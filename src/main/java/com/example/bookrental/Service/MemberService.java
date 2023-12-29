@@ -9,6 +9,6 @@ public interface MemberService {
     public Member addMember (MemberDto memberDto);
     public Member updateMember (MemberDto memberDto);
     public List<Member> getAllMember ();
-    public String DeleteMember (long id);
+    public String deleteMember (long id);
 
 }

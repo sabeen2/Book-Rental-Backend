@@ -1,24 +1,23 @@
-package com.example.bookrental.Entity;
+package com.example.bookrental.Dto;
 
-import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDate;
 import java.util.Date;
 
-@Entity
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "Book")
-@Data
-public class Book {
-    @Id
-            @GeneratedValue( strategy = GenerationType.AUTO)
+public class BookDto {
     long id;
     String name;
     double rating;
     int stock;
+    @JsonFormat(pattern = "yyyy-mm-dd")
     Date published_date;
     String photo;
-
 }

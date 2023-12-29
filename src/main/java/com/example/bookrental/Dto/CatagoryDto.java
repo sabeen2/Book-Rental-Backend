@@ -1,20 +1,14 @@
-package com.example.bookrental.Entity;
+package com.example.bookrental.Dto;
 
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity
-@Table(name="Catagory")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Catagory {
-@Id
-        @GeneratedValue(strategy = GenerationType.AUTO)
+public class CatagoryDto {
     long id;
     String  name;
     String discription;
-
 }

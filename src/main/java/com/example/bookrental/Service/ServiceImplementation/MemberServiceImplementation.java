@@ -16,6 +16,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static com.example.bookrental.Utils.NullValues.getNullPropertyNames;
+
 
 @Service
 @RequiredArgsConstructor
@@ -31,18 +33,6 @@ public class MemberServiceImplementation implements MemberService {
        member=objectMapper.convertValue(memberDto,Member.class);
        return membersRepo.save(member);
     }
-    public static String[] getNullPropertyNames (Object source) {
-        final BeanWrapper src = new BeanWrapperImpl(source);
-        PropertyDescriptor[] pds = src.getPropertyDescriptors();
-
-        Set<String> emptyNames = new HashSet<>();
-        for(PropertyDescriptor pd : pds) {
-            Object srcValue = src.getPropertyValue(pd.getName());
-            if (srcValue == null) emptyNames.add(pd.getName());
-        }
-        return emptyNames.toArray(new String[0]);
-    }
-
     @Override
     public Member updateMember(MemberDto memberDto) {
       Member member=membersRepo.findById(memberDto.getMemberid()).orElseThrow(()->new RuntimeException("Member Not Found"));
@@ -56,8 +46,10 @@ public class MemberServiceImplementation implements MemberService {
     }
 
     @Override
-    public String DeleteMember(long id) {
+    public String deleteMember(long id) {
         Member member=membersRepo.findById(id).orElseThrow(()->new RuntimeException("Member not found"));
-        return "deleted";
+        membersRepo.delete(member);
+        return member.toString()+ "has been deleted";
     }
+
 }

@@ -16,13 +16,11 @@ public class MemberController {
     public MemberController(MemberService memberService) {
         this.memberService = memberService;
     }
-
     @PostMapping("addMember")
     public Member addMember(@RequestBody MemberDto memberDto){
         return memberService.addMember(memberDto);
     }
-
-    @GetMapping("/allEmploye")
+    @GetMapping("/allMembers")
     public List<Member> allMembers(){
         return memberService.getAllMember();
     }
@@ -32,6 +30,6 @@ public class MemberController {
     }
     @DeleteMapping("/removeMember")
     public String deleteMember(@RequestParam long id){
-        return memberService.DeleteMember(id);
+        return memberService.deleteMember(id);
     }
 }

@@ -14,8 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class MemberDto {
     long memberid;
-    String Email;
-    String Name;
-    String mobileNo;
+    String email;
+    String name;
+    String mobile_no;
     String address;
 }
