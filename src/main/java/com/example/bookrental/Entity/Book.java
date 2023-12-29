@@ -29,20 +29,10 @@ public class Book {
     @ManyToOne(cascade = CascadeType.ALL,targetEntity = Catagory.class)
     private Catagory catagory;
 
-//    @ManyToMany
-//    @JoinTable(name = "book_author", // Specify the name of the intermediate table
-//            joinColumns = @JoinColumn(name = "book_id"), // Column in the book table
-//            inverseJoinColumns = @JoinColumn(name = "author_id") // Column in the author table
-//    )
-
-
-    @ManyToMany(targetEntity = Author.class,cascade = CascadeType.ALL)
-    @JoinTable(name="author_book",joinColumns = {
-            @JoinColumn(name = "book_id" ,referencedColumnName = "id")
-    },
-            inverseJoinColumns = {
-                    @JoinColumn(name = "author_id",referencedColumnName = "author_id")
-            }
+    @ManyToMany
+    @JoinTable(name = "book_author", // Specify the name of the intermediate table
+            joinColumns = @JoinColumn(name = "book_id"), // Column in the book table
+            inverseJoinColumns = @JoinColumn(name = "author_id") // Column in the author table
     )
     List<Author> authors;
 }

@@ -26,7 +26,6 @@ public class BookServiceImplementation implements BookService {
     private final BookRepo bookRepo;
     private final CatagoryRepo catagoryRepo;
     private final AuthorRepo authorRepo;
-    private final CatagoryDto catagoryDto;
 @Override
 public Book addBook(BookDto bookDto) {
     long categoryId = bookDto.getCatagory_Id();
