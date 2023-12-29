@@ -5,9 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.antlr.v4.runtime.misc.NotNull;
 
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -20,4 +22,6 @@ public class BookDto {
     @JsonFormat(pattern = "yyyy-mm-dd")
     Date published_date;
     String photo;
+    long catagory_Id;
+    List<Long> authorId;
 }

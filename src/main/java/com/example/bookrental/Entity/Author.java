@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 public class Author {
 @Id
         @GeneratedValue(strategy = GenerationType.AUTO)
-    long Author_id;
+    long author_id;
     String name;
     String email;
     String mobile_number;

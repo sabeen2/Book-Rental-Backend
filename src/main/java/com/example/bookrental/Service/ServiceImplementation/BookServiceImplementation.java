@@ -1,12 +1,18 @@
 package com.example.bookrental.Service.ServiceImplementation;
 
 import com.example.bookrental.Dto.BookDto;
+import com.example.bookrental.Dto.CatagoryDto;
+import com.example.bookrental.Entity.Author;
 import com.example.bookrental.Entity.Book;
+import com.example.bookrental.Entity.Catagory;
+import com.example.bookrental.Repo.AuthorRepo;
 import com.example.bookrental.Repo.BookRepo;
+import com.example.bookrental.Repo.CatagoryRepo;
 import com.example.bookrental.Service.BookService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,13 +24,28 @@ import static com.example.bookrental.Utils.NullValues.getNullPropertyNames;
 public class BookServiceImplementation implements BookService {
     private final ObjectMapper objectMapper;
     private final BookRepo bookRepo;
+    private final CatagoryRepo catagoryRepo;
+    private final AuthorRepo authorRepo;
+    private final CatagoryDto catagoryDto;
+@Override
+public Book addBook(BookDto bookDto) {
+    long categoryId = bookDto.getCatagory_Id();
+    Catagory category = catagoryRepo.findById(categoryId)
+            .orElseThrow(() -> new RuntimeException("Category not found"));
 
+    List<Long> authorId = bookDto.getAuthorId();
+    List<Author> authors = authorRepo.findAllById(authorId);
 
-    @Override
-    public Book addBook(BookDto bookDto) {
-    Book book=objectMapper.convertValue(bookDto,Book.class);
-    return bookRepo.save(book);
+    if (authors.size() != authorId.size()) {
+        throw new RuntimeException("Authors do not exist");
     }
+
+    Book book = objectMapper.convertValue(bookDto, Book.class);
+    book.setCatagory(category);
+    book.setAuthors(authors);
+
+    return bookRepo.save(book);
+}
 
     @Override
     public Book UpdateBook(BookDto bookDto) {

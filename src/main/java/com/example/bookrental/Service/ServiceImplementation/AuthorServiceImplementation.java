@@ -31,7 +31,7 @@ public class AuthorServiceImplementation implements AuthorService {
 
     @Override
     public Author updateAuthor(AuthorDto authorDto) {
-        Author author= authorRepo.findById(authorDto.getId()).orElseThrow(()->new RuntimeException("Author Not Found"));
+        Author author= authorRepo.findById(authorDto.getAuthor_id()).orElseThrow(()->new RuntimeException("Author Not Found"));
         BeanUtils.copyProperties(authorDto,author,getNullPropertyNames(authorDto));
         return authorRepo.save(author);
     }
