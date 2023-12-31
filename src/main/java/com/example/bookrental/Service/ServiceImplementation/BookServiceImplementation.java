@@ -14,8 +14,14 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
+import java.util.UUID;
 
 import static com.example.bookrental.Utils.NullValues.getNullPropertyNames;
 
@@ -38,7 +44,6 @@ public Book addBook(BookDto bookDto) {
     if (authors.size() != authorId.size()) {
         throw new RuntimeException("Authors do not exist");
     }
-
     Book book = objectMapper.convertValue(bookDto, Book.class);
     book.setCatagory(category);
     book.setAuthors(authors);

@@ -7,13 +7,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name="Author")
+@Table(name = "Author")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class Author {
-@Id
-        @GeneratedValue(strategy = GenerationType.AUTO)
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     long author_id;
     String name;
     String email;
