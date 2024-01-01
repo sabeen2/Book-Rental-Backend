@@ -23,7 +23,7 @@ public class BookTransaction {
 
     long code;
 
-    @ManyToOne(cascade = CascadeType.ALL,targetEntity = Book.class)
+    @ManyToOne(targetEntity = Book.class)
     Book book;
 
     @JsonFormat(pattern = "yyyy-mm-dd")
@@ -37,7 +37,7 @@ public class BookTransaction {
     @NonNull
      RENT_TYPE rent_type;
 
-    @OneToOne(cascade =CascadeType.ALL)
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
             @JoinColumn(name = "FK_member_id")
     @NonNull
     Member member;

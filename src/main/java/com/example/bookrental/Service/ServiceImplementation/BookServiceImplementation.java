@@ -1,7 +1,6 @@
 package com.example.bookrental.Service.ServiceImplementation;
 
 import com.example.bookrental.Dto.BookDto;
-import com.example.bookrental.Dto.CatagoryDto;
 import com.example.bookrental.Entity.Author;
 import com.example.bookrental.Entity.Book;
 import com.example.bookrental.Entity.Catagory;
@@ -12,16 +11,9 @@ import com.example.bookrental.Service.BookService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
-import java.util.UUID;
+import java.util.Optional;
 
 import static com.example.bookrental.Utils.NullValues.getNullPropertyNames;
 
@@ -54,9 +46,18 @@ public Book addBook(BookDto bookDto) {
     @Override
     public Book UpdateBook(BookDto bookDto) {
         Book book=bookRepo.findById(bookDto.getId()).orElseThrow(()->new RuntimeException("Book Not Found"));
-        BeanUtils.copyProperties(bookDto, book, getNullPropertyNames(bookDto));
-        return bookRepo.save(book);
 
+        Optional<Catagory> updatedCatagoryOptional = catagoryRepo.findById(bookDto.getCatagory_Id());
+       List<Author> updatedAuthorList = authorRepo.findAllById(bookDto.getAuthorId());
+
+        BeanUtils.copyProperties(bookDto, book, getNullPropertyNames(bookDto));
+
+        if(updatedCatagoryOptional.isPresent()){
+            Catagory UpdatedCatagory=updatedCatagoryOptional.get();
+            book.setCatagory(UpdatedCatagory);
+        }
+
+        return bookRepo.save(book);
     }
 
     @Override

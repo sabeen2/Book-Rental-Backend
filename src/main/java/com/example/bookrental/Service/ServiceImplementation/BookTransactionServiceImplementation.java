@@ -10,14 +10,18 @@ import com.example.bookrental.Repo.BookTransactionRepo;
 import com.example.bookrental.Repo.MembersRepo;
 import com.example.bookrental.Service.BookTransactionService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
-
 
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static com.example.bookrental.Utils.NullValues.getNullPropertyNames;
 
 @Service
 @AllArgsConstructor
@@ -40,9 +44,16 @@ public class BookTransactionServiceImplementation implements BookTransactionServ
         if (book.getStock() <= 0) {
             throw new RuntimeException("Book is out of stock.");
         }
+        if (bookTransactionDto.getRent_type() == RENT_TYPE.RENT) {
+            book.setStock(book.getStock() - 1);
+        }
 
-        if(bookTransactionDto.getRent_type()== RENT_TYPE.RENT){
-            book.setStock(book.getStock()-1);
+        List<BookTransaction> bookTransactions = bookTransactionRepo.findAll();
+        for (BookTransaction bookTransaction : bookTransactions) {
+            Member existingMember = bookTransaction.getMember();
+            if (existingMember.getMemberid() == bookTransactionDto.getFk_member_id()) {
+                throw new RuntimeException("member cannot rent 2 books");
+            }
         }
 
         BookTransaction bookTransaction = objectMapper.convertValue(bookTransactionDto, BookTransaction.class);
@@ -51,23 +62,51 @@ public class BookTransactionServiceImplementation implements BookTransactionServ
 
         return bookTransactionRepo.save(bookTransaction);
     }
+
+    @Transactional
     @Override
     public BookTransaction updateTransaction(BookTransactionDto bookTransactionDto) {
-        return null;
+        BookTransaction bookTransaction = bookTransactionRepo.findById(bookTransactionDto.getId()).orElseThrow(() -> new RuntimeException("Transaction Dosent exist"));
+        if (bookTransactionDto.getRent_type() == RENT_TYPE.RETURN) {
+            deleteTransaction(bookTransactionDto.getId(), bookTransactionDto.getRent_type());
+            return bookTransaction;
+        }
+
+        Optional<Book> updatedBookOptional = bookRepo.findById(bookTransactionDto.getFK_book_id());
+        Optional<Member> updatedMemberOptional = membersRepo.findById(bookTransactionDto.getFk_member_id());
+
+        BeanUtils.copyProperties(bookTransactionDto, bookTransaction, getNullPropertyNames(bookTransactionDto));
+        if (updatedMemberOptional.isPresent()) {
+            Member updatemMember = updatedMemberOptional.get();
+            bookTransaction.setMember(updatemMember);
+        }
+
+        if (updatedBookOptional.isPresent()) {
+            Book updatedBook = updatedBookOptional.get();
+            bookTransaction.setBook(updatedBook);
+        }
+        return bookTransactionRepo.save(bookTransaction);
     }
+
 
     @Override
     public List<BookTransaction> getAllTransaction() {
         return bookTransactionRepo.findAll();
     }
 
-
-
-//delete all the records associated with the transcation
     @Override
-    public String deleteTransaction(long id) {
-        BookTransaction bookTransaction=bookTransactionRepo.findById(id).orElseThrow(()->new RuntimeException("Transcation Not Found"));
-        bookTransactionRepo.delete(bookTransaction);
-        return bookTransaction.toString()+" Transaction has been deleted";
+    public String deleteTransaction(Long id, RENT_TYPE rentType) {
+        BookTransaction bookTransaction = bookTransactionRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Transcation Not Found"));
+        bookTransaction.setRent_type(rentType);
+        if (bookTransaction.getRent_type() == RENT_TYPE.RETURN) {
+            bookTransactionRepo.delete(bookTransaction);
+        } else {
+            throw new RuntimeException("Invalid return type");
+        }
+        Book book = bookTransaction.getBook();
+        book.setStock(book.getStock() + 1);
+        bookRepo.save(book);
+        return bookTransaction.toString() + " Transaction has been deleted";
     }
 }
