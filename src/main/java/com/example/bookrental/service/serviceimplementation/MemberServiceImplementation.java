@@ -19,7 +19,7 @@ import static com.example.bookrental.Utils.NullValues.getNullPropertyNames;
 public class MemberServiceImplementation implements MemberService {
 
     private final MembersRepo membersRepo;
-    private final ObjectMapper objectMapper;
+    private final ObjectMappegit r objectMapper;
 
 
     @Override
