@@ -1,6 +1,7 @@
 package com.example.bookrental.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.util.Date;
@@ -17,10 +18,12 @@ public class Book {
     @SequenceGenerator(name = "book_primary_key_generator", initialValue = 0, allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "book_primary_key_generator")
     Long id;
+
+    @NotNull(message = "Name Cannot be empty")
     String name;
     Double rating;
     Integer stock;
-    Date published_date;
+    Date publishedDate;
     String photo;
 
 
@@ -32,6 +35,7 @@ public class Book {
             joinColumns = @JoinColumn(name = "book_id"), // Column in the book table
             inverseJoinColumns = @JoinColumn(name = "author_id") // Column in the author table
     )
+    @NotNull(message = "Author Cannot be empty")
     List<Author> authors;
 }
 //javaxvaidation constraints

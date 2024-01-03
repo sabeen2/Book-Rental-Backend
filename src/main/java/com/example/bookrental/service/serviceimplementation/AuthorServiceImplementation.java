@@ -40,6 +40,12 @@ public class AuthorServiceImplementation implements AuthorService {
     }
 
     @Override
+    public Author findById(Long id) {
+        return authorRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Author didnt exist"));
+    }
+
+    @Override
     public String deleteAuthor(Long id) {
         Author author = authorRepo.findById(id).orElseThrow(() -> new RuntimeException("Author Not Found"));
         authorRepo.delete(author);

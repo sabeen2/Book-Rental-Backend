@@ -30,7 +30,7 @@ public class BookTransactionController {
         return bookTransactionServiceImplementation.updateTransaction(bookTransactionDto);
     }
     @DeleteMapping("/delete-Transcation")
-    public String deleteTransaction (@RequestParam Long id, RENT_TYPE rentType){
-        return bookTransactionServiceImplementation.deleteTransaction(id, rentType);
+    public String deleteTransaction (@RequestParam Long id){
+        return bookTransactionServiceImplementation.deleteTransaction(id);
     }
 }

@@ -9,5 +9,6 @@ public interface AuthorService {
     public Author addAuthor (AuthorDto authorDto);
     public Author updateAuthor (AuthorDto authorDto);
     public List<Author> getAllAuthor ();
+    public Author findById(Long id);
     public String deleteAuthor (Long id);
 }

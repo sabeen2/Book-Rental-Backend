@@ -27,7 +27,7 @@ public class CategoryServiceImplementation implements CategoryService {
 
     @Override
     public Category updateCategory(CategoryDto categoryDto) {
-        Category category = categoryRepo.findById(categoryDto.getId()).orElseThrow(() -> new RuntimeException("catagory Not Found"));
+        Category category = categoryRepo.findById(categoryDto.getId()).orElseThrow(() -> new RuntimeException("Category Not Found"));
         BeanUtils.copyProperties(categoryDto, category, getNullPropertyNames(categoryDto));
         return categoryRepo.save(category);
     }
@@ -36,6 +36,12 @@ public class CategoryServiceImplementation implements CategoryService {
     public List<Category> getAllCategory() {
         return categoryRepo.findAll();
     }
+
+    @Override
+    public Category findById(Long id) {
+        return categoryRepo.findById(id).orElseThrow(()->new RuntimeException("Category does not exist "));
+    }
+
 
     @Override
     public String deleteCategory(Long id) {

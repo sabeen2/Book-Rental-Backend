@@ -11,6 +11,7 @@ import com.example.bookrental.repo.MembersRepo;
 import com.example.bookrental.service.BookTransactionService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -45,10 +46,11 @@ public class BookTransactionServiceImplementation implements BookTransactionServ
             book.setStock(book.getStock() - 1);
         }
 
+
         List<BookTransaction> bookTransactions = bookTransactionRepo.findAll();
         for (BookTransaction bookTransaction : bookTransactions) {
             Member existingMember = bookTransaction.getMember();
-            if (existingMember.getMemberid().equals(bookTransactionDto.getFkMemberId())) {
+            if (existingMember.getMemberid().equals( bookTransactionDto.getFkMemberId()) ){
                 throw new RuntimeException("member cannot rent 2 books");
             }
         }
@@ -62,15 +64,15 @@ public class BookTransactionServiceImplementation implements BookTransactionServ
 
     @Override
     public BookTransaction updateTransaction(BookTransactionDto bookTransactionDto) {
-        BookTransaction bookTransaction = bookTransactionRepo.findById(bookTransactionDto.getId()).orElseThrow(() -> new RuntimeException("Transaction Dosent exist"));
-        if (bookTransactionDto.getRentType() == RENT_TYPE.RETURN) {
-            deleteTransaction(bookTransactionDto.getId(), bookTransactionDto.getRentType());
-            return bookTransaction;
-        }
+        BookTransaction bookTransaction = bookTransactionRepo.findById(bookTransactionDto.getId())
+                .orElseThrow(() -> new RuntimeException("Transaction Does not exist"));
         Optional<Book> updatedBookOptional = bookRepo.findById(bookTransactionDto.getFkbookid());
         Optional<Member> updatedMemberOptional = membersRepo.findById(bookTransactionDto.getFkMemberId());
 
-        BeanUtils.copyProperties(bookTransactionDto, bookTransaction, getNullPropertyNames(bookTransactionDto));
+        if (bookTransaction.getRentType() == RENT_TYPE.RETURN) {
+            deleteTransaction(bookTransactionDto.getId());
+        }
+
         if (updatedMemberOptional.isPresent()) {
             Member updatemMember = updatedMemberOptional.get();
             bookTransaction.setMember(updatemMember);
@@ -80,6 +82,9 @@ public class BookTransactionServiceImplementation implements BookTransactionServ
             Book updatedBook = updatedBookOptional.get();
             bookTransaction.setBook(updatedBook);
         }
+
+        BeanUtils.copyProperties(bookTransactionDto, bookTransaction, getNullPropertyNames(bookTransactionDto));
+
         return bookTransactionRepo.save(bookTransaction);
     }
 
@@ -90,15 +95,20 @@ public class BookTransactionServiceImplementation implements BookTransactionServ
     }
 
     @Override
-    public String deleteTransaction(Long id, RENT_TYPE rentType) {
+    public BookTransaction findById(Long id) {
+        return bookTransactionRepo.findById(id).orElseThrow(()->new RuntimeException("Transaction Not available"));
+
+    }
+
+    @Transactional
+    @Override
+    public String deleteTransaction(Long id) {
         BookTransaction bookTransaction = bookTransactionRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Transcation Not Found"));
-        bookTransaction.setRentType(rentType);
-        if (bookTransaction.getRentType() == RENT_TYPE.RETURN) {
-            bookTransactionRepo.delete(bookTransaction);
-        } else {
-            throw new RuntimeException("Invalid return type");
-        }
+                .orElseThrow(() -> new RuntimeException("Transaction Not Found"));
+
+        bookTransaction.setRentType(RENT_TYPE.RETURN);
+        bookTransactionRepo.delete(bookTransaction);
+
         Book book = bookTransaction.getBook();
         book.setStock(book.getStock() + 1);
         bookRepo.save(book);

@@ -74,6 +74,11 @@ public class BookServiceImplementation implements BookService {
     }
 
     @Override
+    public Book findById(Long id) {
+        return bookRepo.findById(id).orElseThrow(()->new RuntimeException("Book does not exist"));
+    }
+
+    @Override
     public String deleteBook(Long id) {
         Book book = bookRepo.findById(id).orElseThrow(() -> new RuntimeException("book not found"));
         bookRepo.delete(book);

@@ -19,7 +19,7 @@ import static com.example.bookrental.Utils.NullValues.getNullPropertyNames;
 public class MemberServiceImplementation implements MemberService {
 
     private final MembersRepo membersRepo;
-    private final ObjectMappegit r objectMapper;
+    private final ObjectMapper objectMapper;
 
 
     @Override
@@ -39,6 +39,11 @@ public class MemberServiceImplementation implements MemberService {
     @Override
     public List<Member> getAllMember() {
         return membersRepo.findAll();
+    }
+
+    @Override
+    public Member findById(Long id) {
+        return membersRepo.findById(id).orElseThrow(()->new RuntimeException("Member does not exist"));
     }
 
     @Override
