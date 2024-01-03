@@ -3,6 +3,7 @@ package com.example.bookrental.controller;
 import com.example.bookrental.dto.MemberDto;
 import com.example.bookrental.entity.Member;
 import com.example.bookrental.service.MemberService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,7 +17,7 @@ public class MemberController {
     private final MemberService memberService;
 
     @PostMapping("add-Member")
-    public Member addMember(@RequestBody MemberDto memberDto) {
+    public Member addMember(@RequestBody @Valid MemberDto memberDto) {
         return memberService.addMember(memberDto);
     }
 

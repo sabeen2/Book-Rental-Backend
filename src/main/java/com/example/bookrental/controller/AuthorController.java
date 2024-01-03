@@ -3,6 +3,7 @@ package com.example.bookrental.controller;
 import com.example.bookrental.dto.AuthorDto;
 import com.example.bookrental.entity.Author;
 import com.example.bookrental.service.AuthorService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +17,7 @@ public class AuthorController {
     private final AuthorService authorService;
 
     @PostMapping("/add-Author")
-    public Author addAuthor(@RequestBody AuthorDto authorDto) {
+    public Author addAuthor(@RequestBody  @Valid AuthorDto authorDto) {
         return authorService.addAuthor(authorDto);
     }
 

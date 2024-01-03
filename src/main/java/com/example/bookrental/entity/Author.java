@@ -23,5 +23,6 @@ public class Author {
 
     @Email(message = "Enter valid Email")
     String email;
+    @NotNull
     String mobileNumber;
 }

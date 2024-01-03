@@ -4,6 +4,7 @@ import com.example.bookrental.dto.BookTransactionDto;
 import com.example.bookrental.entity.BookTransaction;
 import com.example.bookrental.enums.RENT_TYPE;
 import com.example.bookrental.service.serviceimplementation.BookTransactionServiceImplementation;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +18,7 @@ public class BookTransactionController {
     private final BookTransactionServiceImplementation bookTransactionServiceImplementation;
 
     @PostMapping("/add-Transaction")
-    public BookTransaction addTransaction(@RequestBody BookTransactionDto bookTransactionDto) {
+    public BookTransaction addTransaction(@RequestBody @Valid BookTransactionDto bookTransactionDto) {
         return bookTransactionServiceImplementation.addTransaction(bookTransactionDto);
     }
 

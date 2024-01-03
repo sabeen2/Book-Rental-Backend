@@ -2,6 +2,7 @@ package com.example.bookrental.service.serviceimplementation;
 
 import com.example.bookrental.dto.CategoryDto;
 import com.example.bookrental.entity.Category;
+import com.example.bookrental.exception.NotFoundException;
 import com.example.bookrental.repo.CategoryRepo;
 import com.example.bookrental.service.CategoryService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -27,7 +28,7 @@ public class CategoryServiceImplementation implements CategoryService {
 
     @Override
     public Category updateCategory(CategoryDto categoryDto) {
-        Category category = categoryRepo.findById(categoryDto.getId()).orElseThrow(() -> new RuntimeException("Category Not Found"));
+        Category category = categoryRepo.findById(categoryDto.getId()).orElseThrow(() -> new NotFoundException("Category Not Found"));
         BeanUtils.copyProperties(categoryDto, category, getNullPropertyNames(categoryDto));
         return categoryRepo.save(category);
     }
@@ -39,13 +40,13 @@ public class CategoryServiceImplementation implements CategoryService {
 
     @Override
     public Category findById(Long id) {
-        return categoryRepo.findById(id).orElseThrow(()->new RuntimeException("Category does not exist "));
+        return categoryRepo.findById(id).orElseThrow(()->new NotFoundException("Category does not exist "));
     }
 
 
     @Override
     public String deleteCategory(Long id) {
-        Category category = categoryRepo.findById(id).orElseThrow(() -> new RuntimeException("Catagory Not Found"));
+        Category category = categoryRepo.findById(id).orElseThrow(() -> new NotFoundException("Catagory Not Found"));
         categoryRepo.delete(category);
         return category.toString() + " has been deleted";
     }

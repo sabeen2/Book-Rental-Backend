@@ -3,6 +3,7 @@ package com.example.bookrental.controller;
 import com.example.bookrental.dto.CategoryDto;
 import com.example.bookrental.entity.Category;
 import com.example.bookrental.service.CategoryService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,7 +16,7 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @PostMapping("/add-Category")
-    public Category addCategory(@RequestBody CategoryDto categoryDto) {
+    public Category addCategory(@RequestBody @Valid CategoryDto categoryDto) {
         return categoryService.addCategory(categoryDto);
     }
 

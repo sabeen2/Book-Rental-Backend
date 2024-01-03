@@ -2,6 +2,7 @@ package com.example.bookrental.service.serviceimplementation;
 
 import com.example.bookrental.dto.AuthorDto;
 import com.example.bookrental.entity.Author;
+import com.example.bookrental.exception.NotFoundException;
 import com.example.bookrental.repo.AuthorRepo;
 import com.example.bookrental.service.AuthorService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -29,7 +30,7 @@ public class AuthorServiceImplementation implements AuthorService {
 
     @Override
     public Author updateAuthor(AuthorDto authorDto) {
-        Author author = authorRepo.findById(authorDto.getAuthorId()).orElseThrow(() -> new RuntimeException("Author Not Found"));
+        Author author = authorRepo.findById(authorDto.getAuthorId()).orElseThrow(() -> new NotFoundException("Author Not Found"));
         BeanUtils.copyProperties(authorDto, author, getNullPropertyNames(authorDto));
         return authorRepo.save(author);
     }
@@ -42,12 +43,12 @@ public class AuthorServiceImplementation implements AuthorService {
     @Override
     public Author findById(Long id) {
         return authorRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Author didnt exist"));
+                .orElseThrow(() -> new NotFoundException("Author didnt exist"));
     }
 
     @Override
     public String deleteAuthor(Long id) {
-        Author author = authorRepo.findById(id).orElseThrow(() -> new RuntimeException("Author Not Found"));
+        Author author = authorRepo.findById(id).orElseThrow(() -> new NotFoundException("Author Not Found"));
         authorRepo.delete(author);
         return author.toString() + "has been Deleted";
     }

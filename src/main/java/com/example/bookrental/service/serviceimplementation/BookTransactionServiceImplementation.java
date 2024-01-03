@@ -5,6 +5,7 @@ import com.example.bookrental.entity.Book;
 import com.example.bookrental.entity.BookTransaction;
 import com.example.bookrental.entity.Member;
 import com.example.bookrental.enums.RENT_TYPE;
+import com.example.bookrental.exception.NotFoundException;
 import com.example.bookrental.repo.BookRepo;
 import com.example.bookrental.repo.BookTransactionRepo;
 import com.example.bookrental.repo.MembersRepo;
@@ -33,14 +34,14 @@ public class BookTransactionServiceImplementation implements BookTransactionServ
     public BookTransaction addTransaction(BookTransactionDto bookTransactionDto) {
         Long bookid = bookTransactionDto.getFkbookid();
         Book book = bookRepo.findById(bookid)
-                .orElseThrow(() -> new RuntimeException("book not found"));
+                .orElseThrow(() -> new NotFoundException("book not found"));
 
         Long memberid = bookTransactionDto.getFkMemberId();
         Member member = membersRepo.findById(memberid)
-                .orElseThrow(() -> new RuntimeException("Member not found"));
+                .orElseThrow(() -> new NotFoundException("Member not found"));
 
         if (book.getStock() <= 0) {
-            throw new RuntimeException("Book is out of stock.");
+            throw new NotFoundException("Book is out of stock.");
         }
         if (bookTransactionDto.getRentType() == RENT_TYPE.RENT) {
             book.setStock(book.getStock() - 1);
@@ -51,7 +52,7 @@ public class BookTransactionServiceImplementation implements BookTransactionServ
         for (BookTransaction bookTransaction : bookTransactions) {
             Member existingMember = bookTransaction.getMember();
             if (existingMember.getMemberid().equals( bookTransactionDto.getFkMemberId()) ){
-                throw new RuntimeException("member cannot rent 2 books");
+                throw new NotFoundException("member cannot rent 2 books");
             }
         }
 
@@ -65,7 +66,7 @@ public class BookTransactionServiceImplementation implements BookTransactionServ
     @Override
     public BookTransaction updateTransaction(BookTransactionDto bookTransactionDto) {
         BookTransaction bookTransaction = bookTransactionRepo.findById(bookTransactionDto.getId())
-                .orElseThrow(() -> new RuntimeException("Transaction Does not exist"));
+                .orElseThrow(() -> new NotFoundException("Transaction Does not exist"));
         Optional<Book> updatedBookOptional = bookRepo.findById(bookTransactionDto.getFkbookid());
         Optional<Member> updatedMemberOptional = membersRepo.findById(bookTransactionDto.getFkMemberId());
 
@@ -96,7 +97,7 @@ public class BookTransactionServiceImplementation implements BookTransactionServ
 
     @Override
     public BookTransaction findById(Long id) {
-        return bookTransactionRepo.findById(id).orElseThrow(()->new RuntimeException("Transaction Not available"));
+        return bookTransactionRepo.findById(id).orElseThrow(()->new NotFoundException("Transaction Not available"));
 
     }
 
@@ -104,7 +105,7 @@ public class BookTransactionServiceImplementation implements BookTransactionServ
     @Override
     public String deleteTransaction(Long id) {
         BookTransaction bookTransaction = bookTransactionRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Transaction Not Found"));
+                .orElseThrow(() -> new NotFoundException("Transaction Not Found"));
 
         bookTransaction.setRentType(RENT_TYPE.RETURN);
         bookTransactionRepo.delete(bookTransaction);

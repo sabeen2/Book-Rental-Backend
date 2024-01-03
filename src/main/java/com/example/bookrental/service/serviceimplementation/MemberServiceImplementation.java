@@ -2,6 +2,7 @@ package com.example.bookrental.service.serviceimplementation;
 
 import com.example.bookrental.dto.MemberDto;
 import com.example.bookrental.entity.Member;
+import com.example.bookrental.exception.NotFoundException;
 import com.example.bookrental.repo.MembersRepo;
 import com.example.bookrental.service.MemberService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -31,7 +32,7 @@ public class MemberServiceImplementation implements MemberService {
 
     @Override
     public Member updateMember(MemberDto memberDto) {
-        Member member = membersRepo.findById(memberDto.getMemberid()).orElseThrow(() -> new RuntimeException("Member Not Found"));
+        Member member = membersRepo.findById(memberDto.getMemberid()).orElseThrow(() -> new NotFoundException("Member Not Found"));
         BeanUtils.copyProperties(memberDto, member, getNullPropertyNames(memberDto));
         return membersRepo.save(member);
     }
@@ -43,12 +44,12 @@ public class MemberServiceImplementation implements MemberService {
 
     @Override
     public Member findById(Long id) {
-        return membersRepo.findById(id).orElseThrow(()->new RuntimeException("Member does not exist"));
+        return membersRepo.findById(id).orElseThrow(()->new NotFoundException("Member does not exist"));
     }
 
     @Override
     public String deleteMember(Long id) {
-        Member member = membersRepo.findById(id).orElseThrow(() -> new RuntimeException("Member not found"));
+        Member member = membersRepo.findById(id).orElseThrow(() -> new NotFoundException("Member not found"));
         membersRepo.delete(member);
         return member.toString() + "has been deleted";
     }
