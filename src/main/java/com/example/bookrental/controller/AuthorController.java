@@ -2,6 +2,7 @@ package com.example.bookrental.controller;
 
 import com.example.bookrental.dto.AuthorDto;
 import com.example.bookrental.entity.Author;
+import com.example.bookrental.generic_response.GenericResponse;
 import com.example.bookrental.service.AuthorService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -17,22 +18,39 @@ public class AuthorController {
     private final AuthorService authorService;
 
     @PostMapping("/add-Author")
-    public Author addAuthor(@RequestBody  @Valid AuthorDto authorDto) {
-        return authorService.addAuthor(authorDto);
+    public GenericResponse<Author> addAuthor(@RequestBody  @Valid AuthorDto authorDto) {
+        return GenericResponse.<Author>builder()
+                .success(true)
+                .message("Author added")
+                .data( authorService.addAuthor(authorDto))
+                .build();
     }
 
     @PutMapping("/update-Author")
-    public Author updateAuthor(@RequestBody AuthorDto authorDto) {
-        return authorService.updateAuthor(authorDto);
+    public GenericResponse<Author> updateAuthor(@RequestBody AuthorDto authorDto) {
+        return GenericResponse.<Author>builder()
+                .success(true)
+                .message("Author updated")
+                .data(authorService.updateAuthor(authorDto))
+                .build();
     }
 
     @GetMapping("/all-Authors")
-    public List<Author> getAllAuthor() {
-        return authorService.getAllAuthor();
+    public GenericResponse<List<Author>> getAllAuthor() {
+
+        return GenericResponse.<List<Author>>builder()
+                .success(true)
+                .message("All Available authors")
+                .data(authorService.getAllAuthor())
+                .build();
     }
 
     @DeleteMapping("/delete")
-    public String deleteAuthor(@RequestParam long id) {
-        return authorService.deleteAuthor(id);
+    public GenericResponse<String> deleteAuthor(@RequestParam long id) {
+        return GenericResponse.<String>builder()
+                .success(true)
+                .message("User id:-"+id+" deleted")
+                .data(authorService.deleteAuthor(id))
+                .build();
     }
 }
