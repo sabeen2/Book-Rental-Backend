@@ -4,7 +4,6 @@ package com.example.bookrental.entity;
 import com.example.bookrental.enums.RENT_TYPE;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
@@ -30,7 +29,7 @@ public class BookTransaction {
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "transaction_primary_key_generator")
     Long id;
 
-    @NotNull(message = "Code Cannot be empty")
+
     Long code;
 
 //    @NotNull(message = "Book Cannot be empty")
@@ -49,7 +48,7 @@ public class BookTransaction {
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH},targetEntity = Member.class)
     @JoinColumn(name = "memberid")
-//    @NotNull(message = "Member Cannot be empty")
+
     Member member;
     private boolean deleted = Boolean.FALSE;
 }

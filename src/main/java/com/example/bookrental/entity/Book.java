@@ -24,13 +24,15 @@ public class Book {
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "book_primary_key_generator")
     Long id;
 
-    @NotNull(message = "Name Cannot be empty")
     String name;
-    Double rating;
-    Integer stock;
-    Date publishedDate;
-    String photo;
 
+    Double rating;
+
+    Integer stock;
+
+    Date publishedDate;
+
+    String photo;
 
     @ManyToOne(cascade = CascadeType.ALL, targetEntity = Category.class)
     private Category category;
@@ -40,8 +42,7 @@ public class Book {
             joinColumns = @JoinColumn(name = "book_id"), // Column in the book table
             inverseJoinColumns = @JoinColumn(name = "author_id") // Column in the author table
     )
-    @NotNull(message = "Author Cannot be empty")
     List<Author> authors;
+
     private boolean deleted = Boolean.FALSE;
 }
-//javaxvaidation constraints

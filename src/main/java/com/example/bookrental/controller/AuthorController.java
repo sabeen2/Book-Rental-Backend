@@ -44,9 +44,17 @@ public class AuthorController {
                 .data(authorService.getAllAuthor())
                 .build();
     }
+    @GetMapping("/find-by-id")
+    public GenericResponse<Author> findAuthorById(@RequestParam Long id){
+        return GenericResponse.<Author>builder()
+                .success(true)
+                .message("User id-:"+id)
+                .data(authorService.findById(id))
+                .build();
+    }
 
     @DeleteMapping("/delete")
-    public GenericResponse<String> deleteAuthor(@RequestParam long id) {
+    public GenericResponse<String> deleteAuthor(@RequestParam Long id) {
         return GenericResponse.<String>builder()
                 .success(true)
                 .message("User id:-"+id+" deleted")

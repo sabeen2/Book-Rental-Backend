@@ -1,15 +1,15 @@
 package com.example.bookrental.generic_response;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
 public class GenericResponse<T> {
     private boolean success;
     private String message;
+    //T is a type parameter or type variable
     private T data;
 }
 

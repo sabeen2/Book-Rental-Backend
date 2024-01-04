@@ -5,7 +5,6 @@ import com.example.bookrental.entity.Book;
 import com.example.bookrental.generic_response.GenericResponse;
 import com.example.bookrental.service.BookService;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
