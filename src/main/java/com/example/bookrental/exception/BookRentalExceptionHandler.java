@@ -27,7 +27,7 @@ public class BookRentalExceptionHandler {
     @ExceptionHandler(NotFoundException.class)
     public Map<String, String> userNotFoundException(NotFoundException e) {
         Map<String, String> map = new HashMap<>();
-        map.put("errorMessage", e.getMessage());
+        map.put("errorMessage", e.message);
         return map;
     }
 

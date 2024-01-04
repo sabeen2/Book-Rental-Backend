@@ -3,6 +3,8 @@ package com.example.bookrental.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import java.util.Date;
 import java.util.List;
@@ -13,6 +15,9 @@ import java.util.List;
 @Table(name = "tbl_book")
 @Getter
 @Setter
+
+@SQLDelete(sql = "UPDATE tbl_book SET deleted = true WHERE id = ?")
+@Where(clause ="deleted=false")
 public class Book {
     @Id
     @SequenceGenerator(name = "book_primary_key_generator", initialValue = 0, allocationSize = 1)
@@ -37,5 +42,6 @@ public class Book {
     )
     @NotNull(message = "Author Cannot be empty")
     List<Author> authors;
+    private boolean deleted = Boolean.FALSE;
 }
 //javaxvaidation constraints

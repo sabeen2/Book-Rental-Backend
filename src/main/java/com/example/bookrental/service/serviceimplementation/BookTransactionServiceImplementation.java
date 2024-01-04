@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
-import static com.example.bookrental.Utils.NullValues.getNullPropertyNames;
+import static com.example.bookrental.utils.NullValues.getNullPropertyNames;
 
 @Service
 @RequiredArgsConstructor
@@ -46,16 +46,13 @@ public class BookTransactionServiceImplementation implements BookTransactionServ
         if (bookTransactionDto.getRentType() == RENT_TYPE.RENT) {
             book.setStock(book.getStock() - 1);
         }
-
-
         List<BookTransaction> bookTransactions = bookTransactionRepo.findAll();
         for (BookTransaction bookTransaction : bookTransactions) {
             Member existingMember = bookTransaction.getMember();
-            if (existingMember.getMemberid().equals( bookTransactionDto.getFkMemberId()) ){
-                throw new NotFoundException("member cannot rent 2 books");
+            if (existingMember.getMemberid().equals(bookTransactionDto.getFkMemberId()) && bookTransaction.getRentType().equals(RENT_TYPE.RENT)) {
+                throw new NotFoundException("Member cannot rent 2 books");
             }
         }
-
         BookTransaction bookTransaction = objectMapper.convertValue(bookTransactionDto, BookTransaction.class);
         bookTransaction.setMember(member);
         bookTransaction.setBook(book);
@@ -97,7 +94,7 @@ public class BookTransactionServiceImplementation implements BookTransactionServ
 
     @Override
     public BookTransaction findById(Long id) {
-        return bookTransactionRepo.findById(id).orElseThrow(()->new NotFoundException("Transaction Not available"));
+        return bookTransactionRepo.findById(id).orElseThrow(() -> new NotFoundException("Transaction Not available"));
 
     }
 
@@ -106,10 +103,7 @@ public class BookTransactionServiceImplementation implements BookTransactionServ
     public String deleteTransaction(Long id) {
         BookTransaction bookTransaction = bookTransactionRepo.findById(id)
                 .orElseThrow(() -> new NotFoundException("Transaction Not Found"));
-
-        bookTransaction.setRentType(RENT_TYPE.RETURN);
         bookTransactionRepo.delete(bookTransaction);
-
         Book book = bookTransaction.getBook();
         book.setStock(book.getStock() + 1);
         bookRepo.save(book);

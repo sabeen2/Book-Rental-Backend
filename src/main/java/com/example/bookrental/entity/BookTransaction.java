@@ -18,13 +18,16 @@ import java.util.Date;
 @Entity
 @Table(name = "tbl_book_transaction")
 //@SQLDelete(sql = "UPDATE tbl_book_transaction SET deleted = true WHERE id=?")
+//@Where(clause ="deleted=true")
 @SQLDelete(sql = "UPDATE tbl_book_transaction SET deleted = true, rent_status = 'RETURN' WHERE id=?")
-@Where(clause ="deleted=false")
+@Where(clause = "deleted = false AND rent_status = 'RENT'")
+
+
 
 public class BookTransaction {
     @Id
-    @SequenceGenerator(name = "primary_key_generator", initialValue = 0, allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "primary_key_generator")
+    @SequenceGenerator(name = "transaction_primary_key_generator", initialValue = 0, allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "transaction_primary_key_generator")
     Long id;
 
     @NotNull(message = "Code Cannot be empty")
@@ -44,7 +47,7 @@ public class BookTransaction {
     @Enumerated(EnumType.STRING)
     RENT_TYPE rentType;
 
-    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH},targetEntity = Member.class)
     @JoinColumn(name = "memberid")
 //    @NotNull(message = "Member Cannot be empty")
     Member member;

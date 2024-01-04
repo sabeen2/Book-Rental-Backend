@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static com.example.bookrental.Utils.NullValues.getNullPropertyNames;
+import static com.example.bookrental.utils.NullValues.getNullPropertyNames;
 
 @Service
 @RequiredArgsConstructor

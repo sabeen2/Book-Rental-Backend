@@ -1,4 +1,4 @@
-package com.example.bookrental.Utils;
+package com.example.bookrental.utils;
 
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
