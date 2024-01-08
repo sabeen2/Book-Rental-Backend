@@ -6,18 +6,20 @@ import com.example.bookrental.generic_response.GenericResponse;
 import com.example.bookrental.service.MemberService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("members")
+@RequestMapping("/Libmembers")
 @RequiredArgsConstructor
 public class MemberController {
 
     private final MemberService memberService;
 
     @PostMapping("add-Member")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     public GenericResponse<Member> addMember(@RequestBody @Valid MemberDto memberDto) {
         return GenericResponse.<Member>builder()
                 .success(true)
@@ -26,6 +28,7 @@ public class MemberController {
                 .build();
     }
     @GetMapping("/all-Members")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     public GenericResponse<List<Member>> allMembers() {
         return GenericResponse.<List<Member>>builder()
                 .success(true)
@@ -34,6 +37,7 @@ public class MemberController {
                 .build();
     }
     @PutMapping("/update-Members")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     public  GenericResponse<Member> updateMember(@RequestBody MemberDto memberDto) {
         return GenericResponse.<Member>builder()
                 .success(true)
@@ -42,6 +46,7 @@ public class MemberController {
                 .build();
     }
     @DeleteMapping("/remove-Member")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     public GenericResponse<String> deleteMember(@RequestParam long id) {
 
         return GenericResponse.<String>builder()

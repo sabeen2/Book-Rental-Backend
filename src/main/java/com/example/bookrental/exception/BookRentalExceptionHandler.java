@@ -13,7 +13,6 @@ import java.util.Map;
 @RestControllerAdvice
 public class BookRentalExceptionHandler {
 
-
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public GenericResponse<Map<String, String>> invalidArgumentHandler(MethodArgumentNotValidException e) {

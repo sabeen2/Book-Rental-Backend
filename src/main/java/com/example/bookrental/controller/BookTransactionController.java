@@ -9,17 +9,19 @@ import com.example.bookrental.service.serviceimplementation.BookTransactionServi
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/transactions")
+@RequestMapping("/Lib/transactions")
 public class BookTransactionController {
     private final BookTransactionServiceImplementation bookTransactionServiceImplementation;
 
     @PostMapping("/add-Transaction")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     public GenericResponse<BookTransaction> addTransaction(@RequestBody @Valid BookTransactionDto bookTransactionDto) {
         return  GenericResponse.<BookTransaction>builder()
                 .success(true)
@@ -28,6 +30,7 @@ public class BookTransactionController {
                 .build();
     }
     @GetMapping("/get-All-Transcations")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     public GenericResponse<List<BookTransaction>> getAllTransaction(){
         return  GenericResponse.<List<BookTransaction>>builder()
                 .success(true)
@@ -36,6 +39,7 @@ public class BookTransactionController {
                 .build();
     }
     @PutMapping("/update-Transcation")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     public GenericResponse<BookTransaction> updateTransaction(@RequestBody BookTransactionDto bookTransactionDto){
 
         return GenericResponse.<BookTransaction>builder()
@@ -45,6 +49,7 @@ public class BookTransactionController {
                 .build();
     }
     @DeleteMapping("/delete-Transcation")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     public GenericResponse<String> deleteTransaction (@RequestParam Long id){
         return GenericResponse.<String>builder()
                 .success(true)

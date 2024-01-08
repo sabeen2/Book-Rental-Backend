@@ -1,0 +1,33 @@
+package com.example.bookrental.entity;
+
+import com.example.bookrental.enums.USER_TYPE;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
+
+@Entity
+@Table(name = "tbl_user")
+@SQLDelete(sql = "UPDATE tbl_user SET deleted = true WHERE author_id = ?")
+@Where(clause = "deleted=false")
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+public class UserEntity {
+    @Id
+    @SequenceGenerator(name = "user_primary_key_generator", initialValue = 0, allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "user_primary_key_generator")
+    Long id;
+    String username;
+    String password;
+
+    @Column(name = "user_type")
+    @Enumerated(EnumType.STRING)
+    USER_TYPE userType;
+
+    private boolean deleted = Boolean.FALSE;
+}
