@@ -17,9 +17,7 @@ public class BookRentalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public GenericResponse<Map<String, String>> invalidArgumentHandler(MethodArgumentNotValidException e) {
         Map<String, String> map = new HashMap<>();
-        e.getBindingResult().getFieldErrors().forEach(error -> {
-            map.put(error.getField(), error.getDefaultMessage());
-        });
+        e.getBindingResult().getFieldErrors().forEach(error -> map.put(error.getField(), error.getDefaultMessage()));
         return GenericResponse.<Map<String, String>>builder()
                 .success(false)
                 .message("Method Argument Not Valid Exception is Thrown")

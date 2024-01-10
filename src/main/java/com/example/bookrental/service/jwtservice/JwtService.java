@@ -58,7 +58,7 @@ public class JwtService {
                 .signWith(SignatureAlgorithm.HS256, getSignKey())
                 .compact();
     }
-public static final String SECRET="G2o+qUjYiIWsFbMAl0ElY3z9Hqw/W1JGUTlI7ObtjtE=";
+    public static final String SECRET="G2o+qUjYiIWsFbMAl0ElY3z9Hqw/W1JGUTlI7ObtjtE=";
 
     private Key getSignKey(){
         byte[] keyByte= Decoders.BASE64.decode(SECRET);

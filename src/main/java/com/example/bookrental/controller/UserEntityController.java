@@ -31,7 +31,6 @@ public class UserEntityController {
                 .data(userEntityService.addUser(userEntityDto))
                 .build();
     }
-
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @DeleteMapping("/deactivate")
     public GenericResponse<String> deactivateUser(@RequestParam Long id) {

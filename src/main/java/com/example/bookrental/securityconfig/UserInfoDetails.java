@@ -13,16 +13,17 @@ import java.util.stream.Collectors;
 
 public class UserInfoDetails implements UserDetails {
 
-    private String username;
-    private String password;
+    private final String username;
+    private final String password;
 
-    private List<GrantedAuthority> authorities;
+    private final List<GrantedAuthority> authorities;
 
 
     public UserInfoDetails(UserEntity userEntity) {
         username = userEntity.getUsername();
         password = userEntity.getPassword();
         authorities = Arrays.stream(USER_TYPE.values())
+                .filter(userType -> userEntity.getUserType() == userType)
                 .map(userType -> new SimpleGrantedAuthority("ROLE_" + userType.name()))
                 .collect(Collectors.toList());
     }

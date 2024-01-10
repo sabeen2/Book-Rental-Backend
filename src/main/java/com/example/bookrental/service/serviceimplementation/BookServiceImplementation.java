@@ -49,18 +49,14 @@ public class BookServiceImplementation implements BookService {
     public Book updateBook(BookDto bookDto) {
         Book book = bookRepo.findById(bookDto.getId()).orElseThrow(() -> new NotFoundException("Book Not Found"));
         BeanUtils.copyProperties(bookDto, book, getNullPropertyNames(bookDto));
-
         if (bookDto.getAuthorId() != null && !bookDto.getAuthorId().isEmpty()) {
             List<Author> updatedAuthorList = authorRepo.findAllById(bookDto.getAuthorId());
             book.setAuthors(updatedAuthorList);
         }
-
-
         if (bookDto.getCategoryId() != null) {
             Category updatedCategoryOptional = categoryRepo.findById(bookDto.getCategoryId()).orElseThrow(() -> new NotFoundException("Catagory dosent exist"));
             book.setCategory(updatedCategoryOptional);
         }
-
         return bookRepo.save(book);
 //        Optional<Catagory> updatedCatagoryOptional = catagoryRepo.findById(bookDto.getCatagory_Id());
 //        if(updatedCatagoryOptional.isPresent()){
