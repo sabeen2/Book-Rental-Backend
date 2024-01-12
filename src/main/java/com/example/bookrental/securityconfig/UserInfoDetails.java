@@ -15,7 +15,6 @@ public class UserInfoDetails implements UserDetails {
 
     private final String username;
     private final String password;
-
     private final List<GrantedAuthority> authorities;
 
 
@@ -23,11 +22,15 @@ public class UserInfoDetails implements UserDetails {
         username = userEntity.getUsername();
         password = userEntity.getPassword();
         authorities = Arrays.stream(USER_TYPE.values())
+                //When creating the authorities list to include only the roles
+                // that correspond to the USER_TYPE of the authenticated user
+                //The filter operation ensures that only the USER_TYPE value
+                // matching the userType of the authenticated user are retained in the stream
+                // and mapped to simpleGranted authority
                 .filter(userType -> userEntity.getUserType() == userType)
                 .map(userType -> new SimpleGrantedAuthority("ROLE_" + userType.name()))
                 .collect(Collectors.toList());
     }
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return authorities;

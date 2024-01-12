@@ -1,5 +1,6 @@
 package com.example.bookrental.controller;
 
+import com.example.bookrental.controller.basecontroller.BaseController;
 import com.example.bookrental.dto.BookDto;
 import com.example.bookrental.entity.Book;
 import com.example.bookrental.generic_response.GenericResponse;
@@ -14,45 +15,30 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/Lib/books")
-public class BookController {
+public class BookController extends BaseController {
     private final BookService bookService;
 
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     @PostMapping("/add-Book")
     public GenericResponse<Book> addBook(@RequestBody @Valid BookDto bookDto) {
-        return GenericResponse.<Book>builder()
-                .success(true)
-                .message("New Book added")
-                .data(bookService.addBook(bookDto))
-                .build();
-
+        return successResponse(bookService.addBook(bookDto), "New book added");
     }
 
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     @PutMapping("/update-Book")
     public GenericResponse<Book> updateBook(@RequestBody BookDto bookDto) {
-        return GenericResponse.<Book>builder()
-                .success(true)
-                .message("Book updated")
-                .data(bookService.updateBook(bookDto))
-                .build();
+        return successResponse(bookService.updateBook(bookDto), "Book Updated");
     }
+
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     @GetMapping("/get-All-Books")
     public GenericResponse<List<Book>> getAllBook() {
-        return GenericResponse.<List<Book>>builder()
-                .success(true)
-                .message("All available books")
-                .data(bookService.getAllBook())
-                .build();
+        return successResponse(bookService.getAllBook(), "All available Books");
     }
+
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     @DeleteMapping("/delete-Book")
     public GenericResponse<String> deleteBook(@RequestParam long id) {
-        return GenericResponse.<String>builder()
-                .success(true)
-                .message("Book id-:"+id+" is deleted ")
-                .data(bookService.deleteBook(id))
-                .build();
+        return successResponse(bookService.deleteBook(id), "Book id-:" + id + " is deleted ");
     }
 }

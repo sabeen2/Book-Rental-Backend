@@ -1,5 +1,6 @@
 package com.example.bookrental.controller;
 
+import com.example.bookrental.controller.basecontroller.BaseController;
 import com.example.bookrental.dto.CategoryDto;
 import com.example.bookrental.entity.Category;
 import com.example.bookrental.generic_response.GenericResponse;
@@ -14,47 +15,30 @@ import java.util.List;
 @RestController
 @RequestMapping("/Lib/category")
 @RequiredArgsConstructor
-public class CategoryController {
+public class CategoryController extends BaseController {
     private final CategoryService categoryService;
 
     @PostMapping("/add-Category")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     public GenericResponse<Category> addCategory(@RequestBody @Valid CategoryDto categoryDto) {
-        return GenericResponse.<Category>builder()
-                .success(true)
-                .message("Category added")
-                .data(categoryService.addCategory(categoryDto))
-                .build();
+        return successResponse(categoryService.addCategory(categoryDto), "Category added");
     }
 
     @PutMapping("/update-Category")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     public GenericResponse<Category> updateCategory(@RequestBody CategoryDto categoryDto) {
-        return GenericResponse.<Category>builder()
-                .success(true)
-                .message("Category added")
-                .data(categoryService.updateCategory(categoryDto))
-                .build();
+        return successResponse(categoryService.updateCategory(categoryDto), "Category Updated");
     }
 
     @GetMapping("/get-all-Category")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     public GenericResponse<List<Category>> getAllCategory() {
-
-        return GenericResponse.<List<Category>>builder()
-                .success(true)
-                .message("Category added")
-                .data(categoryService.getAllCategory())
-                .build();
+        return successResponse(categoryService.getAllCategory(), "All available Categories");
     }
 
     @DeleteMapping("/deleteCategory")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     public GenericResponse<String> deleteCategory(@RequestParam long id) {
-        return GenericResponse.<String>builder()
-                .success(true)
-                .message("Category added")
-                .data(categoryService.deleteCategory(id))
-                .build();
+        return successResponse(categoryService.deleteCategory(id), "Category" + id + " has been deleted");
     }
 }

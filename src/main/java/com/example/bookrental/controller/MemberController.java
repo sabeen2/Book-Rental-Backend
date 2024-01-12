@@ -1,5 +1,6 @@
 package com.example.bookrental.controller;
 
+import com.example.bookrental.controller.basecontroller.BaseController;
 import com.example.bookrental.dto.MemberDto;
 import com.example.bookrental.entity.Member;
 import com.example.bookrental.generic_response.GenericResponse;
@@ -14,45 +15,31 @@ import java.util.List;
 @RestController
 @RequestMapping("/Libmembers")
 @RequiredArgsConstructor
-public class MemberController {
+public class MemberController extends BaseController {
 
     private final MemberService memberService;
 
     @PostMapping("add-Member")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     public GenericResponse<Member> addMember(@RequestBody @Valid MemberDto memberDto) {
-        return GenericResponse.<Member>builder()
-                .success(true)
-                .message("User added")
-                .data(memberService.addMember(memberDto))
-                .build();
+        return successResponse(memberService.addMember(memberDto), "New Member added");
     }
+
     @GetMapping("/all-Members")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     public GenericResponse<List<Member>> allMembers() {
-        return GenericResponse.<List<Member>>builder()
-                .success(true)
-                .message("All available member")
-                .data( memberService.getAllMember())
-                .build();
+        return successResponse(memberService.getAllMember(), "All available members");
     }
+
     @PutMapping("/update-Members")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
-    public  GenericResponse<Member> updateMember(@RequestBody MemberDto memberDto) {
-        return GenericResponse.<Member>builder()
-                .success(true)
-                .message("Member updated Successfully")
-                .data(memberService.updateMember(memberDto))
-                .build();
+    public GenericResponse<Member> updateMember(@RequestBody MemberDto memberDto) {
+        return successResponse(memberService.updateMember(memberDto), "Member updated");
     }
+
     @DeleteMapping("/remove-Member")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     public GenericResponse<String> deleteMember(@RequestParam long id) {
-
-        return GenericResponse.<String>builder()
-                .success(true)
-                .message("User id-:"+id+" Deleted")
-                .data(memberService.deleteMember(id))
-                .build();
+        return successResponse(memberService.deleteMember(id), "Member id-" + id + " has been deleted");
     }
 }

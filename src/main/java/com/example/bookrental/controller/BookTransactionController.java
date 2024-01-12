@@ -1,5 +1,6 @@
 package com.example.bookrental.controller;
 
+import com.example.bookrental.controller.basecontroller.BaseController;
 import com.example.bookrental.dto.BookTransactionDto;
 import com.example.bookrental.entity.BookTransaction;
 import com.example.bookrental.entity.Category;
@@ -17,44 +18,30 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/Lib/transactions")
-public class BookTransactionController {
+public class BookTransactionController extends BaseController {
     private final BookTransactionServiceImplementation bookTransactionServiceImplementation;
 
     @PostMapping("/add-Transaction")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     public GenericResponse<BookTransaction> addTransaction(@RequestBody @Valid BookTransactionDto bookTransactionDto) {
-        return  GenericResponse.<BookTransaction>builder()
-                .success(true)
-                .message("Transaction added")
-                .data(bookTransactionServiceImplementation.addTransaction(bookTransactionDto))
-                .build();
+        return successResponse(bookTransactionServiceImplementation.addTransaction(bookTransactionDto), "Transaction added");
     }
+
     @GetMapping("/get-All-Transcations")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
-    public GenericResponse<List<BookTransaction>> getAllTransaction(){
-        return  GenericResponse.<List<BookTransaction>>builder()
-                .success(true)
-                .message("Transaction added")
-                .data(bookTransactionServiceImplementation.getAllTransaction())
-                .build();
+    public GenericResponse<List<BookTransaction>> getAllTransaction() {
+        return successResponse(bookTransactionServiceImplementation.getAllTransaction(), "All transactions");
     }
+
     @PutMapping("/update-Transcation")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
-    public GenericResponse<BookTransaction> updateTransaction(@RequestBody BookTransactionDto bookTransactionDto){
-
-        return GenericResponse.<BookTransaction>builder()
-                .success(true)
-                .message("Transaction Updated")
-                .data(bookTransactionServiceImplementation.updateTransaction(bookTransactionDto))
-                .build();
+    public GenericResponse<BookTransaction> updateTransaction(@RequestBody BookTransactionDto bookTransactionDto) {
+        return successResponse(bookTransactionServiceImplementation.updateTransaction(bookTransactionDto), "Transactions Updated");
     }
+
     @DeleteMapping("/delete-Transcation")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
-    public GenericResponse<String> deleteTransaction (@RequestParam Long id){
-        return GenericResponse.<String>builder()
-                .success(true)
-                .message("Trascation"+id+" is hidden")
-                .data( bookTransactionServiceImplementation.deleteTransaction(id))
-                .build();
+    public GenericResponse<String> deleteTransaction(@RequestParam Long id) {
+        return successResponse(bookTransactionServiceImplementation.deleteTransaction(id),"Trascation" + id + " is hidden");
     }
 }
