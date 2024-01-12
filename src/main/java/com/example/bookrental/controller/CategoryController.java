@@ -5,6 +5,7 @@ import com.example.bookrental.dto.CategoryDto;
 import com.example.bookrental.entity.Category;
 import com.example.bookrental.generic_response.GenericResponse;
 import com.example.bookrental.service.CategoryService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -15,6 +16,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/Lib/category")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "bookRental")
 public class CategoryController extends BaseController {
     private final CategoryService categoryService;
 

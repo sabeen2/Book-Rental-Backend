@@ -5,6 +5,7 @@ import com.example.bookrental.dto.MemberDto;
 import com.example.bookrental.entity.Member;
 import com.example.bookrental.generic_response.GenericResponse;
 import com.example.bookrental.service.MemberService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -13,8 +14,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/Libmembers")
+@RequestMapping("/Lib/members")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "bookRental")
 public class MemberController extends BaseController {
 
     private final MemberService memberService;

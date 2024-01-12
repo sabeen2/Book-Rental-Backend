@@ -5,6 +5,7 @@ import com.example.bookrental.dto.BookDto;
 import com.example.bookrental.entity.Book;
 import com.example.bookrental.generic_response.GenericResponse;
 import com.example.bookrental.service.BookService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -15,6 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/Lib/books")
+@SecurityRequirement(name = "bookRental")
 public class BookController extends BaseController {
     private final BookService bookService;
 

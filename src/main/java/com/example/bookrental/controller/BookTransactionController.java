@@ -7,6 +7,7 @@ import com.example.bookrental.entity.Category;
 import com.example.bookrental.enums.RENT_TYPE;
 import com.example.bookrental.generic_response.GenericResponse;
 import com.example.bookrental.service.serviceimplementation.BookTransactionServiceImplementation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/Lib/transactions")
+@SecurityRequirement(name = "bookRental")
 public class BookTransactionController extends BaseController {
     private final BookTransactionServiceImplementation bookTransactionServiceImplementation;
 
