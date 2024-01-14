@@ -1,5 +1,6 @@
 package com.example.bookrental.service.serviceimplementation;
 
+import com.example.bookrental.dto.PasswordResetDto;
 import com.example.bookrental.dto.UserEntityDto;
 import com.example.bookrental.entity.UserEntity;
 import com.example.bookrental.exception.NotFoundException;
@@ -23,7 +24,7 @@ private final UserInfoDetailService userInfoDetailService;
 private final UserEntityRepo userEntityRepo;
 private final PasswordEncoder passwordEncoder;
     @Override
-    public String requestReset(HttpServletRequest request, UserEntityDto userEntityDto) {
+    public String requestReset(HttpServletRequest request, PasswordResetDto passwordResetDto) {
         String authHeader = request.getHeader("Authorization");
         String token = null;
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
@@ -31,22 +32,20 @@ private final PasswordEncoder passwordEncoder;
         }
         if (SecurityContextHolder.getContext().getAuthentication() != null) {
             UserDetails userDetails = userInfoDetailService.loadUserByUsername(jwtService.extractUsername(token));
-            if (userDetails.getUsername().equals(userEntityDto.getUsername())) {
-                updatePassword(userDetails, userEntityDto.getPassword());
-            } else {
-                throw new NotFoundException("User mismatch");
+            String newPassword=passwordEncoder.encode(passwordResetDto.getNewPassword());
+            if(passwordEncoder.matches(passwordResetDto.getOldPassword(), userDetails.getPassword())){
+                UserEntity user=userEntityRepo.findByUsername(jwtService.extractUsername(token))
+                        .orElseThrow(()->new NotFoundException("user not found"));
+                user.setPassword(newPassword);
+                userEntityRepo.save(user);
+                return "Password changed! USERNAME" ;
+            }else{
+                return "incorrect password";
             }
-        } else {
-            throw new NotFoundException("Authentication Failed");
+        }else {
+            return "user not authenticated";
         }
-        return "Password changed! USERNAME=" + userEntityDto.getUsername();
-    }
-    public void updatePassword(UserDetails userDetails, String newPassword) {
-        UserEntity userEntity = userEntityRepo.findByUsername(userDetails.getUsername())
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        String encodedPassword = passwordEncoder.encode(newPassword);
-        userEntity.setPassword(encodedPassword);
-        userEntityRepo.save(userEntity);
+
     }
 }
 

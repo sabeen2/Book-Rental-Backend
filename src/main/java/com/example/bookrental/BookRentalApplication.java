@@ -10,7 +10,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 
-@OpenAPIDefinition(info = @Info(title = "Authors API", version = "2.0", description = "Crud operation for authors"))
+@OpenAPIDefinition(info = @Info(title = "Book rental API", version = "1.0", description = "Allows the admin and librarian too keep track of the rented books and Transactions associated with it."))
 @SecurityScheme(name = "bookRental", scheme = "bearer", type = SecuritySchemeType.HTTP, in = SecuritySchemeIn.HEADER)
 public class BookRentalApplication {
 

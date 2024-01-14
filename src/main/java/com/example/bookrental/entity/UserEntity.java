@@ -1,6 +1,6 @@
 package com.example.bookrental.entity;
 
-import com.example.bookrental.enums.USER_TYPE;
+import com.example.bookrental.enums.UserType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -27,7 +27,7 @@ public class UserEntity {
 
     @Column(name = "user_type")
     @Enumerated(EnumType.STRING)
-    USER_TYPE userType;
+    UserType userType;
 
     private boolean deleted = Boolean.FALSE;
 }

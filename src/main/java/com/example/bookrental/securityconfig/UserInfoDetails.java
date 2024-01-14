@@ -1,7 +1,7 @@
 package com.example.bookrental.securityconfig;
 
 import com.example.bookrental.entity.UserEntity;
-import com.example.bookrental.enums.USER_TYPE;
+import com.example.bookrental.enums.UserType;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,7 +21,7 @@ public class UserInfoDetails implements UserDetails {
     public UserInfoDetails(UserEntity userEntity) {
         username = userEntity.getUsername();
         password = userEntity.getPassword();
-        authorities = Arrays.stream(USER_TYPE.values())
+        authorities = Arrays.stream(UserType.values())
                 //When creating the authorities list to include only the roles
                 // that correspond to the USER_TYPE of the authenticated user
                 //The filter operation ensures that only the USER_TYPE value

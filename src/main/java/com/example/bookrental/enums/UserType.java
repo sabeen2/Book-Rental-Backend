@@ -1,5 +1,5 @@
 package com.example.bookrental.enums;
 
-public enum USER_TYPE {
+public enum UserType {
     ADMIN,LIBRARIAN;
 }

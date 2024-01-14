@@ -32,7 +32,7 @@ public class SecurityConfig {
     public UserDetailsService userDetailsService() {
         return new UserInfoDetailService(userEntityRepo);
     }
-    private static final String[] AUTH_WHITELIST = {
+    private static final String[] SWAGGER_URLS = {
             "/api/v1/auth/**",
             "/v3/api-docs/**",
             "/v3/api-docs.yaml",
@@ -49,7 +49,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/admin/user/add-user", "/admin/user/deactivate").hasRole("ADMIN")
                         .requestMatchers("/Lib/**","/admin/user/reset").hasAnyRole("ADMIN", "LIBRARIAN")
-                        .requestMatchers(AUTH_WHITELIST).permitAll()
+                        .requestMatchers(SWAGGER_URLS).permitAll()
                         .requestMatchers("/admin/user/login").permitAll().anyRequest().authenticated())
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);

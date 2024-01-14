@@ -1,7 +1,7 @@
 package com.example.bookrental.entity;
 
 
-import com.example.bookrental.enums.RENT_TYPE;
+import com.example.bookrental.enums.RentType;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.*;
@@ -44,7 +44,7 @@ public class BookTransaction {
 
     @Column(name = "rent_status")
     @Enumerated(EnumType.STRING)
-    RENT_TYPE rentType;
+    RentType rentType;
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH},targetEntity = Member.class)
     @JoinColumn(name = "memberid")

@@ -1,7 +1,5 @@
 package com.example.bookrental.dto;
 
-import com.example.bookrental.enums.UserType;
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,9 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserEntityDto {
-    String username;
-    String password;
-    @Enumerated(EnumType.STRING)
-    UserType userType;
+public class PasswordResetDto {
+    String oldPassword;
+    String newPassword;
 }

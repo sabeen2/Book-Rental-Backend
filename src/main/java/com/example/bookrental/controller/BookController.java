@@ -20,14 +20,14 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/Lib/books")
-@SecurityRequirement(name = "bookRental")
+//@SecurityRequirement(name = "bookRental")
 @Tag(name = "Book Controller", description = "APIs for managing Books")
 public class BookController extends BaseController {
     private final BookService bookService;
 
     @Operation(summary = "Add Book", description = "Add Book to the application")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Book added"),
+            @ApiResponse(responseCode = "200", description = "Book added" ),
             @ApiResponse(responseCode = "403" ,description = "Forbidden"),
             @ApiResponse(responseCode = "500", description = "internal server error")
     })

@@ -2,6 +2,7 @@ package com.example.bookrental.controller;
 
 import com.example.bookrental.controller.basecontroller.BaseController;
 import com.example.bookrental.dto.AuthenticationDto;
+import com.example.bookrental.dto.PasswordResetDto;
 import com.example.bookrental.dto.UserEntityDto;
 import com.example.bookrental.entity.UserEntity;
 import com.example.bookrental.generic_response.GenericResponse;
@@ -82,11 +83,11 @@ public class UserEntityController extends BaseController {
     })
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     @PostMapping("/reset")
-    public GenericResponse<String> reset(HttpServletRequest request, @RequestBody UserEntityDto userEntityDto) {
+    public GenericResponse<String> reset(HttpServletRequest request, @RequestBody PasswordResetDto passwordResetDto) {
         return GenericResponse.<String>builder()
                 .success(true)
                 .message("password changed")
-                .data(passwordResetService.requestReset(request, userEntityDto))
+                .data(passwordResetService.requestReset(request, passwordResetDto))
                 .build();
     }
 }

@@ -1,6 +1,6 @@
 package com.example.bookrental.dto;
 
-import com.example.bookrental.enums.RENT_TYPE;
+import com.example.bookrental.enums.RentType;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
@@ -23,8 +23,8 @@ public class BookTransactionDto {
     Long code;
 
     @NotNull(message = "Book Id Cannot be empty")
-    @JsonProperty("FK_book_id")
-    long fkbookid;
+//    @JsonProperty("FK_book_id")
+    Long bookId;
 
     @NotNull(message = "date Cannot be empty")
     @JsonFormat(pattern = "yyyy-mm-dd")
@@ -36,7 +36,7 @@ public class BookTransactionDto {
 
     @NotNull(message = "Rest status Cannot be empty")
     @Enumerated(EnumType.STRING)
-    RENT_TYPE rentType;
+    RentType rentType;
 
     @NotNull(message = "Member Cannot be empty")
     @JsonProperty("Fk_member_id")

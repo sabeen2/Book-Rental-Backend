@@ -1,8 +1,6 @@
 package com.example.bookrental.service;
 import com.example.bookrental.dto.BookTransactionDto;
-import com.example.bookrental.entity.Author;
 import com.example.bookrental.entity.BookTransaction;
-import com.example.bookrental.enums.RENT_TYPE;
 
 import java.util.List;
 

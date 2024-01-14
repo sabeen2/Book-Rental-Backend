@@ -4,7 +4,7 @@ import com.example.bookrental.dto.BookTransactionDto;
 import com.example.bookrental.entity.Book;
 import com.example.bookrental.entity.BookTransaction;
 import com.example.bookrental.entity.Member;
-import com.example.bookrental.enums.RENT_TYPE;
+import com.example.bookrental.enums.RentType;
 import com.example.bookrental.exception.NotFoundException;
 import com.example.bookrental.repo.BookRepo;
 import com.example.bookrental.repo.BookTransactionRepo;
@@ -43,13 +43,13 @@ public class BookTransactionServiceImplementation implements BookTransactionServ
         if (book.getStock() <= 0) {
             throw new NotFoundException("Book is out of stock.");
         }
-        if (bookTransactionDto.getRentType() == RENT_TYPE.RENT) {
+        if (bookTransactionDto.getRentType() == RentType.RENT) {
             book.setStock(book.getStock() - 1);
         }
         List<BookTransaction> bookTransactions = bookTransactionRepo.findAll();
         for (BookTransaction bookTransaction : bookTransactions) {
             Member existingMember = bookTransaction.getMember();
-            if (existingMember.getMemberid().equals(bookTransactionDto.getFkMemberId()) && bookTransaction.getRentType().equals(RENT_TYPE.RENT)) {
+            if (existingMember.getMemberid().equals(bookTransactionDto.getFkMemberId()) && bookTransaction.getRentType().equals(RentType.RENT)) {
                 throw new NotFoundException("Member cannot rent 2 books");
             }
         }
@@ -67,7 +67,7 @@ public class BookTransactionServiceImplementation implements BookTransactionServ
         Optional<Book> updatedBookOptional = bookRepo.findById(bookTransactionDto.getFkbookid());
         Optional<Member> updatedMemberOptional = membersRepo.findById(bookTransactionDto.getFkMemberId());
 
-        if (bookTransaction.getRentType() == RENT_TYPE.RETURN) {
+        if (bookTransaction.getRentType() == RentType.RETURN) {
             deleteTransaction(bookTransactionDto.getId());
         }
 

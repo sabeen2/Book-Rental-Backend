@@ -1,5 +1,5 @@
 package com.example.bookrental.enums;
 
-public enum RENT_TYPE {
+public enum RentType {
     RENT, RETURN
 }
