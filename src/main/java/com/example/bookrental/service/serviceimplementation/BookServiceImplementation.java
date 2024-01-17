@@ -43,14 +43,15 @@ public class BookServiceImplementation implements BookService {
         if (authors.size() != authorId.size()) {
             throw new NotFoundException("Authors do not exist");
         }
-        saveImage("C:\\Users\\shyam prasad\\Pictures\\Saved Pictures",file);
-        bookDto.setPhoto(file.getOriginalFilename());
+        String path=saveImage("C:\\Users\\shyam prasad\\Pictures\\Saved Pictures",file);
+//        bookDto.setPhoto(file.getOriginalFilename());
+        bookDto.setPhoto(path);
         Book book = objectMapper.convertValue(bookDto, Book.class);
         book.setCategory(category);
         book.setAuthors(authors);
         return bookRepo.save(book);
     }
-    public static void saveImage(String path, MultipartFile file) throws IOException {
+    public static String saveImage(String path, MultipartFile file) throws IOException {
         if(file==null){
             throw new NotFoundException("photo is req");
         }
@@ -61,6 +62,7 @@ public class BookServiceImplementation implements BookService {
                 folder.mkdir();
             }
             Files.copy(file.getInputStream(), Paths.get(filePath));
+            return name;
     }
     @Override
     public Book updateBook(BookDto bookDto) {
