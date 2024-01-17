@@ -5,6 +5,7 @@ import com.example.bookrental.dto.BookDto;
 import com.example.bookrental.entity.Book;
 import com.example.bookrental.generic_response.GenericResponse;
 import com.example.bookrental.service.BookService;
+import com.example.bookrental.service.serviceimplementation.BookServiceImplementation;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -12,9 +13,13 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Bean;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -24,19 +29,20 @@ import java.util.List;
 @Tag(name = "Book Controller", description = "APIs for managing Books")
 public class BookController extends BaseController {
     private final BookService bookService;
+    private final BookServiceImplementation bookServiceImpl;
 
     @Operation(summary = "Add Book", description = "Add Book to the application")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Book added" ),
+            @ApiResponse(responseCode = "200", description = "Book added"),
             @ApiResponse(responseCode = "403" ,description = "Forbidden"),
             @ApiResponse(responseCode = "500", description = "internal server error")
     })
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
-    @PostMapping("/add-Book")
-    public GenericResponse<Book> addBook(@RequestBody @Valid BookDto bookDto) {
-        return successResponse(bookService.addBook(bookDto), "New book added");
+//    @PostMapping( "/add-Book")
+    @PostMapping(value = "/add-Book", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public GenericResponse<Book> addBook(@ModelAttribute @Valid BookDto bookDto, MultipartFile file) throws Exception {
+        return successResponse(bookService.addBook(bookDto,file), "New book added");
     }
-
     @Operation(summary = "Update Book", description = "update the available Book detail")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Book updated"),

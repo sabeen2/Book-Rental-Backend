@@ -4,6 +4,7 @@ import com.example.bookrental.controller.basecontroller.BaseController;
 import com.example.bookrental.dto.BookTransactionDto;
 import com.example.bookrental.entity.BookTransaction;
 import com.example.bookrental.generic_response.GenericResponse;
+import com.example.bookrental.repo.BookTransactionRepo;
 import com.example.bookrental.service.serviceimplementation.BookTransactionServiceImplementation;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -12,9 +13,19 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -24,6 +35,7 @@ import java.util.List;
 @Tag(name = "Book Transaction Controller", description = "APIs for managing Transactions")
 public class BookTransactionController extends BaseController {
     private final BookTransactionServiceImplementation bookTransactionServiceImplementation;
+    private final BookTransactionRepo bookTransactionRepo;
 
     @Operation(summary = "Add book transaction", description = "Add book transaction to the application")
     @ApiResponses(value = {
@@ -50,6 +62,18 @@ public class BookTransactionController extends BaseController {
         return successResponse(bookTransactionServiceImplementation.getAllTransaction(), "All transactions");
     }
 
+    @Operation(summary = "Get all book transaction details with rented member and download in excel", description = "Fetch all available book transaction detail")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "All available book transaction"),
+            @ApiResponse(responseCode = "403", description = "Forbidden"),
+            @ApiResponse(responseCode = "404", description = "book transaction not found"),
+            @ApiResponse(responseCode = "500", description = "internal server error")
+    })
+    @GetMapping("/All-Transcations")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
+    public GenericResponse<Object> getMemberAndBookDetails(){
+        return successResponse(bookTransactionServiceImplementation.getNames(),"All transactions details");
+    }
     @Operation(summary = "Get transaction detail by book id", description = "Fetch available Transaction details based on provided id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Transaction found"),

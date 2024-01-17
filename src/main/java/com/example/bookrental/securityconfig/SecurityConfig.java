@@ -32,6 +32,7 @@ public class SecurityConfig {
     public UserDetailsService userDetailsService() {
         return new UserInfoDetailService(userEntityRepo);
     }
+
     private static final String[] SWAGGER_URLS = {
             "/api/v1/auth/**",
             "/v3/api-docs/**",
@@ -39,23 +40,22 @@ public class SecurityConfig {
             "/swagger-ui/**",
             "/swagger-ui.html"
     };
+
     // Filter chain for configuration of authentication
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-
         httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/admin/user/add-user", "/admin/user/deactivate").hasRole("ADMIN")
-                        .requestMatchers("/Lib/**","/admin/user/reset").hasAnyRole("ADMIN", "LIBRARIAN")
+                        .requestMatchers("/Lib/**", "/admin/user/reset").hasAnyRole("ADMIN", "LIBRARIAN")
                         .requestMatchers(SWAGGER_URLS).permitAll()
                         .requestMatchers("/admin/user/login").permitAll().anyRequest().authenticated())
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         return httpSecurity.build();
     }
-
     // Password encoder
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -69,7 +69,6 @@ public class SecurityConfig {
         authenticationProvider.setPasswordEncoder(passwordEncoder());
         return authenticationProvider;
     }
-
     @Bean
     public AuthenticationManager authenticationManagerBean(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();

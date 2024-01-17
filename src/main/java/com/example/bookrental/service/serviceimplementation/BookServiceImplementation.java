@@ -13,8 +13,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
-
+import org.springframework.web.multipart.MultipartFile;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
+import java.util.UUID;
 
 import static com.example.bookrental.utils.NullValues.getNullPropertyNames;
 
@@ -27,7 +32,7 @@ public class BookServiceImplementation implements BookService {
     private final AuthorRepo authorRepo;
 
     @Override
-    public Book addBook(BookDto bookDto) {
+    public Book addBook(BookDto bookDto,MultipartFile file) throws Exception {
         Long categoryId = bookDto.getCategoryId();
         Category category = categoryRepo.findById(categoryId)
                 .orElseThrow(() -> new NotFoundException("Category not found"));
@@ -38,13 +43,25 @@ public class BookServiceImplementation implements BookService {
         if (authors.size() != authorId.size()) {
             throw new NotFoundException("Authors do not exist");
         }
+        saveImage("C:\\Users\\shyam prasad\\Pictures\\Saved Pictures",file);
+        bookDto.setPhoto(file.getOriginalFilename());
         Book book = objectMapper.convertValue(bookDto, Book.class);
         book.setCategory(category);
         book.setAuthors(authors);
-
         return bookRepo.save(book);
     }
-
+    public static void saveImage(String path, MultipartFile file) throws IOException {
+        if(file==null){
+            throw new NotFoundException("photo is req");
+        }
+            String name = UUID.randomUUID() + "-" + file.getOriginalFilename();
+            String filePath = path + File.separator + name;
+            File folder = new File(path);
+            if (!folder.exists()) {
+                folder.mkdir();
+            }
+            Files.copy(file.getInputStream(), Paths.get(filePath));
+    }
     @Override
     public Book updateBook(BookDto bookDto) {
         Book book = bookRepo.findById(bookDto.getId()).orElseThrow(() -> new NotFoundException("Book Not Found"));
@@ -58,11 +75,6 @@ public class BookServiceImplementation implements BookService {
             book.setCategory(updatedCategoryOptional);
         }
         return bookRepo.save(book);
-//        Optional<Catagory> updatedCatagoryOptional = catagoryRepo.findById(bookDto.getCatagory_Id());
-//        if(updatedCatagoryOptional.isPresent()){
-//            Catagory UpdatedCatagory=updatedCatagoryOptional.get();
-//            book.setCatagory(UpdatedCatagory);
-//        }
     }
 
     @Override
@@ -72,7 +84,7 @@ public class BookServiceImplementation implements BookService {
 
     @Override
     public Book findById(Long id) {
-        return bookRepo.findById(id).orElseThrow(()->new NotFoundException("Book does not exist"));
+        return bookRepo.findById(id).orElseThrow(() -> new NotFoundException("Book does not exist"));
     }
 
     @Override
