@@ -44,7 +44,6 @@ public class BookServiceImplementation implements BookService {
             throw new NotFoundException("Authors do not exist");
         }
         String path=saveImage("C:\\Users\\shyam prasad\\Pictures\\Saved Pictures",file);
-//        bookDto.setPhoto(file.getOriginalFilename());
         bookDto.setPhoto(path);
         Book book = objectMapper.convertValue(bookDto, Book.class);
         book.setCategory(category);

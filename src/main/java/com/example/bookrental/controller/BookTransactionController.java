@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.apache.poi.ss.usermodel.Row;
@@ -62,18 +63,36 @@ public class BookTransactionController extends BaseController {
         return successResponse(bookTransactionServiceImplementation.getAllTransaction(), "All transactions");
     }
 
-    @Operation(summary = "Get all book transaction details with rented member and download in excel", description = "Fetch all available book transaction detail")
+    @Operation(summary = "Get all book transaction details with rented member", description = "Fetch all available book transaction detail")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "All available book transaction"),
             @ApiResponse(responseCode = "403", description = "Forbidden"),
             @ApiResponse(responseCode = "404", description = "book transaction not found"),
             @ApiResponse(responseCode = "500", description = "internal server error")
     })
-    @GetMapping("/All-Transcations")
+    @GetMapping("/all-Transcations")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
-    public GenericResponse<Object> getMemberAndBookDetails(){
-        return successResponse(bookTransactionServiceImplementation.getNames(),"All transactions details");
+    public GenericResponse<Object> getMemberAndBookDetails() {
+        return successResponse(bookTransactionServiceImplementation.getNames(), "All transactions details");
     }
+
+    @Operation(summary = "Get all book transaction details with rented member names, book names and download in excel", description = "Fetch all available book transaction detail")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "All available book transaction"),
+            @ApiResponse(responseCode = "403", description = "Forbidden"),
+            @ApiResponse(responseCode = "500", description = "internal server error")
+    })
+    @GetMapping("/download-Transcations")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
+    public String downloadExcel(HttpServletResponse response) throws IOException {
+        response.setContentType("application/octet-stream");
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment;filename=transcations.xls";
+        response.setHeader(headerKey, headerValue);
+        bookTransactionServiceImplementation.generateExcel(response);
+        return "excel downloaded";
+    }
+
     @Operation(summary = "Get transaction detail by book id", description = "Fetch available Transaction details based on provided id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Transaction found"),
@@ -104,7 +123,7 @@ public class BookTransactionController extends BaseController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "book transaction found and Deleted"),
             @ApiResponse(responseCode = "402", description = "book transaction not found"),
-            @ApiResponse(responseCode = "403" ,description = "Forbidden"),
+            @ApiResponse(responseCode = "403", description = "Forbidden"),
             @ApiResponse(responseCode = "500", description = "internal server error")
     })
     @DeleteMapping("/delete-Transcation")

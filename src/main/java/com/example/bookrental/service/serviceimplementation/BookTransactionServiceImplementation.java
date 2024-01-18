@@ -12,18 +12,16 @@ import com.example.bookrental.repo.MembersRepo;
 import com.example.bookrental.service.BookTransactionService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
@@ -118,7 +116,43 @@ public class BookTransactionServiceImplementation implements BookTransactionServ
         return bookTransaction.toString() + " Transaction has been deleted";
     }
 
-    public List<Object> getNames(){
+    public List<Object> getNames() {
         return bookTransactionRepo.getMemberAndBookDetails();
+    }
+
+    public void generateExcel(HttpServletResponse response) throws IOException {
+        List<BookTransaction> transactions = bookTransactionRepo.findAll();
+        //Create workBook
+        HSSFWorkbook workbook = new HSSFWorkbook();
+
+        //create Sheet
+        HSSFSheet sheet = workbook.createSheet("Transactions details");
+
+        //create Row
+        HSSFRow row = sheet.createRow(0);
+
+        row.createCell(0).setCellValue("id");
+        row.createCell(1).setCellValue("Name");
+        row.createCell(2).setCellValue("BookName");
+        row.createCell(3).setCellValue("FromDate");
+        row.createCell(4).setCellValue("ToDate");
+
+        //since index 0 has headers so data index start from 1
+        int dataRow = 1;
+        for (BookTransaction transaction : transactions) {
+            //insert data to excelSheet
+            HSSFRow data = sheet.createRow(dataRow);
+            data.createCell(0).setCellValue(transaction.getId());
+            data.createCell(1).setCellValue(transaction.getMember().getName());
+            data.createCell(2).setCellValue(transaction.getBook().getName());
+            data.createCell(3).setCellValue(transaction.getFromDate());
+            data.createCell(4).setCellValue(transaction.getToDate());
+            dataRow++;
+        }
+        ServletOutputStream out= response.getOutputStream();
+        workbook.write(out);
+        workbook.close();
+        out.close();
+
     }
 }
