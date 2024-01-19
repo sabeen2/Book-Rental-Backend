@@ -14,18 +14,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
 
@@ -57,7 +47,7 @@ public class BookTransactionController extends BaseController {
             @ApiResponse(responseCode = "404", description = "book transaction not found"),
             @ApiResponse(responseCode = "500", description = "internal server error")
     })
-    @GetMapping("/get-All-Transcations")
+    @GetMapping("/get-All-Transactions")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     public GenericResponse<List<BookTransaction>> getAllTransaction() {
         return successResponse(bookTransactionServiceImplementation.getAllTransaction(), "All transactions");
@@ -70,7 +60,7 @@ public class BookTransactionController extends BaseController {
             @ApiResponse(responseCode = "404", description = "book transaction not found"),
             @ApiResponse(responseCode = "500", description = "internal server error")
     })
-    @GetMapping("/all-Transcations")
+    @GetMapping("/all-Transactions")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     public GenericResponse<Object> getMemberAndBookDetails() {
         return successResponse(bookTransactionServiceImplementation.getNames(), "All transactions details");
@@ -78,19 +68,17 @@ public class BookTransactionController extends BaseController {
 
     @Operation(summary = "Get all book transaction details with rented member names, book names and download in excel", description = "Fetch all available book transaction detail")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "All available book transaction"),
             @ApiResponse(responseCode = "403", description = "Forbidden"),
             @ApiResponse(responseCode = "500", description = "internal server error")
     })
-    @GetMapping("/download-Transcations")
+    @GetMapping("/download-Transactions")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
-    public String downloadExcel(HttpServletResponse response) throws IOException {
+    public GenericResponse<String> downloadExcel(HttpServletResponse response) throws IOException {
         response.setContentType("application/octet-stream");
         String headerKey = "Content-Disposition";
-        String headerValue = "attachment;filename=transcations.xls";
+        String headerValue = "attachment;filename=transactions.xls";
         response.setHeader(headerKey, headerValue);
-        bookTransactionServiceImplementation.generateExcel(response);
-        return "excel downloaded";
+        return successResponse(bookTransactionServiceImplementation.generateExcel(response),"excel downloaded");
     }
 
     @Operation(summary = "Get transaction detail by book id", description = "Fetch available Transaction details based on provided id")
@@ -126,7 +114,7 @@ public class BookTransactionController extends BaseController {
             @ApiResponse(responseCode = "403", description = "Forbidden"),
             @ApiResponse(responseCode = "500", description = "internal server error")
     })
-    @DeleteMapping("/delete-Transcation")
+    @DeleteMapping("/delete-Transaction")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     public GenericResponse<String> deleteTransaction(@RequestParam Long id) {
         return successResponse(bookTransactionServiceImplementation.deleteTransaction(id), "Trascation" + id + " is hidden");

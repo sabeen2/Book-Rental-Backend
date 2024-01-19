@@ -12,5 +12,4 @@ import lombok.Setter;
 public class AuthenticationDto  {
     String username;
     String password;
-
 }

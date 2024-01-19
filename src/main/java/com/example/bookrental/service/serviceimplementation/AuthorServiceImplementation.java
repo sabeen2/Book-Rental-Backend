@@ -50,6 +50,6 @@ public class AuthorServiceImplementation implements AuthorService {
     public String deleteAuthor(Long id) {
         Author author = authorRepo.findById(id).orElseThrow(() -> new NotFoundException("Author Not Found"));
         authorRepo.delete(author);
-        return author.toString() + "has been Deleted";
+        return author + "has been Deleted";
     }
 }

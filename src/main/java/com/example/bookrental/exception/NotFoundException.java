@@ -3,7 +3,6 @@ package com.example.bookrental.exception;
 public class NotFoundException extends RuntimeException {
     String message;
 
-
     @Override
     public String toString() {
         return message;

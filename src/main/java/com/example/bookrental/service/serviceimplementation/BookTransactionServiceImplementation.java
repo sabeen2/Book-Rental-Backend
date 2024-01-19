@@ -38,12 +38,12 @@ public class BookTransactionServiceImplementation implements BookTransactionServ
 
     @Override
     public BookTransaction addTransaction(BookTransactionDto bookTransactionDto) {
-        Long bookid = bookTransactionDto.getBookId();
-        Book book = bookRepo.findById(bookid)
+        Long bookId = bookTransactionDto.getBookId();
+        Book book = bookRepo.findById(bookId)
                 .orElseThrow(() -> new NotFoundException("book not found"));
 
-        Long memberid = bookTransactionDto.getFkMemberId();
-        Member member = membersRepo.findById(memberid)
+        Long memberId = bookTransactionDto.getFkMemberId();
+        Member member = membersRepo.findById(memberId)
                 .orElseThrow(() -> new NotFoundException("Member not found"));
 
         if (book.getStock() <= 0) {
@@ -113,15 +113,16 @@ public class BookTransactionServiceImplementation implements BookTransactionServ
         Book book = bookTransaction.getBook();
         book.setStock(book.getStock() + 1);
         bookRepo.save(book);
-        return bookTransaction.toString() + " Transaction has been deleted";
+        return bookTransaction + " Transaction has been deleted";
     }
-
     public List<Object> getNames() {
         return bookTransactionRepo.getMemberAndBookDetails();
     }
 
-    public void generateExcel(HttpServletResponse response) throws IOException {
+    public String generateExcel(HttpServletResponse response) throws IOException {
+//        workbook-->sheet-->row-->cell-->{DATA}
         List<BookTransaction> transactions = bookTransactionRepo.findAll();
+
         //Create workBook
         HSSFWorkbook workbook = new HSSFWorkbook();
 
@@ -130,7 +131,6 @@ public class BookTransactionServiceImplementation implements BookTransactionServ
 
         //create Row
         HSSFRow row = sheet.createRow(0);
-
         row.createCell(0).setCellValue("id");
         row.createCell(1).setCellValue("Name");
         row.createCell(2).setCellValue("BookName");
@@ -145,14 +145,15 @@ public class BookTransactionServiceImplementation implements BookTransactionServ
             data.createCell(0).setCellValue(transaction.getId());
             data.createCell(1).setCellValue(transaction.getMember().getName());
             data.createCell(2).setCellValue(transaction.getBook().getName());
-            data.createCell(3).setCellValue(transaction.getFromDate());
-            data.createCell(4).setCellValue(transaction.getToDate());
+            data.createCell(3).setCellValue(transaction.getFromDate().toString());
+            data.createCell(4).setCellValue(transaction.getToDate().toString());
             dataRow++;
         }
-        ServletOutputStream out= response.getOutputStream();
+        ServletOutputStream out = response.getOutputStream();
         workbook.write(out);
         workbook.close();
+        //
         out.close();
-
+        return "Download success";
     }
 }
