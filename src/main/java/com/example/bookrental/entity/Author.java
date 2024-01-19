@@ -21,8 +21,14 @@ public class Author {
     @SequenceGenerator(name = "author_primary_key_generator", initialValue = 0, allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "author_primary_key_generator")
     Long authorId;
+
+    @Column(unique=true)
     String name;
+
+    @Column(unique=true)
     String email;
+
+    @Column(unique=true)
     String mobileNumber;
     private boolean deleted = Boolean.FALSE;
 }

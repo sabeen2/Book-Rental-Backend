@@ -19,6 +19,8 @@ public class Category {
     @SequenceGenerator(name = "category_primary_key_generator", initialValue = 0, allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "category_primary_key_generator")
     Long id;
+
+    @Column(unique=true)
     String name;
     String discription;
     private boolean deleted = Boolean.FALSE;

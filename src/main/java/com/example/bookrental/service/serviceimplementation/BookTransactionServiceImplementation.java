@@ -10,9 +10,11 @@ import com.example.bookrental.repo.BookRepo;
 import com.example.bookrental.repo.BookTransactionRepo;
 import com.example.bookrental.repo.MembersRepo;
 import com.example.bookrental.service.BookTransactionService;
+import com.example.bookrental.service.jwtservice.JwtService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -35,9 +37,10 @@ public class BookTransactionServiceImplementation implements BookTransactionServ
     private final ObjectMapper objectMapper;
     private final BookRepo bookRepo;
     private final MembersRepo membersRepo;
+    private final JwtService jwtService;
 
     @Override
-    public BookTransaction addTransaction(BookTransactionDto bookTransactionDto) {
+    public BookTransaction addTransaction(BookTransactionDto bookTransactionDto,HttpServletRequest request) {
         Long bookId = bookTransactionDto.getBookId();
         Book book = bookRepo.findById(bookId)
                 .orElseThrow(() -> new NotFoundException("book not found"));
@@ -60,14 +63,25 @@ public class BookTransactionServiceImplementation implements BookTransactionServ
             }
         }
         BookTransaction bookTransaction = objectMapper.convertValue(bookTransactionDto, BookTransaction.class);
+        bookTransaction.setUsername(getUsername(request));
         bookTransaction.setMember(member);
         bookTransaction.setBook(book);
 
         return bookTransactionRepo.save(bookTransaction);
     }
+    protected String getUsername(HttpServletRequest request) {
+        String authHeader = request.getHeader("Authorization");
+        String token = null;
+        String username = null;
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            token = authHeader.substring(7);
+            username = jwtService.extractUsername(token);
+        }
+        return username;
+    }
 
     @Override
-    public BookTransaction updateTransaction(BookTransactionDto bookTransactionDto) {
+    public BookTransaction updateTransaction(BookTransactionDto bookTransactionDto,HttpServletRequest request) {
         BookTransaction bookTransaction = bookTransactionRepo.findById(bookTransactionDto.getId())
                 .orElseThrow(() -> new NotFoundException("Transaction Does not exist"));
         Optional<Book> updatedBookOptional = bookRepo.findById(bookTransactionDto.getBookId());
@@ -88,7 +102,7 @@ public class BookTransactionServiceImplementation implements BookTransactionServ
         }
 
         BeanUtils.copyProperties(bookTransactionDto, bookTransaction, getNullPropertyNames(bookTransactionDto));
-
+        bookTransaction.setUsername(getUsername(request));
         return bookTransactionRepo.save(bookTransaction);
     }
 

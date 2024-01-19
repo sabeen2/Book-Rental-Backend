@@ -23,6 +23,7 @@ public class Book {
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "book_primary_key_generator")
     Long id;
 
+    @Column(unique=true)
     String name;
 
     Double rating;

@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -36,8 +37,8 @@ public class BookTransactionController extends BaseController {
     })
     @PostMapping("/add-Transaction")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
-    public GenericResponse<BookTransaction> addTransaction(@RequestBody @Valid BookTransactionDto bookTransactionDto) {
-        return successResponse(bookTransactionServiceImplementation.addTransaction(bookTransactionDto), "Transaction added");
+    public GenericResponse<BookTransaction> addTransaction(@RequestBody @Valid BookTransactionDto bookTransactionDto, HttpServletRequest request) {
+        return successResponse(bookTransactionServiceImplementation.addTransaction(bookTransactionDto,request), "Transaction added");
     }
 
     @Operation(summary = "Get all book transaction", description = "Fetch all available book transaction detail")
@@ -103,8 +104,8 @@ public class BookTransactionController extends BaseController {
     })
     @PutMapping("/update-Transcation")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
-    public GenericResponse<BookTransaction> updateTransaction(@RequestBody BookTransactionDto bookTransactionDto) {
-        return successResponse(bookTransactionServiceImplementation.updateTransaction(bookTransactionDto), "Transactions Updated");
+    public GenericResponse<BookTransaction> updateTransaction(@RequestBody BookTransactionDto bookTransactionDto,HttpServletRequest request) {
+        return successResponse(bookTransactionServiceImplementation.updateTransaction(bookTransactionDto,request), "Transactions Updated");
     }
 
     @Operation(summary = "delete book transaction by id", description = "delete available book transaction detail based on  provided id")

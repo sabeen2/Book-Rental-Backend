@@ -21,8 +21,11 @@ public class Member {
     @SequenceGenerator(name = "member_primary_key_generator", initialValue = 0, allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "member_primary_key_generator")
     Long memberid;
+
+    @Column(unique=true)
     String email;
     String name;
+    @Column(unique=true)
     String mobileNo;
     String address;
     private boolean deleted = Boolean.FALSE;

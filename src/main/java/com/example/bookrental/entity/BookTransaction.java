@@ -29,7 +29,7 @@ public class BookTransaction {
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "transaction_primary_key_generator")
     Long id;
 
-
+    @Column(unique=true)
     Long code;
 
 //    @NotNull(message = "Book Cannot be empty")
@@ -51,4 +51,6 @@ public class BookTransaction {
 
     Member member;
     private boolean deleted = Boolean.FALSE;
+
+    String username;
 }
