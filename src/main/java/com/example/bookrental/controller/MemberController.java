@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/Lib/members")
+@RequestMapping("/lib/members")
 @RequiredArgsConstructor
 @SecurityRequirement(name = "bookRental")
 @Tag(name = "Member Controller", description = "APIs for managing Members")
@@ -32,7 +32,7 @@ public class MemberController extends BaseController {
             @ApiResponse(responseCode = "403" ,description = "Forbidden"),
             @ApiResponse(responseCode = "500", description = "internal server error")
     })
-    @PostMapping("add-Member")
+    @PostMapping("add-member")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     public GenericResponse<Member> addMember(@RequestBody @Valid MemberDto memberDto) {
         return successResponse(memberService.addMember(memberDto), "New Member added");
@@ -45,7 +45,7 @@ public class MemberController extends BaseController {
             @ApiResponse(responseCode = "404", description = "Member not found"),
             @ApiResponse(responseCode = "500", description = "internal server error")
     })
-    @GetMapping("/all-Members")
+    @GetMapping("/all-members")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     public GenericResponse<List<Member>> allMembers() {
         return successResponse(memberService.getAllMember(), "All available members");
@@ -58,7 +58,7 @@ public class MemberController extends BaseController {
             @ApiResponse(responseCode = "404", description = "Member not found"),
             @ApiResponse(responseCode = "500", description = "internal server error")
     })
-    @PutMapping("/update-Members")
+    @PutMapping("/update-members")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     public GenericResponse<Member> updateMember(@RequestBody MemberDto memberDto) {
         return successResponse(memberService.updateMember(memberDto), "Member updated");
@@ -71,7 +71,7 @@ public class MemberController extends BaseController {
             @ApiResponse(responseCode = "402", description = "Member not found"),
             @ApiResponse(responseCode = "500", description = "internal server error")
     })
-    @DeleteMapping("/remove-Member")
+    @DeleteMapping("/remove-member")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     public GenericResponse<String> deleteMember(@RequestParam long id) {
         return successResponse(memberService.deleteMember(id), "Member id-" + id + " has been deleted");
@@ -85,7 +85,7 @@ public class MemberController extends BaseController {
             @ApiResponse(responseCode = "500", description = "internal server error")
     })
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
-    @GetMapping("/get-By-Id")
+    @GetMapping("/get-by-id")
     public GenericResponse<Member> getById(@RequestParam Long id){
         return successResponse(memberService.findById(id),"Member id-:"+id+"details");
     }

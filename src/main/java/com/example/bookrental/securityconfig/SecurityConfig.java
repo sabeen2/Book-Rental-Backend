@@ -49,7 +49,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/admin/user/add-user", "/admin/user/deactivate").hasRole("ADMIN")
-                        .requestMatchers("/Lib/**", "/admin/user/reset").hasAnyRole("ADMIN", "LIBRARIAN")
+                        .requestMatchers("/lib/**", "/admin/user/reset").hasAnyRole("ADMIN", "LIBRARIAN")
                         .requestMatchers(SWAGGER_URLS).permitAll()
                         .requestMatchers("/admin/user/login").permitAll().anyRequest().authenticated())
                 .authenticationProvider(authenticationProvider())

@@ -24,7 +24,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/Lib/authors")
+@RequestMapping("/lib/authors")
 @SecurityRequirement(name = "bookRental")
 @Tag(name = "Author Controller", description = "APIs for managing Authors")
 public class AuthorController extends BaseController {
@@ -35,7 +35,7 @@ public class AuthorController extends BaseController {
             @ApiResponse(responseCode = "200", description = "Author added"),
             @ApiResponse(responseCode = "500", description = "internal server error")
     })
-    @PostMapping("/add-Author")
+    @PostMapping("/add-author")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     public GenericResponse<Author> addAuthor(@RequestBody @Valid AuthorDto authorDto) {
         return successResponse(authorService.addAuthor(authorDto), "Author added");
@@ -47,7 +47,7 @@ public class AuthorController extends BaseController {
             @ApiResponse(responseCode = "404", description = "Author not found"),
             @ApiResponse(responseCode = "500", description = "internal server error")
     })
-    @PutMapping("/update-Author")
+    @PutMapping("/update-author")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     public GenericResponse<Author> updateAuthor(@RequestBody AuthorDto authorDto) {
         return successResponse(authorService.updateAuthor(authorDto), "Author Updated");
@@ -58,7 +58,7 @@ public class AuthorController extends BaseController {
             @ApiResponse(responseCode = "404", description = "Author not found"),
             @ApiResponse(responseCode = "500", description = "internal server error")
     })
-    @GetMapping("/all-Authors")
+    @GetMapping("/all-authors")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     public GenericResponse<List<Author>> getAllAuthor() {
         return successResponse(authorService.getAllAuthor(), "All Available Authors");
@@ -83,7 +83,7 @@ public class AuthorController extends BaseController {
             @ApiResponse(responseCode = "402", description = "Author not found"),
             @ApiResponse(responseCode = "500", description = "internal server error")
     })
-    @DeleteMapping("/delete")
+    @DeleteMapping("/delete-author")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     public GenericResponse<String> deleteAuthor(@RequestParam Long id) {
         return successResponse(authorService.deleteAuthor(id),"User id:-"+ id +" deleted");

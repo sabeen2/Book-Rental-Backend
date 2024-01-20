@@ -22,7 +22,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/Lib/transactions")
+@RequestMapping("/lib/transactions")
 @SecurityRequirement(name = "bookRental")
 @Tag(name = "Book Transaction Controller", description = "APIs for managing Transactions")
 public class BookTransactionController extends BaseController {
@@ -35,7 +35,7 @@ public class BookTransactionController extends BaseController {
             @ApiResponse(responseCode = "403", description = "Forbidden"),
             @ApiResponse(responseCode = "500", description = "internal server error")
     })
-    @PostMapping("/add-Transaction")
+    @PostMapping("/add-transaction")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     public GenericResponse<BookTransaction> addTransaction(@RequestBody @Valid BookTransactionDto bookTransactionDto, HttpServletRequest request) {
         return successResponse(bookTransactionServiceImplementation.addTransaction(bookTransactionDto,request), "Transaction added");
@@ -48,7 +48,7 @@ public class BookTransactionController extends BaseController {
             @ApiResponse(responseCode = "404", description = "book transaction not found"),
             @ApiResponse(responseCode = "500", description = "internal server error")
     })
-    @GetMapping("/get-All-Transactions")
+    @GetMapping("/get-all-transactions")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     public GenericResponse<List<BookTransaction>> getAllTransaction() {
         return successResponse(bookTransactionServiceImplementation.getAllTransaction(), "All transactions");
@@ -61,7 +61,7 @@ public class BookTransactionController extends BaseController {
             @ApiResponse(responseCode = "404", description = "book transaction not found"),
             @ApiResponse(responseCode = "500", description = "internal server error")
     })
-    @GetMapping("/all-Transactions")
+    @GetMapping("/all-transactions")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     public GenericResponse<Object> getMemberAndBookDetails() {
         return successResponse(bookTransactionServiceImplementation.getNames(), "All transactions details");
@@ -72,7 +72,7 @@ public class BookTransactionController extends BaseController {
             @ApiResponse(responseCode = "403", description = "Forbidden"),
             @ApiResponse(responseCode = "500", description = "internal server error")
     })
-    @GetMapping("/download-Transactions")
+    @GetMapping("/download-transactions")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     public GenericResponse<String> downloadExcel(HttpServletResponse response) throws IOException {
         return successResponse(bookTransactionServiceImplementation.generateExcel(response),"excel downloaded");
@@ -85,7 +85,7 @@ public class BookTransactionController extends BaseController {
             @ApiResponse(responseCode = "404", description = "Transaction Not found"),
             @ApiResponse(responseCode = "500", description = "internal server error")
     })
-    @GetMapping("/get-By-Id")
+    @GetMapping("/get-by-id")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     public GenericResponse<BookTransaction> getById(@RequestParam Long id) {
         return successResponse(bookTransactionServiceImplementation.findById(id), "transaction detail-:" + id + " are");
@@ -98,7 +98,7 @@ public class BookTransactionController extends BaseController {
             @ApiResponse(responseCode = "404", description = "book transaction not found"),
             @ApiResponse(responseCode = "500", description = "internal server error")
     })
-    @PutMapping("/update-Transaction")
+    @PutMapping("/update-transaction")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     public GenericResponse<BookTransaction> updateTransaction(@RequestBody BookTransactionDto bookTransactionDto,HttpServletRequest request) {
         return successResponse(bookTransactionServiceImplementation.updateTransaction(bookTransactionDto,request), "Transactions Updated");
@@ -111,7 +111,7 @@ public class BookTransactionController extends BaseController {
             @ApiResponse(responseCode = "403", description = "Forbidden"),
             @ApiResponse(responseCode = "500", description = "internal server error")
     })
-    @DeleteMapping("/delete-Transaction")
+    @DeleteMapping("/delete-transaction")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     public GenericResponse<String> deleteTransaction(@RequestParam Long id) {
         return successResponse(bookTransactionServiceImplementation.deleteTransaction(id), "Trascation" + id + " is hidden");

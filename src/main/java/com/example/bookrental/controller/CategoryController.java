@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/Lib/category")
+@RequestMapping("/lib/category")
 @RequiredArgsConstructor
 @SecurityRequirement(name = "bookRental")
 @Tag(name = "Category Controller", description = "APIs for managing Category")
@@ -32,7 +32,7 @@ public class CategoryController extends BaseController {
             @ApiResponse(responseCode = "403" ,description = "Forbidden"),
             @ApiResponse(responseCode = "500", description = "internal server error")
     })
-    @PostMapping("/add-Category")
+    @PostMapping("/add-category")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     public GenericResponse<Category> addCategory(@RequestBody @Valid CategoryDto categoryDto) {
         return successResponse(categoryService.addCategory(categoryDto), "Category added");
@@ -45,7 +45,7 @@ public class CategoryController extends BaseController {
             @ApiResponse(responseCode = "404", description = "Category not found"),
             @ApiResponse(responseCode = "500", description = "internal server error")
     })
-    @PutMapping("/update-Category")
+    @PutMapping("/update-category")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     public GenericResponse<Category> updateCategory(@RequestBody CategoryDto categoryDto) {
         return successResponse(categoryService.updateCategory(categoryDto), "Category Updated");
@@ -57,7 +57,7 @@ public class CategoryController extends BaseController {
             @ApiResponse(responseCode = "404", description = "Category not found"),
             @ApiResponse(responseCode = "500", description = "internal server error")
     })
-    @GetMapping("/get-all-Category")
+    @GetMapping("/get-all-category")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     public GenericResponse<List<Category>> getAllCategory() {
         return successResponse(categoryService.getAllCategory(), "All available Categories");
@@ -70,7 +70,7 @@ public class CategoryController extends BaseController {
             @ApiResponse(responseCode = "404", description = "Category not found"),
             @ApiResponse(responseCode = "500", description = "internal server error")
     })
-    @GetMapping("/get-By-Id")
+    @GetMapping("/get-by-id")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     public GenericResponse<Category> getById(@RequestParam Long id){
         return successResponse(categoryService.findById(id),"Category id-:"+id+"details");
@@ -83,7 +83,7 @@ public class CategoryController extends BaseController {
             @ApiResponse(responseCode = "402", description = "Category not found"),
             @ApiResponse(responseCode = "500", description = "internal server error")
     })
-    @DeleteMapping("/deleteCategory")
+    @DeleteMapping("/delete-category")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     public GenericResponse<String> deleteCategory(@RequestParam long id) {
         return successResponse(categoryService.deleteCategory(id), "Category" + id + " has been deleted");

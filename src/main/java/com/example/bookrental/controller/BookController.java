@@ -9,22 +9,21 @@ import com.example.bookrental.service.serviceimplementation.BookServiceImplement
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Bean;
+
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/Lib/books")
+@RequestMapping("/lib/books")
 //@SecurityRequirement(name = "bookRental")
 @Tag(name = "Book Controller", description = "APIs for managing Books")
 public class BookController extends BaseController {
@@ -39,7 +38,7 @@ public class BookController extends BaseController {
     })
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
 //    @PostMapping( "/add-Book")
-    @PostMapping(value = "/add-Book", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/add-book", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public GenericResponse<Book> addBook(@ModelAttribute @Valid BookDto bookDto, MultipartFile file) throws Exception {
         return successResponse(bookService.addBook(bookDto,file), "New book added");
     }
@@ -51,7 +50,7 @@ public class BookController extends BaseController {
             @ApiResponse(responseCode = "500", description = "internal server error")
     })
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
-    @PutMapping("/update-Book")
+    @PutMapping("/update-book")
     public GenericResponse<Book> updateBook(@RequestBody BookDto bookDto) {
         return successResponse(bookService.updateBook(bookDto), "Book Updated");
     }
@@ -64,7 +63,7 @@ public class BookController extends BaseController {
             @ApiResponse(responseCode = "500", description = "internal server error")
     })
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
-    @GetMapping("/get-All-Books")
+    @GetMapping("/get-all-books")
     public GenericResponse<List<Book>> getAllBook() {
         return successResponse(bookService.getAllBook(), "All available Books");
     }
@@ -75,7 +74,7 @@ public class BookController extends BaseController {
             @ApiResponse(responseCode = "403" ,description = "Forbidden"),
             @ApiResponse(responseCode = "500", description = "internal server error")
     })
-    @GetMapping("/get-By-Id")
+    @GetMapping("/get-by-id")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     public GenericResponse<Book> getById(@RequestParam Long id){
         return successResponse(bookService.findById(id),"book id-:"+id+"details");
@@ -88,7 +87,7 @@ public class BookController extends BaseController {
             @ApiResponse(responseCode = "500", description = "internal server error")
     })
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
-    @DeleteMapping("/delete-Book")
+    @DeleteMapping("/delete-book")
     public GenericResponse<String> deleteBook(@RequestParam long id) {
         return successResponse(bookService.deleteBook(id), "Book id-:" + id + " is deleted ");
     }
