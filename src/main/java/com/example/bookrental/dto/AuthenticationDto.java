@@ -1,5 +1,6 @@
 package com.example.bookrental.dto;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,6 +11,8 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AuthenticationDto  {
+    @NotNull(message = "username cannot be null")
     String username;
+    @NotNull(message = "password cannot be null")
     String password;
 }

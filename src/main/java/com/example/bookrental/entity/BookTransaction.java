@@ -15,7 +15,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "tbl_book_transaction")
+@Table(name = "tbl_book_transaction",uniqueConstraints = {@UniqueConstraint(columnNames = {"code"})})
 //@SQLDelete(sql = "UPDATE tbl_book_transaction SET deleted = true WHERE id=?")
 //@Where(clause ="deleted=true")
 @SQLDelete(sql = "UPDATE tbl_book_transaction SET deleted = true, rent_status = 'RETURN' WHERE id=?")

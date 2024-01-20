@@ -75,10 +75,6 @@ public class BookTransactionController extends BaseController {
     @GetMapping("/download-Transactions")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     public GenericResponse<String> downloadExcel(HttpServletResponse response) throws IOException {
-        response.setContentType("application/octet-stream");
-        String headerKey = "Content-Disposition";
-        String headerValue = "attachment;filename=transactions.xls";
-        response.setHeader(headerKey, headerValue);
         return successResponse(bookTransactionServiceImplementation.generateExcel(response),"excel downloaded");
     }
 
@@ -102,7 +98,7 @@ public class BookTransactionController extends BaseController {
             @ApiResponse(responseCode = "404", description = "book transaction not found"),
             @ApiResponse(responseCode = "500", description = "internal server error")
     })
-    @PutMapping("/update-Transcation")
+    @PutMapping("/update-Transaction")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     public GenericResponse<BookTransaction> updateTransaction(@RequestBody BookTransactionDto bookTransactionDto,HttpServletRequest request) {
         return successResponse(bookTransactionServiceImplementation.updateTransaction(bookTransactionDto,request), "Transactions Updated");

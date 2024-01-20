@@ -7,7 +7,7 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 @Entity
-@Table(name = "tbl_catagory")
+@Table(name = "tbl_catagory",uniqueConstraints = {@UniqueConstraint(columnNames = {"name"})})
 @Getter
 @Setter
 @AllArgsConstructor
@@ -20,7 +20,6 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "category_primary_key_generator")
     Long id;
 
-    @Column(unique=true)
     String name;
     String discription;
     private boolean deleted = Boolean.FALSE;

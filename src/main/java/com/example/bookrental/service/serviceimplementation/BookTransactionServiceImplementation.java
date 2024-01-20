@@ -40,7 +40,7 @@ public class BookTransactionServiceImplementation implements BookTransactionServ
     private final JwtService jwtService;
 
     @Override
-    public BookTransaction addTransaction(BookTransactionDto bookTransactionDto,HttpServletRequest request) {
+    public BookTransaction addTransaction(BookTransactionDto bookTransactionDto, HttpServletRequest request) {
         Long bookId = bookTransactionDto.getBookId();
         Book book = bookRepo.findById(bookId)
                 .orElseThrow(() -> new NotFoundException("book not found"));
@@ -69,6 +69,7 @@ public class BookTransactionServiceImplementation implements BookTransactionServ
 
         return bookTransactionRepo.save(bookTransaction);
     }
+
     protected String getUsername(HttpServletRequest request) {
         String authHeader = request.getHeader("Authorization");
         String token = null;
@@ -81,7 +82,7 @@ public class BookTransactionServiceImplementation implements BookTransactionServ
     }
 
     @Override
-    public BookTransaction updateTransaction(BookTransactionDto bookTransactionDto,HttpServletRequest request) {
+    public BookTransaction updateTransaction(BookTransactionDto bookTransactionDto, HttpServletRequest request) {
         BookTransaction bookTransaction = bookTransactionRepo.findById(bookTransactionDto.getId())
                 .orElseThrow(() -> new NotFoundException("Transaction Does not exist"));
         Optional<Book> updatedBookOptional = bookRepo.findById(bookTransactionDto.getBookId());
@@ -129,6 +130,7 @@ public class BookTransactionServiceImplementation implements BookTransactionServ
         bookRepo.save(book);
         return bookTransaction + " Transaction has been deleted";
     }
+
     public List<Object> getNames() {
         return bookTransactionRepo.getMemberAndBookDetails();
     }
@@ -166,7 +168,10 @@ public class BookTransactionServiceImplementation implements BookTransactionServ
         ServletOutputStream out = response.getOutputStream();
         workbook.write(out);
         workbook.close();
-        //
+        response.setContentType("application/octet-stream");
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment;filename=transactions.xls";
+        response.setHeader(headerKey, headerValue);
         out.close();
         return "Download success";
     }

@@ -8,7 +8,7 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 @Entity
-@Table(name = "tbl_member")
+@Table(name = "tbl_member",uniqueConstraints = {@UniqueConstraint(columnNames = {"email","mobileNo"})})
 @SQLDelete(sql = "UPDATE tbl_member SET deleted = true WHERE memberid = ?")
 @Where(clause = "deleted=false")
 @Getter
@@ -22,10 +22,9 @@ public class Member {
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "member_primary_key_generator")
     Long memberid;
 
-    @Column(unique=true)
     String email;
     String name;
-    @Column(unique=true)
+
     String mobileNo;
     String address;
     private boolean deleted = Boolean.FALSE;

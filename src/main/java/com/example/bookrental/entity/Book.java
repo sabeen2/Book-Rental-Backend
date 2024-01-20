@@ -11,7 +11,7 @@ import java.util.List;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "tbl_book")
+@Table(name = "tbl_book",uniqueConstraints = {@UniqueConstraint(columnNames = {"name"})})
 @Getter
 @Setter
 
@@ -23,7 +23,6 @@ public class Book {
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "book_primary_key_generator")
     Long id;
 
-    @Column(unique=true)
     String name;
 
     Double rating;
