@@ -11,11 +11,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 
-@OpenAPIDefinition(info = @Info(title = "Book rental API", version = "1.0", description = "Allows the admin and librarian too keep track of the rented books and Transactions associated with it.")
-        , servers = {@Server(url = "https://bookrental-demo-production.up.railway.app/", description = "Deployed Server URL"),
-        @Server(url = "http://localhost:8080", description = "Local Server URL")
-}
-)
+@OpenAPIDefinition(info = @Info(title = "Book rental API", version = "1.0", description = "Allows the admin and librarian too keep track of the rented books and Transactions associated with it."))
 @SecurityScheme(name = "bookRental", scheme = "bearer", type = SecuritySchemeType.HTTP, in = SecuritySchemeIn.HEADER)
 public class BookRentalApplication {
 
