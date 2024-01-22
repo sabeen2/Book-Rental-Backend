@@ -20,14 +20,12 @@ public class ReturnDateExceededEmailService {
     public String sendDueDateMail() {
         Date today = new Date();
 
-        // Find transactions where return date has exceeded today's date
-        List<BookTransaction> overdueTransactions = bookTransactionRepo.findByToDateBefore(today);
+        List<BookTransaction> returnDateExceeded = bookTransactionRepo.findByToDateBefore(today);
 
-        for (BookTransaction transaction : overdueTransactions) {
-            String memberEmail = transaction.getMember().getEmail(); // Assuming Member has an email field
+        for (BookTransaction transaction : returnDateExceeded) {
+            String memberEmail = transaction.getMember().getEmail();
             String emailSubject = "Return date exceeded";
             String emailBody = MailUtils.setTemplet(memberEmail,emailSubject);
-            // Send email
             sendMail(memberEmail, emailSubject, emailBody);
         }
 
