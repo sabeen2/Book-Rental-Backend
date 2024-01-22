@@ -1,6 +1,7 @@
 package com.example.bookrental.entity;
 
 
+import com.example.bookrental.auditingconfig.AuditingEntity;
 import com.example.bookrental.enums.RentType;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
@@ -23,7 +24,7 @@ import java.util.Date;
 
 
 
-public class BookTransaction {
+public class BookTransaction  extends AuditingEntity {
     @Id
     @SequenceGenerator(name = "transaction_primary_key_generator", initialValue = 0, allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "transaction_primary_key_generator")

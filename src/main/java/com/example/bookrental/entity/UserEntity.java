@@ -1,5 +1,6 @@
 package com.example.bookrental.entity;
 
+import com.example.bookrental.auditingconfig.AuditingEntity;
 import com.example.bookrental.enums.UserType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -17,7 +18,7 @@ import org.hibernate.annotations.Where;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserEntity {
+public class UserEntity extends AuditingEntity {
     @Id
     @SequenceGenerator(name = "user_primary_key_generator", initialValue = 0, allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "user_primary_key_generator")
