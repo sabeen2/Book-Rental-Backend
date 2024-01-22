@@ -78,6 +78,16 @@
         </dependency>
         <!-- Swagger dependencies-->
 
+        <!--Smtp-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
+        <!--Smtp-->
+
+
+    <!--apache poi-->
+
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi</artifactId>
@@ -89,7 +99,7 @@
             <artifactId>poi-ooxml</artifactId>
             <version>5.2.0</version> <!-- Use the same version as poi -->
         </dependency>
-
+        <!--apache poi-->
 
         <dependency>
             <groupId>org.postgresql</groupId>

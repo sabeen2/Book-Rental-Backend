@@ -15,11 +15,13 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -87,5 +89,17 @@ public class AuthorController extends BaseController {
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     public GenericResponse<String> deleteAuthor(@RequestParam Long id) {
         return successResponse(authorService.deleteAuthor(id),"User id:-"+ id +" deleted");
+    }
+
+    @Operation(summary = "download author", description = "download available author detail based on excel sheet")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Author found and Deleted"),
+            @ApiResponse(responseCode = "402", description = "Author not found"),
+            @ApiResponse(responseCode = "500", description = "internal server error")
+    })
+    @GetMapping("/download-author")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
+    public GenericResponse<String> getExcel(HttpServletResponse response) throws IOException, IllegalAccessException {
+        return successResponse(authorService.getExcel(response),"excelSheet downloaded");
     }
 }

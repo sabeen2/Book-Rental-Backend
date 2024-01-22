@@ -5,6 +5,8 @@ import com.example.bookrental.dto.MemberDto;
 import com.example.bookrental.entity.Member;
 import com.example.bookrental.generic_response.GenericResponse;
 import com.example.bookrental.service.MemberService;
+import com.example.bookrental.service.serviceimplementation.ReturnDateExceededEmailService;
+import com.example.bookrental.utils.MailUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -25,6 +27,7 @@ import java.util.List;
 public class MemberController extends BaseController {
 
     private final MemberService memberService;
+    private final ReturnDateExceededEmailService emailService;
 
     @Operation(summary = "Add Member", description = "Add Member to the application")
     @ApiResponses(value = {
@@ -88,5 +91,20 @@ public class MemberController extends BaseController {
     @GetMapping("/get-by-id")
     public GenericResponse<Member> getById(@RequestParam Long id){
         return successResponse(memberService.findById(id),"Member id-:"+id+"details");
+    }
+
+
+
+    @Operation(summary = "send mail to users", description = "send mail to specified user")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Member found"),
+            @ApiResponse(responseCode = "403" ,description = "Forbidden"),
+            @ApiResponse(responseCode = "404", description = "Member not found"),
+            @ApiResponse(responseCode = "500", description = "internal server error")
+    })
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
+    @PostMapping("/send-mail")
+    public GenericResponse<String> sendMail(String to,String subject,String body){
+        return successResponse(emailService.sendMail("member777@yopmail.com","Due date exceeded",MailUtils.setTemplet(to)),"mail sent");
     }
 }
