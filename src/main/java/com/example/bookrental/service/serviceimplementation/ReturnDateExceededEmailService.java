@@ -6,6 +6,7 @@ import com.example.bookrental.utils.MailUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -17,6 +18,7 @@ public class ReturnDateExceededEmailService {
     private final JavaMailSender javaMailSender;
     private final BookTransactionRepo bookTransactionRepo;
 
+//    @Scheduled(fixedRate = 5000)
     public String sendDueDateMail() {
         Date today = new Date();
 

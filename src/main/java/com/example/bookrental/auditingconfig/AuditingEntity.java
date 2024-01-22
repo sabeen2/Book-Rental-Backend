@@ -2,6 +2,7 @@ package com.example.bookrental.auditingconfig;
 
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.Temporal;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,6 +15,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.util.Date;
 
+import static jakarta.persistence.TemporalType.TIMESTAMP;
+
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 @Getter
@@ -22,9 +25,11 @@ import java.util.Date;
 @NoArgsConstructor
 public class AuditingEntity {
     @CreatedDate
+    @Temporal(TIMESTAMP)
     Date createdDate;
 
     @LastModifiedDate
+    @Temporal(TIMESTAMP)
     Date modifiedDate;
 
     @LastModifiedBy
