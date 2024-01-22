@@ -105,6 +105,6 @@ public class MemberController extends BaseController {
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     @PostMapping("/send-mail")
     public GenericResponse<String> sendMail(String to,String subject,String body){
-        return successResponse(emailService.sendMail("member777@yopmail.com","Due date exceeded",MailUtils.setTemplet(to)),"mail sent");
+        return successResponse(emailService.sendMail(to,subject,body),"mail sent");
     }
 }

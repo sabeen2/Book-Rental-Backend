@@ -53,5 +53,4 @@ public class MemberServiceImplementation implements MemberService {
         membersRepo.delete(member);
         return member.toString() + "has been deleted";
     }
-
 }

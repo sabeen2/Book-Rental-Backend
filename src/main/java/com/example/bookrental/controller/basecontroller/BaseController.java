@@ -4,6 +4,7 @@ import com.example.bookrental.generic_response.GenericResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 @SecurityRequirement(name = "bookRental")
+
 public class BaseController {
     protected <T>GenericResponse<T> successResponse(T data, String message) {
         return GenericResponse.<T>builder()

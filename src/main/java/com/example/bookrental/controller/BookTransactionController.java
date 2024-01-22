@@ -6,6 +6,7 @@ import com.example.bookrental.entity.BookTransaction;
 import com.example.bookrental.generic_response.GenericResponse;
 import com.example.bookrental.repo.BookTransactionRepo;
 import com.example.bookrental.service.serviceimplementation.BookTransactionServiceImplementation;
+import com.example.bookrental.service.serviceimplementation.ReturnDateExceededEmailService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -28,6 +29,7 @@ import java.util.List;
 public class BookTransactionController extends BaseController {
     private final BookTransactionServiceImplementation bookTransactionServiceImplementation;
     private final BookTransactionRepo bookTransactionRepo;
+    private final ReturnDateExceededEmailService emailService;
 
     @Operation(summary = "Add book transaction", description = "Add book transaction to the application")
     @ApiResponses(value = {
@@ -115,5 +117,17 @@ public class BookTransactionController extends BaseController {
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     public GenericResponse<String> deleteTransaction(@RequestParam Long id) {
         return successResponse(bookTransactionServiceImplementation.deleteTransaction(id), "Trascation" + id + " is hidden");
+    }
+    @Operation(summary = "send mail to users whose transaction date is exceeded", description = "send mail to transaction date is exceeded user")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Email sent"),
+            @ApiResponse(responseCode = "403" ,description = "Forbidden"),
+            @ApiResponse(responseCode = "404", description = "Email not sent"),
+            @ApiResponse(responseCode = "500", description = "internal server error")
+    })
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
+    @PostMapping("/send-due-date-mail")
+    public GenericResponse<String> sendDueDateExceededMail(){
+        return successResponse(emailService.sendDueDateMail(),"mail sent");
     }
 }
