@@ -21,16 +21,18 @@ public class CategoryServiceImplementation implements CategoryService {
     private final CategoryRepo categoryRepo;
 
     @Override
-    public Category addCategory(CategoryDto categoryDto) {
+    public String addCategory(CategoryDto categoryDto) {
         Category category = objectMapper.convertValue(categoryDto, Category.class);
-        return categoryRepo.save(category);
+        categoryRepo.save(category);
+        return "category added"+categoryDto.getName();
     }
 
     @Override
-    public Category updateCategory(CategoryDto categoryDto) {
+    public String updateCategory(CategoryDto categoryDto) {
         Category category = categoryRepo.findById(categoryDto.getId()).orElseThrow(() -> new NotFoundException("Category Not Found"));
         BeanUtils.copyProperties(categoryDto, category, getNullPropertyNames(categoryDto));
-        return categoryRepo.save(category);
+        categoryRepo.save(category);
+        return "category added"+categoryDto.getName();
     }
 
     @Override

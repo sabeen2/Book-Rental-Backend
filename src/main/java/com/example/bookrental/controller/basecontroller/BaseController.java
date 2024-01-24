@@ -5,7 +5,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
 @SecurityRequirement(name = "bookRental")
-@CrossOrigin(origins = { "http://localhost:5173","https://book-rental-system-ts.netlify.app/",},allowedHeaders = "*")
+@CrossOrigin(origins = { "http://localhost:5173","https://book-rental-system-ts.netlify.app/","https://bookrental-demo-production.up.railway.app"},allowedHeaders = "*")
 public class BaseController {
     protected <T>GenericResponse<T> successResponse(T data, String message) {
         return GenericResponse.<T>builder()

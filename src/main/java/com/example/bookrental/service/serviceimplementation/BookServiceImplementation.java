@@ -32,7 +32,7 @@ public class BookServiceImplementation implements BookService {
     private final AuthorRepo authorRepo;
 
     @Override
-    public Book addBook(BookDto bookDto,MultipartFile file) throws Exception {
+    public String addBook(BookDto bookDto,MultipartFile file) throws Exception {
         Long categoryId = bookDto.getCategoryId();
         Category category = categoryRepo.findById(categoryId)
                 .orElseThrow(() -> new NotFoundException("Category not found"));
@@ -48,7 +48,8 @@ public class BookServiceImplementation implements BookService {
         Book book = objectMapper.convertValue(bookDto, Book.class);
         book.setCategory(category);
         book.setAuthors(authors);
-        return bookRepo.save(book);
+        bookRepo.save(book);
+        return "Book added"+bookDto.getName();
     }
     public static String saveImage(String path, MultipartFile file) throws IOException {
         if(file==null){
@@ -64,7 +65,7 @@ public class BookServiceImplementation implements BookService {
             return name;
     }
     @Override
-    public Book updateBook(BookDto bookDto) {
+    public String updateBook(BookDto bookDto) {
         Book book = bookRepo.findById(bookDto.getId()).orElseThrow(() -> new NotFoundException("Book Not Found"));
         BeanUtils.copyProperties(bookDto, book, getNullPropertyNames(bookDto));
         if (bookDto.getAuthorId() != null && !bookDto.getAuthorId().isEmpty()) {
@@ -75,7 +76,8 @@ public class BookServiceImplementation implements BookService {
             Category updatedCategoryOptional = categoryRepo.findById(bookDto.getCategoryId()).orElseThrow(() -> new NotFoundException("Catagory dosent exist"));
             book.setCategory(updatedCategoryOptional);
         }
-        return bookRepo.save(book);
+        bookRepo.save(book);
+        return "Book Updated"+bookDto.getName();
     }
 
     @Override

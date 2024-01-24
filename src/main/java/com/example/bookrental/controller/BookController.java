@@ -39,7 +39,7 @@ public class BookController extends BaseController {
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
 //    @PostMapping( "/add-Book")
     @PostMapping(value = "/add-book", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public GenericResponse<Book> addBook(@ModelAttribute @Valid BookDto bookDto, MultipartFile file) throws Exception {
+    public GenericResponse<String> addBook(@ModelAttribute @Valid BookDto bookDto, MultipartFile file) throws Exception {
         return successResponse(bookService.addBook(bookDto,file), "New book added");
     }
     @Operation(summary = "Update Book", description = "update the available Book detail")
@@ -51,7 +51,7 @@ public class BookController extends BaseController {
     })
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     @PutMapping("/update-book")
-    public GenericResponse<Book> updateBook(@RequestBody BookDto bookDto) {
+    public GenericResponse<String> updateBook(@RequestBody BookDto bookDto) {
         return successResponse(bookService.updateBook(bookDto), "Book Updated");
     }
 

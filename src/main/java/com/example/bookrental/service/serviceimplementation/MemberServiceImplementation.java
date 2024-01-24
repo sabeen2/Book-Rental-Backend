@@ -24,18 +24,21 @@ public class MemberServiceImplementation implements MemberService {
 
 
     @Override
-    public Member addMember(MemberDto memberDto) {
+    public String addMember(MemberDto memberDto) {
         Member member;
         member = objectMapper.convertValue(memberDto, Member.class);
-        return membersRepo.save(member);
+        membersRepo.save(member);
+        return "Member added-:"+memberDto.getName();
     }
 
     @Override
-    public Member updateMember(MemberDto memberDto) {
+    public String updateMember(MemberDto memberDto) {
         Member member = membersRepo.findById(memberDto.getMemberid()).orElseThrow(() -> new NotFoundException("Member Not Found"));
         BeanUtils.copyProperties(memberDto, member, getNullPropertyNames(memberDto));
-        return membersRepo.save(member);
+        membersRepo.save(member);
+        return "Member updated-:"+memberDto.getName();
     }
+
 
     @Override
     public List<Member> getAllMember() {

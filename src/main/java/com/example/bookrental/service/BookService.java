@@ -9,8 +9,8 @@ import java.io.IOException;
 import java.util.List;
 
 public interface BookService {
-    public Book addBook(BookDto  bookDto,MultipartFile file) throws Exception;
-    public Book updateBook(BookDto  bookDto);
+    public String addBook(BookDto  bookDto,MultipartFile file) throws Exception;
+    public String updateBook(BookDto  bookDto);
     public List<Book> getAllBook();
     public Book findById(Long id);
     public String deleteBook(Long id);

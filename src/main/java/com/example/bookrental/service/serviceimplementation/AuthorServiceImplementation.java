@@ -4,14 +4,18 @@ import com.example.bookrental.dto.AuthorDto;
 import com.example.bookrental.entity.Author;
 import com.example.bookrental.entity.Book;
 import com.example.bookrental.exception.NotFoundException;
+import com.example.bookrental.generic_response.GenericResponse;
 import com.example.bookrental.repo.AuthorRepo;
 import com.example.bookrental.service.AuthorService;
 import com.example.bookrental.utils.ExcelGenerator;
+import com.example.bookrental.utils.ExcelToDb;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
@@ -26,17 +30,19 @@ public class AuthorServiceImplementation implements AuthorService {
     private final ObjectMapper objectMapper;
 
     @Override
-    public Author addAuthor(AuthorDto authorDto) {
+    public String addAuthor(AuthorDto authorDto) {
         Author author;
         author = objectMapper.convertValue(authorDto, Author.class);
-        return authorRepo.save(author);
+         authorRepo.save(author);
+         return "author saved -:"+authorDto.getName();
     }
 
     @Override
-    public Author updateAuthor(AuthorDto authorDto) {
+    public String updateAuthor(AuthorDto authorDto) {
         Author author = authorRepo.findById(authorDto.getAuthorId()).orElseThrow(() -> new NotFoundException("Author Not Found"));
         BeanUtils.copyProperties(authorDto, author, getNullPropertyNames(authorDto));
-        return authorRepo.save(author);
+        authorRepo.save(author);
+        return "author Updated -:"+authorDto.getName();
     }
 
     @Override
@@ -60,5 +66,11 @@ public class AuthorServiceImplementation implements AuthorService {
     public String getExcel(HttpServletResponse response) throws IOException, IllegalAccessException {
         ExcelGenerator.generateExcel(response,authorRepo.findAll(),"author sheet",Author.class);
         return "downloaded";
+    }
+
+    public String excelToDb(MultipartFile file) throws IOException, IllegalAccessException, InstantiationException {
+        List<Author> authors= ExcelToDb.createEntitiesFromExcel(file,Author.class);
+        authorRepo.saveAll(authors);
+        return "excel sheet data added";
     }
 }

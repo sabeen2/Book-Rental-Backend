@@ -16,9 +16,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -40,7 +42,7 @@ public class BookTransactionController extends BaseController {
     })
     @PostMapping("/add-transaction")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
-    public GenericResponse<BookTransaction> addTransaction(@RequestBody @Valid BookTransactionDto bookTransactionDto, HttpServletRequest request) {
+    public GenericResponse<String> addTransaction(@RequestBody @Valid BookTransactionDto bookTransactionDto, HttpServletRequest request) {
         return successResponse(bookTransactionServiceImplementation.addTransaction(bookTransactionDto,request), "Transaction added");
     }
 
@@ -103,7 +105,7 @@ public class BookTransactionController extends BaseController {
     })
     @PutMapping("/update-transaction")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
-    public GenericResponse<BookTransaction> updateTransaction(@RequestBody BookTransactionDto bookTransactionDto,HttpServletRequest request) {
+    public GenericResponse<String> updateTransaction(@RequestBody BookTransactionDto bookTransactionDto,HttpServletRequest request) {
         return successResponse(bookTransactionServiceImplementation.updateTransaction(bookTransactionDto,request), "Transactions Updated");
     }
 
@@ -130,5 +132,10 @@ public class BookTransactionController extends BaseController {
     @PostMapping("/send-due-date-mail")
     public GenericResponse<String> sendDueDateExceededMail(){
         return successResponse(emailService.sendDueDateMail(),"mail sent");
+    }
+    @PostMapping(value = "/export-to-db" ,consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
+    public GenericResponse<String> excelToDb(@ModelAttribute MultipartFile file) throws IOException, IllegalAccessException, InstantiationException {
+        return successResponse(bookTransactionServiceImplementation.excelToDb(file),"data exported");
     }
 }

@@ -34,7 +34,7 @@ public class CategoryController extends BaseController {
     })
     @PostMapping("/add-category")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
-    public GenericResponse<Category> addCategory(@RequestBody @Valid CategoryDto categoryDto) {
+    public GenericResponse<String> addCategory(@RequestBody @Valid CategoryDto categoryDto) {
         return successResponse(categoryService.addCategory(categoryDto), "Category added");
     }
 
@@ -47,7 +47,7 @@ public class CategoryController extends BaseController {
     })
     @PutMapping("/update-category")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
-    public GenericResponse<Category> updateCategory(@RequestBody CategoryDto categoryDto) {
+    public GenericResponse<String> updateCategory(@RequestBody CategoryDto categoryDto) {
         return successResponse(categoryService.updateCategory(categoryDto), "Category Updated");
     }
     @Operation(summary = "Get all Category", description = "Fetch all available Category detail")

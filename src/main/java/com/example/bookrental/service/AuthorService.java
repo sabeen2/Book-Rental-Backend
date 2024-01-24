@@ -8,8 +8,8 @@ import java.io.IOException;
 import java.util.List;
 
 public interface AuthorService {
-    public Author addAuthor (AuthorDto authorDto);
-    public Author updateAuthor (AuthorDto authorDto);
+    public String addAuthor (AuthorDto authorDto);
+    public String updateAuthor (AuthorDto authorDto);
     public List<Author> getAllAuthor ();
     public Author findById(Long id);
     public String deleteAuthor (Long id);

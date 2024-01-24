@@ -5,6 +5,8 @@ import com.example.bookrental.dto.AuthorDto;
 import com.example.bookrental.entity.Author;
 import com.example.bookrental.generic_response.GenericResponse;
 import com.example.bookrental.service.AuthorService;
+import com.example.bookrental.service.serviceimplementation.AuthorServiceImplementation;
+import com.example.bookrental.utils.ExcelToDb;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
@@ -18,8 +20,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
@@ -31,6 +35,7 @@ import java.util.List;
 @Tag(name = "Author Controller", description = "APIs for managing Authors")
 public class AuthorController extends BaseController {
     private final AuthorService authorService;
+    private final AuthorServiceImplementation authorServiceImplementation;
 
     @Operation(summary = "Add authors", description = "Add authors to the application")
     @ApiResponses(value = {
@@ -39,7 +44,7 @@ public class AuthorController extends BaseController {
     })
     @PostMapping("/add-author")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
-    public GenericResponse<Author> addAuthor(@RequestBody @Valid AuthorDto authorDto) {
+    public GenericResponse<String> addAuthor(@RequestBody @Valid AuthorDto authorDto) {
         return successResponse(authorService.addAuthor(authorDto), "Author added");
     }
 
@@ -51,7 +56,7 @@ public class AuthorController extends BaseController {
     })
     @PutMapping("/update-author")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
-    public GenericResponse<Author> updateAuthor(@RequestBody AuthorDto authorDto) {
+    public GenericResponse<String> updateAuthor(@RequestBody AuthorDto authorDto) {
         return successResponse(authorService.updateAuthor(authorDto), "Author Updated");
     }
     @Operation(summary = "Get all authors", description = "Fetch all available authors detail")
@@ -93,13 +98,22 @@ public class AuthorController extends BaseController {
 
     @Operation(summary = "download author", description = "download available author detail based on excel sheet")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Author found and Deleted"),
-            @ApiResponse(responseCode = "402", description = "Author not found"),
+            @ApiResponse(responseCode = "200", description = "Author found"),
             @ApiResponse(responseCode = "500", description = "internal server error")
     })
     @GetMapping("/download-author")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     public GenericResponse<String> getExcel(HttpServletResponse response) throws IOException, IllegalAccessException {
         return successResponse(authorService.getExcel(response),"excelSheet downloaded");
+    }
+    @Operation(summary = "Upload author details", description = "upload author detail based of excel sheet")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Author uploaded"),
+            @ApiResponse(responseCode = "500", description = "internal server error")
+    })
+    @PostMapping(value = "/export-to-db" ,consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
+    public GenericResponse<String> excelToDb(@ModelAttribute MultipartFile file) throws IOException, IllegalAccessException, InstantiationException {
+        return successResponse(authorServiceImplementation.excelToDb(file),"data exported");
     }
 }

@@ -43,7 +43,7 @@ public class UserEntityController extends BaseController {
     })
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @PostMapping("/add-user")
-    public GenericResponse<UserEntity> addUser(@RequestBody UserEntityDto userEntityDto) {
+    public GenericResponse<String> addUser(@RequestBody UserEntityDto userEntityDto) {
         return successResponse(userEntityService.addUser(userEntityDto), "New user" + userEntityDto.getUserType() + " Added");
     }
     @Operation(summary = "Deactivate Users" ,description = "Deactivate users")

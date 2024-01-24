@@ -7,8 +7,8 @@ import com.example.bookrental.entity.Category;
 import java.util.List;
 
 public interface CategoryService {
-    public Category addCategory(CategoryDto categoryDto);
-    public Category updateCategory(CategoryDto categoryDto);
+    public String addCategory(CategoryDto categoryDto);
+    public String updateCategory(CategoryDto categoryDto);
     public List<Category> getAllCategory();
     public Category findById(Long id);
     public String deleteCategory(Long id);

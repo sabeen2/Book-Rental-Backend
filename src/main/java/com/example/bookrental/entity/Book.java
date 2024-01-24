@@ -38,9 +38,9 @@ public class Book extends AuditingEntity {
     private Category category;
 
     @ManyToMany
-    @JoinTable(name = "book_author", // Specify the name of the intermediate table
-            joinColumns = @JoinColumn(name = "book_id"), // Column in the book table
-            inverseJoinColumns = @JoinColumn(name = "author_id") // Column in the author table
+    @JoinTable(name = "book_author",// Specify the name of the intermediate table
+            joinColumns = @JoinColumn(name = "book_id",foreignKey = @ForeignKey(name ="book_id_foreign_key")), // Column in the book table
+            inverseJoinColumns = @JoinColumn(name = "author_id",foreignKey = @ForeignKey(name ="author_id_foreign_key")) // Column in the author table
     )
     List<Author> authors;
 

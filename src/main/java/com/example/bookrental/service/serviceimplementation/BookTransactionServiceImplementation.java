@@ -1,6 +1,7 @@
 package com.example.bookrental.service.serviceimplementation;
 
 import com.example.bookrental.dto.BookTransactionDto;
+import com.example.bookrental.entity.Author;
 import com.example.bookrental.entity.Book;
 import com.example.bookrental.entity.BookTransaction;
 import com.example.bookrental.entity.Member;
@@ -11,6 +12,7 @@ import com.example.bookrental.repo.BookTransactionRepo;
 import com.example.bookrental.repo.MembersRepo;
 import com.example.bookrental.service.BookTransactionService;
 import com.example.bookrental.service.jwtservice.JwtService;
+import com.example.bookrental.utils.ExcelToDb;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.ServletOutputStream;
@@ -23,6 +25,7 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
@@ -40,7 +43,7 @@ public class BookTransactionServiceImplementation implements BookTransactionServ
     private final JwtService jwtService;
 
     @Override
-    public BookTransaction addTransaction(BookTransactionDto bookTransactionDto, HttpServletRequest request) {
+    public String addTransaction(BookTransactionDto bookTransactionDto, HttpServletRequest request) {
         Long bookId = bookTransactionDto.getBookId();
         Book book = bookRepo.findById(bookId)
                 .orElseThrow(() -> new NotFoundException("book not found"));
@@ -63,26 +66,15 @@ public class BookTransactionServiceImplementation implements BookTransactionServ
             }
         }
         BookTransaction bookTransaction = objectMapper.convertValue(bookTransactionDto, BookTransaction.class);
-        bookTransaction.setUsername(getUsername(request));
         bookTransaction.setMember(member);
         bookTransaction.setBook(book);
 
-        return bookTransactionRepo.save(bookTransaction);
-    }
+         bookTransactionRepo.save(bookTransaction);
+        return "Transaction Updated"+bookTransactionDto.getCode();
 
-    protected String getUsername(HttpServletRequest request) {
-        String authHeader = request.getHeader("Authorization");
-        String token = null;
-        String username = null;
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            token = authHeader.substring(7);
-            username = jwtService.extractUsername(token);
-        }
-        return username;
     }
-
     @Override
-    public BookTransaction updateTransaction(BookTransactionDto bookTransactionDto, HttpServletRequest request) {
+    public String updateTransaction(BookTransactionDto bookTransactionDto, HttpServletRequest request) {
         BookTransaction bookTransaction = bookTransactionRepo.findById(bookTransactionDto.getId())
                 .orElseThrow(() -> new NotFoundException("Transaction Does not exist"));
         Optional<Book> updatedBookOptional = bookRepo.findById(bookTransactionDto.getBookId());
@@ -103,8 +95,8 @@ public class BookTransactionServiceImplementation implements BookTransactionServ
         }
 
         BeanUtils.copyProperties(bookTransactionDto, bookTransaction, getNullPropertyNames(bookTransactionDto));
-        bookTransaction.setUsername(getUsername(request));
-        return bookTransactionRepo.save(bookTransaction);
+         bookTransactionRepo.save(bookTransaction);
+        return "Transaction Updated"+bookTransactionDto.getCode();
     }
 
 
@@ -174,5 +166,11 @@ public class BookTransactionServiceImplementation implements BookTransactionServ
         response.setHeader(headerKey, headerValue);
         out.close();
         return "Download success";
+    }
+
+    public String excelToDb(MultipartFile file) throws IOException, IllegalAccessException, InstantiationException {
+        List<BookTransaction> bookTransactions= ExcelToDb.createEntitiesFromExcel(file,BookTransaction.class);
+        bookTransactionRepo.saveAll(bookTransactions);
+        return "excel sheet data added";
     }
 }

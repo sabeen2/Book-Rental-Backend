@@ -18,11 +18,12 @@ public class UserEntityServiceImplementation implements UserEntityService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public UserEntity addUser(UserEntityDto userEntityDto) {
+    public String addUser(UserEntityDto userEntityDto) {
         UserEntity userEntity;
         userEntity = objectMapper.convertValue(userEntityDto, UserEntity.class);
         userEntity.setPassword(passwordEncoder.encode(userEntity.getPassword()));
-        return userEntityRepo.save(userEntity);
+         userEntityRepo.save(userEntity);
+        return "User added-:"+userEntityDto.getUsername()+"\n Role-:"+userEntityDto.getUserType();
     }
 
     @Override

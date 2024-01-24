@@ -37,7 +37,7 @@ public class MemberController extends BaseController {
     })
     @PostMapping("add-member")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
-    public GenericResponse<Member> addMember(@RequestBody @Valid MemberDto memberDto) {
+    public GenericResponse<String> addMember(@RequestBody @Valid MemberDto memberDto) {
         return successResponse(memberService.addMember(memberDto), "New Member added");
     }
 
@@ -63,7 +63,7 @@ public class MemberController extends BaseController {
     })
     @PutMapping("/update-members")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
-    public GenericResponse<Member> updateMember(@RequestBody MemberDto memberDto) {
+    public GenericResponse<String> updateMember(@RequestBody MemberDto memberDto) {
         return successResponse(memberService.updateMember(memberDto), "Member updated");
     }
 

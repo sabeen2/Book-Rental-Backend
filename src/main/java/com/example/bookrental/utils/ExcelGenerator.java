@@ -1,10 +1,12 @@
 package com.example.bookrental.utils;
 
+import com.example.bookrental.entity.Author;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -14,7 +16,7 @@ import java.util.List;
 public class ExcelGenerator {
     public static <T> void generateExcel(HttpServletResponse response, List<T> data, String sheetName, Class<T> classes) throws IOException, IllegalAccessException {
         // Create workbook
-        Workbook workbook = new HSSFWorkbook();
+        Workbook workbook = new XSSFWorkbook();
 
         // Create sheet
         Sheet sheet = workbook.createSheet(sheetName);
@@ -33,9 +35,12 @@ public class ExcelGenerator {
             for (int j = 0; j < fields.length; j++) {//mathi ko field ko length jati hunxa date ko length ni teti nai hunxa
                 // so iterating over each field of the field array
                 Cell dataCell = dataRow.createCell(j);//create a cell for each field
-                    fields[j].setAccessible(true);//field is accessible even if it is private
-                    Object value = fields[j].get(data.get(i));
-                    setCellValue(dataCell, value);
+                fields[j].setAccessible(true);//field is accessible even if it is private
+                Object value = fields[j].get(data.get(i));
+//                String value=fields[j].get(data.get(i)).toString();
+//                dataCell.setCellValue(value);
+                setCellValue(dataCell, value);
+
             }
         }
         // Set up response for file download
@@ -43,10 +48,11 @@ public class ExcelGenerator {
         workbook.write(out);
         workbook.close();
         response.setContentType("application/octet-stream");
-        response.setHeader("Content-Disposition", "attachment;filename=" + sheetName + ".xls");
+        response.setHeader("Content-Disposition", "attachment;filename=" + sheetName + ".xlsx");
         out.close();
 
     }
+
     private static void setCellValue(Cell cell, Object value) {
         if (value == null) {
             cell.setCellValue("");
@@ -63,5 +69,4 @@ public class ExcelGenerator {
             cell.setCellStyle(style);
         }
     }
-
 }
