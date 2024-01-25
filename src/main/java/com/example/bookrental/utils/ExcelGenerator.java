@@ -37,9 +37,9 @@ public class ExcelGenerator {
                 Cell dataCell = dataRow.createCell(j);//create a cell for each field
                 fields[j].setAccessible(true);//field is accessible even if it is private
                 Object value = fields[j].get(data.get(i));
+                setCellValue(dataCell, value);
 //                String value=fields[j].get(data.get(i)).toString();
 //                dataCell.setCellValue(value);
-                setCellValue(dataCell, value);
 
             }
         }
