@@ -30,34 +30,34 @@ public class BookRentalExceptionHandler {
                 .data(map)
                 .build();
     }
-    @ExceptionHandler(Exception.class)
-    public GenericResponse<String> handleSecurity(Exception ex) {
-        ProblemDetail problemDetail=null;
-
-        if (ex instanceof BadCredentialsException) {
-            problemDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(401), ex.getMessage());
-            problemDetail.setProperty(("access_denied"), "Bad credentials");
-        }
-
-        if (ex instanceof AccessDeniedException) {
-            problemDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(403), ex.getMessage());
-            problemDetail.setProperty(("access_denied"), "Not authorized");
-        }
-        if(ex instanceof SignatureException){
-            problemDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(403), ex.getMessage());
-            problemDetail.setProperty(("access_denied"), "Not valid Jwt");
-        }
-        if(ex instanceof ExpiredJwtException){
-            problemDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(403), ex.getMessage());
-            problemDetail.setProperty(("access_denied"), "Jwt token Expired");
-        }
-
-        return GenericResponse.<String>builder()
-                .success(false)
-                .message(ex.getMessage())
-                .data(problemDetail.getProperties().values().toString())
-                .build();
-    }
+//    @ExceptionHandler(Exception.class)
+//    public GenericResponse<String> handleSecurity(Exception ex) {
+//        ProblemDetail problemDetail=null;
+//
+//        if (ex instanceof BadCredentialsException) {
+//            problemDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(401), ex.getMessage());
+//            problemDetail.setProperty(("access_denied"), "Bad credentials");
+//        }
+//
+//        if (ex instanceof AccessDeniedException) {
+//            problemDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(403), ex.getMessage());
+//            problemDetail.setProperty(("access_denied"), "Not authorized");
+//        }
+//        if(ex instanceof SignatureException){
+//            problemDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(403), ex.getMessage());
+//            problemDetail.setProperty(("access_denied"), "Not valid Jwt");
+//        }
+//        if(ex instanceof ExpiredJwtException){
+//            problemDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(403), ex.getMessage());
+//            problemDetail.setProperty(("access_denied"), "Jwt token Expired");
+//        }
+//
+//        return GenericResponse.<String>builder()
+//                .success(false)
+//                .message(ex.getMessage())
+//                .data(problemDetail.getProperties().values().toString())
+//                .build();
+//    }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(NotFoundException.class)

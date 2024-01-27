@@ -3,6 +3,7 @@ package com.example.bookrental.securityconfig;
 import com.example.bookrental.filter.JwtAuthFilter;
 import com.example.bookrental.repo.UserEntityRepo;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.filter.CorsFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,6 +23,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import java.util.Arrays;
 
@@ -33,10 +35,19 @@ public class SecurityConfig {
     private final UserEntityRepo userEntityRepo;
     private final JwtAuthFilter jwtAuthFilter;
     private final AuthEntryPoint point;
+
+//    @Qualifier("handlerExceptionResolver")
+//    private final HandlerExceptionResolver handlerExceptionResolver;
+
     @Bean
     public UserDetailsService userDetailsService() {
         return new UserInfoDetailService(userEntityRepo);
     }
+
+//    @Bean
+//    public JwtAuthFilter jwtAuthFilter(){
+//        return new JwtAuthFilter(handlerExceptionResolver);
+//    }
 
     private static final String[] SWAGGER_URLS = {
             "/api/v1/auth/**",
@@ -59,6 +70,7 @@ public class SecurityConfig {
                         .requestMatchers("/admin/user/login").permitAll().anyRequest().authenticated())
                 .authenticationProvider(authenticationProvider())
                 .exceptionHandling(e->e.authenticationEntryPoint(point))
+//                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         return httpSecurity.build();
     }

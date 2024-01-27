@@ -48,7 +48,7 @@ public class BookTransaction  extends AuditingEntity {
     RentType rentType;
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH},targetEntity = Member.class)
-    @JoinColumn(name = "memberid")
+    @JoinColumn(name = "memberid",foreignKey = @ForeignKey(name = "member_id",value = ConstraintMode.CONSTRAINT))
 
     Member member;
     private boolean deleted = Boolean.FALSE;

@@ -64,7 +64,7 @@ public class AuthorServiceImplementation implements AuthorService {
     }
 
     public String getExcel(HttpServletResponse response) throws IOException, IllegalAccessException {
-        ExcelGenerator.generateExcel(response,authorRepo.findAll(),"author sheet",Author.class);
+        ExcelGenerator.generateExcel(response,authorRepo.findAll(),"authorSheet",Author.class);
         return "downloaded";
     }
 

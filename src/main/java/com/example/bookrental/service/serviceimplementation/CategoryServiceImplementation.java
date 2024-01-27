@@ -1,15 +1,22 @@
 package com.example.bookrental.service.serviceimplementation;
 
 import com.example.bookrental.dto.CategoryDto;
+import com.example.bookrental.entity.Author;
+import com.example.bookrental.entity.BookTransaction;
 import com.example.bookrental.entity.Category;
 import com.example.bookrental.exception.NotFoundException;
 import com.example.bookrental.repo.CategoryRepo;
 import com.example.bookrental.service.CategoryService;
+import com.example.bookrental.utils.ExcelGenerator;
+import com.example.bookrental.utils.ExcelToDb;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 import static com.example.bookrental.utils.NullValues.getNullPropertyNames;
@@ -51,5 +58,16 @@ public class CategoryServiceImplementation implements CategoryService {
         Category category = categoryRepo.findById(id).orElseThrow(() -> new NotFoundException("Catagory Not Found"));
         categoryRepo.delete(category);
         return category.toString() + " has been deleted";
+    }
+
+    public String getExcel(HttpServletResponse response) throws IOException, IllegalAccessException {
+        ExcelGenerator.generateExcel(response,categoryRepo.findAll(),"author sheet", Category.class);
+        return "downloaded";
+    }
+
+    public String excelToDb(MultipartFile file) throws IOException, IllegalAccessException, InstantiationException {
+        List<Category> categories= ExcelToDb.createEntitiesFromExcel(file,Category.class);
+        categoryRepo.saveAll(categories);
+        return "excel sheet data added";
     }
 }

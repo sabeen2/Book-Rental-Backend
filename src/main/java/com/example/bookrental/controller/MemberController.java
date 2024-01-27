@@ -12,11 +12,15 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -106,5 +110,20 @@ public class MemberController extends BaseController {
     @PostMapping("/send-mail")
     public GenericResponse<String> sendMail(String to,String subject,String body){
         return successResponse(emailService.sendMail(to,subject,body),"mail sent");
+    }
+    @GetMapping("/download-members")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
+    public GenericResponse<String> getExcel(HttpServletResponse response) throws IOException, IllegalAccessException {
+        return successResponse(memberService.getExcel(response),"excelSheet downloaded");
+    }
+    @Operation(summary = "Upload author details", description = "upload author detail based of excel sheet")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Author uploaded"),
+            @ApiResponse(responseCode = "500", description = "internal server error")
+    })
+    @PostMapping(value = "/export-to-db-members" ,consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
+    public GenericResponse<String> excelToDb(@ModelAttribute MultipartFile file) throws IOException, IllegalAccessException, InstantiationException {
+        return successResponse(memberService.excelToDb(file),"data exported");
     }
 }

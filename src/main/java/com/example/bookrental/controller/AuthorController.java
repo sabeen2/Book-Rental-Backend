@@ -35,7 +35,6 @@ import java.util.List;
 @Tag(name = "Author Controller", description = "APIs for managing Authors")
 public class AuthorController extends BaseController {
     private final AuthorService authorService;
-    private final AuthorServiceImplementation authorServiceImplementation;
 
     @Operation(summary = "Add authors", description = "Add authors to the application")
     @ApiResponses(value = {
@@ -114,6 +113,6 @@ public class AuthorController extends BaseController {
     @PostMapping(value = "/export-to-db" ,consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     public GenericResponse<String> excelToDb(@ModelAttribute MultipartFile file) throws IOException, IllegalAccessException, InstantiationException {
-        return successResponse(authorServiceImplementation.excelToDb(file),"data exported");
+        return successResponse(authorService.excelToDb(file),"data exported");
     }
 }
