@@ -36,18 +36,10 @@ public class SecurityConfig {
     private final JwtAuthFilter jwtAuthFilter;
     private final AuthEntryPoint point;
 
-//    @Qualifier("handlerExceptionResolver")
-//    private final HandlerExceptionResolver handlerExceptionResolver;
-
     @Bean
     public UserDetailsService userDetailsService() {
         return new UserInfoDetailService(userEntityRepo);
     }
-
-//    @Bean
-//    public JwtAuthFilter jwtAuthFilter(){
-//        return new JwtAuthFilter(handlerExceptionResolver);
-//    }
 
     private static final String[] SWAGGER_URLS = {
             "/api/v1/auth/**",

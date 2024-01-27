@@ -70,4 +70,16 @@ public class BookRentalExceptionHandler {
                 .data(map)
                 .build();
     }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(IllegalStateException.class)
+    public GenericResponse<Map<String, String>> userNotFoundException(IllegalStateException e) {
+        Map<String, String> map = new HashMap<>();
+        map.put("errorMessage", e.getMessage());
+        return GenericResponse.<Map<String, String>>builder()
+                .success(false)
+                .message("Type mismatched")
+                .data(map)
+                .build();
+    }
 }
