@@ -2,9 +2,7 @@ package com.example.bookrental.service.serviceimplementation;
 
 import com.example.bookrental.dto.AuthorDto;
 import com.example.bookrental.entity.Author;
-import com.example.bookrental.entity.Book;
 import com.example.bookrental.exception.NotFoundException;
-import com.example.bookrental.generic_response.GenericResponse;
 import com.example.bookrental.repo.AuthorRepo;
 import com.example.bookrental.service.AuthorService;
 import com.example.bookrental.utils.ExcelGenerator;
@@ -14,7 +12,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -69,7 +66,7 @@ public class AuthorServiceImplementation implements AuthorService {
     }
 
     public String excelToDb(MultipartFile file) throws IOException, IllegalAccessException, InstantiationException {
-        List<Author> authors= ExcelToDb.createEntitiesFromExcel(file,Author.class);
+        List<Author> authors= ExcelToDb.createExcel(file,Author.class);
         authorRepo.saveAll(authors);
         return "excel sheet data added";
     }

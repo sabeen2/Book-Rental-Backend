@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface BookTransactionService {
     public String addTransaction  (BookTransactionDto bookTransactionDto, HttpServletRequest request);
-    public String updateTransaction(BookTransactionDto bookTransactionDto,HttpServletRequest request);
+    public String updateTransaction(BookTransactionDto bookTransactionDto);
     public List<BookTransaction> getAllTransaction();
     public BookTransaction findById(Long id);
     public String deleteTransaction (Long id);

@@ -34,6 +34,10 @@ public class Book extends AuditingEntity {
 
     String photo;
 
+    String isbn;
+
+    Integer pages;
+
     @ManyToOne(cascade = CascadeType.ALL, targetEntity = Category.class)
     private Category category;
 

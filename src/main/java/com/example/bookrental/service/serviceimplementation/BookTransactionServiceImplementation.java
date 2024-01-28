@@ -1,7 +1,6 @@
 package com.example.bookrental.service.serviceimplementation;
 
 import com.example.bookrental.dto.BookTransactionDto;
-import com.example.bookrental.entity.Author;
 import com.example.bookrental.entity.Book;
 import com.example.bookrental.entity.BookTransaction;
 import com.example.bookrental.entity.Member;
@@ -74,30 +73,33 @@ public class BookTransactionServiceImplementation implements BookTransactionServ
 
     }
     @Override
-    public String updateTransaction(BookTransactionDto bookTransactionDto, HttpServletRequest request) {
+    public String updateTransaction(BookTransactionDto bookTransactionDto) {
         BookTransaction bookTransaction = bookTransactionRepo.findById(bookTransactionDto.getId())
                 .orElseThrow(() -> new NotFoundException("Transaction Does not exist"));
-        Optional<Book> updatedBookOptional = bookRepo.findById(bookTransactionDto.getBookId());
-        Optional<Member> updatedMemberOptional = membersRepo.findById(bookTransactionDto.getFkMemberId());
 
-        if (bookTransaction.getRentType() == RentType.RETURN) {
+        if (bookTransactionDto.getRentType() == RentType.RETURN) {
             deleteTransaction(bookTransactionDto.getId());
         }
 
-        if (updatedMemberOptional.isPresent()) {
-            Member updatemMember = updatedMemberOptional.get();
+//        Optional<Book> updatedBookOptional = bookRepo.findById(bookTransactionDto.getBookId());
+//        Optional<Member> updatedMemberOptional = membersRepo.findById(bookTransactionDto.getFkMemberId());
+
+
+        if (bookTransactionDto.getFkMemberId()!=null) {
+            Member updatemMember =  membersRepo.findById(bookTransactionDto.getFkMemberId()).get();
             bookTransaction.setMember(updatemMember);
         }
 
-        if (updatedBookOptional.isPresent()) {
-            Book updatedBook = updatedBookOptional.get();
+        if (bookTransactionDto.getBookId()!=null) {
+            Book updatedBook = bookRepo.findById(bookTransactionDto.getBookId()).get();
             bookTransaction.setBook(updatedBook);
         }
 
         BeanUtils.copyProperties(bookTransactionDto, bookTransaction, getNullPropertyNames(bookTransactionDto));
-         bookTransactionRepo.save(bookTransaction);
-        return "Transaction Updated"+bookTransactionDto.getCode();
+
+        return "Updated "+bookTransactionDto.getId();
     }
+
 
 
     @Override
@@ -168,7 +170,7 @@ public class BookTransactionServiceImplementation implements BookTransactionServ
         return "Download success";
     }
     public String excelToDb(MultipartFile file) throws IOException, IllegalAccessException, InstantiationException {
-        List<BookTransaction> bookTransactions= ExcelToDb.createEntitiesFromExcel(file,BookTransaction.class);
+        List<BookTransaction> bookTransactions= ExcelToDb.createExcel(file,BookTransaction.class);
         bookTransactionRepo.saveAll(bookTransactions);
         return "excel sheet data added";
     }

@@ -1,9 +1,6 @@
 package com.example.bookrental.utils;
 
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -15,7 +12,7 @@ import java.util.Date;
 import java.util.List;
 
 public class ExcelToDb {
-    public static <T> List<T> createEntitiesFromExcel(MultipartFile file, Class<T> entityType) throws IOException, IllegalAccessException, InstantiationException {
+    public static <T> List<T> createExcel(MultipartFile file, Class<T> entityType) throws IOException, IllegalAccessException, InstantiationException {
         InputStream inputStream = file.getInputStream();
         Workbook workbook = new XSSFWorkbook(inputStream);//Creates a XSSFWorkbook from the input stream.
         Sheet sheet = workbook.getSheetAt(0);//first sheet
@@ -56,6 +53,8 @@ public class ExcelToDb {
             case STRING:
                 if (fieldType == String.class) {
                     return cell.getStringCellValue();
+                } else {
+                    return null;
                 }
             case NUMERIC:
                 if (fieldType == Double.class || fieldType == double.class) {
@@ -64,12 +63,15 @@ public class ExcelToDb {
                     return (int) cell.getNumericCellValue();
                 } else if (fieldType == Date.class) {
                     return cell.getDateCellValue();
+                } else {
+                    return null;
                 }
+
             case BOOLEAN:
                 return cell.getBooleanCellValue();
-
             default:
                 return null;
         }
     }
+
 }

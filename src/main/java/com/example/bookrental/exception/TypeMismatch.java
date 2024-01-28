@@ -1,6 +1,6 @@
 package com.example.bookrental.exception;
 
-public class TypeMismatch {
+public class TypeMismatch extends Exception{
     String message;
 
     @Override

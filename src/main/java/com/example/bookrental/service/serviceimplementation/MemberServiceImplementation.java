@@ -1,7 +1,6 @@
 package com.example.bookrental.service.serviceimplementation;
 
 import com.example.bookrental.dto.MemberDto;
-import com.example.bookrental.entity.Category;
 import com.example.bookrental.entity.Member;
 import com.example.bookrental.exception.NotFoundException;
 import com.example.bookrental.repo.MembersRepo;
@@ -69,7 +68,7 @@ public class MemberServiceImplementation implements MemberService {
     }
 @Override
     public String excelToDb(MultipartFile file) throws IOException, IllegalAccessException, InstantiationException {
-        List<Member> members= ExcelToDb.createEntitiesFromExcel(file,Member.class);
+        List<Member> members= ExcelToDb.createExcel(file,Member.class);
         membersRepo.saveAll(members);
         return "excel sheet data added";
     }

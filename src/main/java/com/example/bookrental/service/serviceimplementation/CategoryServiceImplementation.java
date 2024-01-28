@@ -1,8 +1,6 @@
 package com.example.bookrental.service.serviceimplementation;
 
 import com.example.bookrental.dto.CategoryDto;
-import com.example.bookrental.entity.Author;
-import com.example.bookrental.entity.BookTransaction;
 import com.example.bookrental.entity.Category;
 import com.example.bookrental.exception.NotFoundException;
 import com.example.bookrental.repo.CategoryRepo;
@@ -66,7 +64,7 @@ public class CategoryServiceImplementation implements CategoryService {
     }
 
     public String excelToDb(MultipartFile file) throws IOException, IllegalAccessException, InstantiationException {
-        List<Category> categories= ExcelToDb.createEntitiesFromExcel(file,Category.class);
+        List<Category> categories= ExcelToDb.createExcel(file,Category.class);
         categoryRepo.saveAll(categories);
         return "excel sheet data added";
     }

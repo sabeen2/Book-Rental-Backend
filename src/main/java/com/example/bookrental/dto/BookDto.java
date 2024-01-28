@@ -23,6 +23,10 @@ public class BookDto {
 
     String photo;
 
+    String isbn;
+
+    Integer pages;
+
     @NotNull(message = "category id Cannot be empty")
     Long categoryId;
 

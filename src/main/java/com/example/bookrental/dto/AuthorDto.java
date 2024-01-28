@@ -20,5 +20,5 @@ public class AuthorDto {
 
     @NotNull(message = "Mobile-No cannot be empty")
     @Pattern(regexp = "^[0-9]{10}$",message = "invalid phone")
-    String mobileNumber;
+    Long mobileNumber;
 }

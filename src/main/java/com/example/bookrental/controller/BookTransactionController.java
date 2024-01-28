@@ -31,7 +31,6 @@ import java.util.List;
 @Tag(name = "Book Transaction Controller", description = "APIs for managing Transactions")
 public class BookTransactionController extends BaseController {
     private final BookTransactionServiceImplementation bookTransactionServiceImplementation;
-    private final BookTransactionRepo bookTransactionRepo;
     private final ReturnDateExceededEmailService emailService;
 
     @Operation(summary = "Add book transaction", description = "Add book transaction to the application")
@@ -105,8 +104,8 @@ public class BookTransactionController extends BaseController {
     })
     @PutMapping("/update-transaction")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
-    public GenericResponse<String> updateTransaction(@RequestBody BookTransactionDto bookTransactionDto,HttpServletRequest request) {
-        return successResponse(bookTransactionServiceImplementation.updateTransaction(bookTransactionDto,request), "Transactions Updated");
+    public GenericResponse<String> updateTransaction(@RequestBody BookTransactionDto bookTransactionDto) {
+        return successResponse(bookTransactionServiceImplementation.updateTransaction(bookTransactionDto), "Transactions Updated");
     }
 
     @Operation(summary = "delete book transaction by id", description = "delete available book transaction detail based on  provided id")
