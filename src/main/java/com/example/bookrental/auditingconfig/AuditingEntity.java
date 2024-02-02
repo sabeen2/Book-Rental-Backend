@@ -13,6 +13,7 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import static jakarta.persistence.TemporalType.TIMESTAMP;
@@ -23,7 +24,7 @@ import static jakarta.persistence.TemporalType.TIMESTAMP;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuditingEntity {
+public class AuditingEntity implements Serializable {
     @CreatedDate
     @Temporal(TIMESTAMP)
     Date createdDate;

@@ -53,7 +53,7 @@ public class ExcelToDb {
             case STRING:
                 if (fieldType == String.class) {
                     return cell.getStringCellValue();
-                } else {
+                } else{
                     return null;
                 }
             case NUMERIC:

@@ -25,7 +25,6 @@ public class AuthorServiceImplementation implements AuthorService {
 
     private final AuthorRepo authorRepo;
     private final ObjectMapper objectMapper;
-
     @Override
     public String addAuthor(AuthorDto authorDto) {
         Author author;
@@ -39,7 +38,7 @@ public class AuthorServiceImplementation implements AuthorService {
         Author author = authorRepo.findById(authorDto.getAuthorId()).orElseThrow(() -> new NotFoundException("Author Not Found"));
         BeanUtils.copyProperties(authorDto, author, getNullPropertyNames(authorDto));
         authorRepo.save(author);
-        return "author Updated -:"+authorDto.getName();
+        return "author Updated --";
     }
 
     @Override

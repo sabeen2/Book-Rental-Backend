@@ -59,9 +59,10 @@ public class SecurityConfig {
                         .requestMatchers("/admin/user/add-user", "/admin/user/deactivate").hasRole("ADMIN")
                         .requestMatchers("/lib/**", "/admin/user/reset").hasAnyRole("ADMIN", "LIBRARIAN")
                         .requestMatchers(SWAGGER_URLS).permitAll()
+                        .requestMatchers("/reset-password/generate-Otp","reset-password/reset").permitAll()
                         .requestMatchers("/admin/user/login").permitAll().anyRequest().authenticated())
                 .authenticationProvider(authenticationProvider())
-                .exceptionHandling(e->e.authenticationEntryPoint(point))
+//                .exceptionHandling(e->e.authenticationEntryPoint(point))
 //                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         return httpSecurity.build();

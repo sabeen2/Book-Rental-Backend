@@ -18,14 +18,17 @@ import org.hibernate.annotations.Where;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserEntity extends AuditingEntity {
+public class UserEntity {
     @Id
     @SequenceGenerator(name = "user_primary_key_generator", initialValue = 0, allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "user_primary_key_generator")
     Long id;
+
     @Column(unique = true)
     String username;
+
     String password;
+
     @Column(name = "user_type")
     @Enumerated(EnumType.STRING)
     UserType userType;
