@@ -25,12 +25,13 @@ public class AuthorServiceImplementation implements AuthorService {
 
     private final AuthorRepo authorRepo;
     private final ObjectMapper objectMapper;
+
     @Override
     public String addAuthor(AuthorDto authorDto) {
         Author author;
         author = objectMapper.convertValue(authorDto, Author.class);
-         authorRepo.save(author);
-         return "author saved -:"+authorDto.getName();
+        authorRepo.save(author);
+        return "author saved -:" + authorDto.getName();
     }
 
     @Override
@@ -53,6 +54,12 @@ public class AuthorServiceImplementation implements AuthorService {
     }
 
     @Override
+    public AuthorDto findByAuthorId(Long id) {
+        return authorRepo.findAuthorById(id)
+                .orElseThrow(() -> new NotFoundException("Author didnt exist"));
+    }
+
+    @Override
     public String deleteAuthor(Long id) {
         Author author = authorRepo.findById(id).orElseThrow(() -> new NotFoundException("Author Not Found"));
         authorRepo.delete(author);
@@ -60,12 +67,12 @@ public class AuthorServiceImplementation implements AuthorService {
     }
 
     public String getExcel(HttpServletResponse response) throws IOException, IllegalAccessException {
-        ExcelGenerator.generateExcel(response,authorRepo.findAll(),"authorSheet",Author.class);
+        ExcelGenerator.generateExcel(response, authorRepo.findAll(), "authorSheet", Author.class);
         return "downloaded";
     }
 
     public String excelToDb(MultipartFile file) throws IOException, IllegalAccessException, InstantiationException {
-        List<Author> authors= ExcelToDb.createExcel(file,Author.class);
+        List<Author> authors = ExcelToDb.createExcel(file, Author.class);
         authorRepo.saveAll(authors);
         return "excel sheet data added";
     }

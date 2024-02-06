@@ -7,7 +7,7 @@ import lombok.*;
 
 @Getter
 @Setter
-@AllArgsConstructor
+//@AllArgsConstructor
 @NoArgsConstructor
 public class AuthorDto {
     Long authorId;
@@ -20,5 +20,12 @@ public class AuthorDto {
 
     @NotNull(message = "Mobile-No cannot be empty")
     @Pattern(regexp = "^[0-9]{10}$",message = "invalid phone")
-    Long mobileNumber;
+    String mobileNumber;
+
+    public AuthorDto(Long authorId, String name, String email, String mobileNumber) {
+        this.authorId = authorId;
+        this.name = name;
+        this.email = email;
+        this.mobileNumber = mobileNumber;
+    }
 }

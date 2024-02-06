@@ -83,7 +83,7 @@ public class PasswordResetServiceImplementation implements PasswordResetService 
         UserEntity user=userEntityRepo.findByUsername(username)
                 .orElseThrow(()->new NotFoundException(("specified user does not exist in our records")));
 
-        if(resetTokenDto.getUsername().equals(resetToken.getUsername())&&resetTokenDto.getToken().equals(resetToken.getToken())){
+        if(resetTokenDto.getToken().equals(resetToken.getToken())){
             String password=passwordEncoder.encode(resetTokenDto.getPassword());
             user.setPassword(password);
             userEntityRepo.save(user);

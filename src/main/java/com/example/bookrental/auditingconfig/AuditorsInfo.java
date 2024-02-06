@@ -21,8 +21,8 @@ import java.util.Optional;
 @EnableJpaAuditing(auditorAwareRef = "auditorProvider")
 @RequiredArgsConstructor
 class AuditorsInfo {
-    private final JwtService jwtService;
 
+    private final JwtService jwtService;
     private final HttpServletRequest request;
 
     @Bean

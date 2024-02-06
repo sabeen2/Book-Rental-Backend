@@ -62,8 +62,7 @@ public class SecurityConfig {
                         .requestMatchers("/reset-password/generate-Otp","reset-password/reset").permitAll()
                         .requestMatchers("/admin/user/login").permitAll().anyRequest().authenticated())
                 .authenticationProvider(authenticationProvider())
-//                .exceptionHandling(e->e.authenticationEntryPoint(point))
-//                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+                .exceptionHandling(e->e.authenticationEntryPoint(point))
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         return httpSecurity.build();
     }

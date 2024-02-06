@@ -5,6 +5,7 @@ import com.example.bookrental.dto.CategoryDto;
 import com.example.bookrental.entity.Book;
 import com.example.bookrental.entity.Category;
 import com.example.bookrental.generic_response.GenericResponse;
+import com.example.bookrental.projectioninterface.CategoryProjection;
 import com.example.bookrental.service.CategoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -65,6 +66,12 @@ public class CategoryController extends BaseController {
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     public GenericResponse<List<Category>> getAllCategory() {
         return successResponse(categoryService.getAllCategory(), "All available Categories");
+    }
+
+    @GetMapping("/find-all-category")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
+    public GenericResponse<List<CategoryProjection>> findAllCategory() {
+        return successResponse(categoryService.findAllCategory(), "All available Categories");
     }
 
     @Operation(summary = "Get Category by id", description = "Fetch available Category detail based on  provided id")

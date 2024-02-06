@@ -10,12 +10,18 @@ import com.example.bookrental.repo.BookRepo;
 import com.example.bookrental.repo.CategoryRepo;
 import com.example.bookrental.service.BookService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.compress.utils.IOUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
@@ -32,7 +38,7 @@ public class BookServiceImplementation implements BookService {
     private final AuthorRepo authorRepo;
 
     @Override
-    public String addBook(BookDto bookDto,MultipartFile file) throws Exception {
+    public String addBook(BookDto bookDto, MultipartFile file) throws Exception {
         Long categoryId = bookDto.getCategoryId();
         Category category = categoryRepo.findById(categoryId)
                 .orElseThrow(() -> new NotFoundException("Category not found"));
@@ -43,27 +49,29 @@ public class BookServiceImplementation implements BookService {
         if (authors.size() != authorId.size()) {
             throw new NotFoundException("Authors do not exist");
         }
-        String path=saveImage("C:\\Users\\shyam prasad\\Pictures\\Saved Pictures",file);
+        String path=saveImage("C:\\Users\\shyam prasad\\Pictures\\Saved Pictures\\", file);
         bookDto.setPhoto(path);
         Book book = objectMapper.convertValue(bookDto, Book.class);
         book.setCategory(category);
         book.setAuthors(authors);
         bookRepo.save(book);
-        return "Book added"+bookDto.getName();
+        return "Book added-" + bookDto.getName()+"\n id- "+bookDto.getId();
     }
+
     public static String saveImage(String path, MultipartFile file) throws IOException {
-        if(file==null){
+        if (file == null) {
             throw new NotFoundException("photo is req");
         }
-            String name = UUID.randomUUID() + "-" + file.getOriginalFilename();
-            String filePath = path + File.separator + name;
-            File folder = new File(path);
-            if (!folder.exists()) {
-                folder.mkdir();
-            }
-            Files.copy(file.getInputStream(), Paths.get(filePath));
-            return name;
+        String name = UUID.randomUUID() + "-" + file.getOriginalFilename();
+        String filePath = path + File.separator + name;
+        File folder = new File(path);
+        if (!folder.exists()) {
+            folder.mkdir();
+        }
+        Files.copy(file.getInputStream(), Paths.get(filePath));
+        return name;
     }
+
     @Override
     public String updateBook(BookDto bookDto) {
         Book book = bookRepo.findById(bookDto.getId()).orElseThrow(() -> new NotFoundException("Book Not Found"));
@@ -77,13 +85,14 @@ public class BookServiceImplementation implements BookService {
             book.setCategory(updatedCategoryOptional);
         }
         bookRepo.save(book);
-        return "Book Updated"+bookDto.getName();
+        return "Book Updated" + bookDto.getName();
     }
 
     @Override
     public List<Book> getAllBook() {
         return bookRepo.findAll();
     }
+
 
     @Override
     public Book findById(Long id) {
@@ -95,5 +104,19 @@ public class BookServiceImplementation implements BookService {
         Book book = bookRepo.findById(id).orElseThrow(() -> new NotFoundException("book not found"));
         bookRepo.delete(book);
         return book.toString() + " has been deleted";
+    }
+    public void getImage(Long id,HttpServletResponse response) throws IOException {
+        Book book = bookRepo.findById(id).orElseThrow(() -> new RuntimeException("Book does not exist"));
+        String name = book.getPhoto();
+        InputStream stream = new FileInputStream("C:\\Users\\shyam prasad\\Pictures\\Saved Pictures\\" + name);
+        ServletOutputStream out=response.getOutputStream();
+        response.setContentType("image/jpeg");
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment;filename=book_" + id + ".jpg";
+        response.setHeader(headerKey, headerValue);
+        byte[] imageByte=IOUtils.toByteArray(stream);
+        out.write(imageByte);
+        out.flush();
+        out.close();
     }
 }

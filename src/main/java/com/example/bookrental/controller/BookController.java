@@ -11,6 +11,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -19,6 +21,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -37,7 +40,6 @@ public class BookController extends BaseController {
             @ApiResponse(responseCode = "500", description = "internal server error")
     })
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
-//    @PostMapping( "/add-Book")
     @PostMapping(value = "/add-book", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public GenericResponse<String> addBook(@ModelAttribute @Valid BookDto bookDto, MultipartFile file) throws Exception {
         return successResponse(bookService.addBook(bookDto,file), "New book added");
@@ -78,6 +80,20 @@ public class BookController extends BaseController {
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     public GenericResponse<Book> getById(@RequestParam Long id){
         return successResponse(bookService.findById(id),"book id-:"+id+"details");
+    }
+    @Operation(summary = "Get book image by id", description = "Fetch Book image based on  provided id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Image found"),
+            @ApiResponse(responseCode = "404", description = "Image not found"),
+            @ApiResponse(responseCode = "403" ,description = "Forbidden"),
+            @ApiResponse(responseCode = "500", description = "internal server error")
+    })
+//    @GetMapping(value = "/get-image-by-id", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    @GetMapping("/get-image-by-id")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
+    public GenericResponse<String> getPhoto(@RequestParam Long id, HttpServletResponse response) throws IOException {
+        bookServiceImpl.getImage(id,response);
+        return successResponse("Book", "book id-:" + id + " details");
     }
     @Operation(summary = "delete book by id", description = "delete available book detail based on  provided id")
     @ApiResponses(value = {

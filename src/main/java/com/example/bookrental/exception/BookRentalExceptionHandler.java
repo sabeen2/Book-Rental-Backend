@@ -71,29 +71,15 @@ public class BookRentalExceptionHandler {
                 .build();
     }
 
-//    @ExceptionHandler(Exception.class)
-//    public GenericResponse<Map<String, String>> extraException67ytr4(NotFoundException e) {
-//        Map<String, String> map = new HashMap<>();
-//        map.put("errorMessage", e.message);
-//        return GenericResponse.<Map<String, String>>builder()
-//                .success(false)
-//                .message("Not found Exception Thrown")
-//                .data(map)
-//                .build();
-//    }
-
-
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(IllegalStateException.class)
-    public GenericResponse<Map<String, String>> userNotFoundException(IllegalStateException e) {
+    @ExceptionHandler(Exception.class)
+    public GenericResponse<Map<String, String>> globalException(Exception e) {
         Map<String, String> map = new HashMap<>();
         map.put("errorMessage", e.getMessage());
         return GenericResponse.<Map<String, String>>builder()
                 .success(false)
-                .message("Type mismatched")
+                .message("Exception Thrown")
                 .data(map)
                 .build();
     }
-
-
 }

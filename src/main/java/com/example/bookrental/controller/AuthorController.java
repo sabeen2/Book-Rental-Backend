@@ -79,9 +79,16 @@ public class AuthorController extends BaseController {
     })
     @GetMapping("/find-by-id")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
-    public GenericResponse<Author> findAuthorById(@RequestParam Long id) {
+    public GenericResponse<Author> findById(@RequestParam Long id) {
         return successResponse(authorService.findById(id), "User id-:" + id);
     }
+
+    @GetMapping("/find-by-authorId")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
+    public GenericResponse<AuthorDto> findAuthorById(@RequestParam Long id) {
+        return successResponse(authorService.findByAuthorId(id), "User id-:" + id);
+    }
+
 
     @Operation(summary = "delete author by id", description = "delete available author detail based on  provided id")
     @ApiResponses(value = {

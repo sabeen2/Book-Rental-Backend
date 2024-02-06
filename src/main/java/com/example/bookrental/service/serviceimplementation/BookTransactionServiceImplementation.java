@@ -28,6 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static com.example.bookrental.utils.NullValues.getNullPropertyNames;
@@ -80,10 +81,8 @@ public class BookTransactionServiceImplementation implements BookTransactionServ
         if (bookTransactionDto.getRentType() == RentType.RETURN) {
             deleteTransaction(bookTransactionDto.getId());
         }
-
 //        Optional<Book> updatedBookOptional = bookRepo.findById(bookTransactionDto.getBookId());
 //        Optional<Member> updatedMemberOptional = membersRepo.findById(bookTransactionDto.getFkMemberId());
-
 
         if (bookTransactionDto.getFkMemberId()!=null) {
             Member updatemMember =  membersRepo.findById(bookTransactionDto.getFkMemberId()).get();
@@ -125,9 +124,15 @@ public class BookTransactionServiceImplementation implements BookTransactionServ
         return bookTransaction + " Transaction has been deleted";
     }
 
-    public List<Object> getNames() {
+    public List<Map<String,Object>> getNames() {
         return bookTransactionRepo.getMemberAndBookDetails();
     }
+
+    public List<Map<String,Object>> getTransactionHistory() {
+        return bookTransactionRepo.getTranscationHistry();
+    }
+
+
 
     public String generateExcel(HttpServletResponse response) throws IOException {
 //        workbook-->sheet-->row-->cell-->{DATA}

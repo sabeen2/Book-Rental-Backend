@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @RestController
@@ -69,6 +70,19 @@ public class BookTransactionController extends BaseController {
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     public GenericResponse<Object> getMemberAndBookDetails() {
         return successResponse(bookTransactionServiceImplementation.getNames(), "All transactions details");
+    }
+
+    @Operation(summary = "Get all book transaction history", description = "Fetch all available book transaction history detail")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "All available book transaction history"),
+            @ApiResponse(responseCode = "403", description = "Forbidden"),
+            @ApiResponse(responseCode = "404", description = "book transaction not found"),
+            @ApiResponse(responseCode = "500", description = "internal server error")
+    })
+    @GetMapping("/get-transactions-history")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
+    public GenericResponse<Object> getTransactionHistory() {
+        return successResponse(bookTransactionServiceImplementation.getTransactionHistory(), "All transactions details");
     }
 
     @Operation(summary = "Get all book transaction details with rented member names, book names and download in excel", description = "Fetch all available book transaction detail")
