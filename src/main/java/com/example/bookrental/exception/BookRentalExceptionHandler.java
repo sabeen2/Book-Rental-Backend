@@ -1,18 +1,13 @@
 package com.example.bookrental.exception;
 
 import com.example.bookrental.generic_response.GenericResponse;
-import io.jsonwebtoken.ExpiredJwtException;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
-import org.springframework.http.ProblemDetail;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.nio.file.AccessDeniedException;
-import java.security.SignatureException;
 import java.util.HashMap;
 import java.util.Map;
 

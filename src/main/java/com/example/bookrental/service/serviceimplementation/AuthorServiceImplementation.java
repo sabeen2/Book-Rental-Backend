@@ -2,6 +2,8 @@ package com.example.bookrental.service.serviceimplementation;
 
 import com.example.bookrental.dto.AuthorDto;
 import com.example.bookrental.entity.Author;
+import com.example.bookrental.exception.CustomMessageSource;
+import com.example.bookrental.exception.ExceptionMessages;
 import com.example.bookrental.exception.NotFoundException;
 import com.example.bookrental.repo.AuthorRepo;
 import com.example.bookrental.service.AuthorService;
@@ -25,6 +27,7 @@ public class AuthorServiceImplementation implements AuthorService {
 
     private final AuthorRepo authorRepo;
     private final ObjectMapper objectMapper;
+    private final CustomMessageSource messageSource;
 
     @Override
     public String addAuthor(AuthorDto authorDto) {
@@ -50,7 +53,7 @@ public class AuthorServiceImplementation implements AuthorService {
     @Override
     public Author findById(Long id) {
         return authorRepo.findById(id)
-                .orElseThrow(() -> new NotFoundException("Author didnt exist"));
+                .orElseThrow(() -> new NotFoundException(messageSource.get(ExceptionMessages.FAIL.getCode())));
     }
 
     @Override

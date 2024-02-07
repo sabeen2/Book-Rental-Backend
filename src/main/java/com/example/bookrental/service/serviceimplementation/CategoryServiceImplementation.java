@@ -60,7 +60,7 @@ public class CategoryServiceImplementation implements CategoryService {
 
     @Override
     public String deleteCategory(Long id) {
-        Category category = categoryRepo.findById(id).orElseThrow(() -> new NotFoundException("Catagory Not Found"));
+        Category category = categoryRepo.findById(id).orElseThrow(() -> new NotFoundException("Category does not exist"));
         categoryRepo.delete(category);
         return category.toString() + " has been deleted";
     }
