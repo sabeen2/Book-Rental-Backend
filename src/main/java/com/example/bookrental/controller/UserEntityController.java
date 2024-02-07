@@ -5,6 +5,8 @@ import com.example.bookrental.dto.AuthenticationDto;
 import com.example.bookrental.dto.PasswordResetDto;
 import com.example.bookrental.dto.UserEntityDto;
 import com.example.bookrental.entity.UserEntity;
+import com.example.bookrental.exception.CustomMessageSource;
+import com.example.bookrental.exception.ExceptionMessages;
 import com.example.bookrental.generic_response.GenericResponse;
 import com.example.bookrental.service.PasswordResetService;
 import com.example.bookrental.service.UserEntityService;
@@ -33,6 +35,7 @@ public class UserEntityController extends BaseController {
     private final JwtService jwtService;
     private final PasswordResetService passwordResetService;
     private final AuthenticationManager authenticationManager;
+    private final CustomMessageSource messageSource;
 
 
     @Operation(summary = "Add Users" ,description = "Add users and provide them Roles")
@@ -69,9 +72,9 @@ public class UserEntityController extends BaseController {
     public GenericResponse<String> login(@RequestBody AuthenticationDto authenticationDto) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationDto.getUsername(), authenticationDto.getPassword()));
         if (authentication.isAuthenticated()) {
-            return successResponse(jwtService.generateToken(authenticationDto.getUsername()), "Login success");
+            return successResponse(jwtService.generateToken(authenticationDto.getUsername()), messageSource.get(ExceptionMessages.SUCCESS.getCode()));
         } else {
-            return errorResponse("invalid credentials");
+            return errorResponse(messageSource.get(ExceptionMessages.INVALID_CREDENTIALS.getCode()));
         }
     }
 

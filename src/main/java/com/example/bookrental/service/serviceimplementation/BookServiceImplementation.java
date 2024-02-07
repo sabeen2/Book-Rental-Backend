@@ -4,6 +4,8 @@ import com.example.bookrental.dto.BookDto;
 import com.example.bookrental.entity.Author;
 import com.example.bookrental.entity.Book;
 import com.example.bookrental.entity.Category;
+import com.example.bookrental.exception.CustomMessageSource;
+import com.example.bookrental.exception.ExceptionMessages;
 import com.example.bookrental.exception.NotFoundException;
 import com.example.bookrental.repo.AuthorRepo;
 import com.example.bookrental.repo.BookRepo;
@@ -36,18 +38,18 @@ public class BookServiceImplementation implements BookService {
     private final BookRepo bookRepo;
     private final CategoryRepo categoryRepo;
     private final AuthorRepo authorRepo;
-
+private final CustomMessageSource messageSource;
     @Override
     public String addBook(BookDto bookDto, MultipartFile file) throws Exception {
         Long categoryId = bookDto.getCategoryId();
         Category category = categoryRepo.findById(categoryId)
-                .orElseThrow(() -> new NotFoundException("Category not found"));
+                .orElseThrow(() -> new NotFoundException(messageSource.get(ExceptionMessages.NOT_FOUND.getCode())));
 
         List<Long> authorId = bookDto.getAuthorId();
         List<Author> authors = authorRepo.findAllById(authorId);
 
         if (authors.size() != authorId.size()) {
-            throw new NotFoundException("Authors do not exist");
+            throw new NotFoundException(messageSource.get(ExceptionMessages.NOT_FOUND.getCode()));
         }
         String path=saveImage("C:\\Users\\shyam prasad\\Pictures\\Saved Pictures\\", file);
         bookDto.setPhoto(path);
@@ -74,7 +76,8 @@ public class BookServiceImplementation implements BookService {
 
     @Override
     public String updateBook(BookDto bookDto) {
-        Book book = bookRepo.findById(bookDto.getId()).orElseThrow(() -> new NotFoundException("Book Not Found"));
+        Book book = bookRepo.findById(bookDto.getId())
+                .orElseThrow(() -> new NotFoundException(messageSource.get(ExceptionMessages.NOT_FOUND.getCode())));
         BeanUtils.copyProperties(bookDto, book, getNullPropertyNames(bookDto));
         if (bookDto.getAuthorId() != null && !bookDto.getAuthorId().isEmpty()) {
             List<Author> updatedAuthorList = authorRepo.findAllById(bookDto.getAuthorId());
@@ -96,17 +99,19 @@ public class BookServiceImplementation implements BookService {
 
     @Override
     public Book findById(Long id) {
-        return bookRepo.findById(id).orElseThrow(() -> new NotFoundException("Book does not exist"));
+        return bookRepo.findById(id)
+                .orElseThrow(() -> new NotFoundException(messageSource.get(ExceptionMessages.NOT_FOUND.getCode())));
     }
 
     @Override
     public String deleteBook(Long id) {
-        Book book = bookRepo.findById(id).orElseThrow(() -> new NotFoundException("book not found"));
+        Book book = bookRepo.findById(id)
+                .orElseThrow(() -> new NotFoundException(messageSource.get(ExceptionMessages.NOT_FOUND.getCode())));
         bookRepo.delete(book);
-        return book.toString() + " has been deleted";
+        return book.getName()  + " has been deleted";
     }
     public void getImage(Long id,HttpServletResponse response) throws IOException {
-        Book book = bookRepo.findById(id).orElseThrow(() -> new RuntimeException("Book does not exist"));
+        Book book = bookRepo.findById(id) .orElseThrow(() -> new NotFoundException(messageSource.get(ExceptionMessages.NOT_FOUND.getCode())));
         String name = book.getPhoto();
         InputStream stream = new FileInputStream("C:\\Users\\shyam prasad\\Pictures\\Saved Pictures\\" + name);
         ServletOutputStream out=response.getOutputStream();

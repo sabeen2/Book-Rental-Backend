@@ -2,6 +2,8 @@ package com.example.bookrental.service.serviceimplementation;
 
 import com.example.bookrental.dto.CategoryDto;
 import com.example.bookrental.entity.Category;
+import com.example.bookrental.exception.CustomMessageSource;
+import com.example.bookrental.exception.ExceptionMessages;
 import com.example.bookrental.exception.NotFoundException;
 import com.example.bookrental.projectioninterface.CategoryProjection;
 import com.example.bookrental.repo.CategoryRepo;
@@ -25,20 +27,22 @@ import static com.example.bookrental.utils.NullValues.getNullPropertyNames;
 public class CategoryServiceImplementation implements CategoryService {
     private final ObjectMapper objectMapper;
     private final CategoryRepo categoryRepo;
+    private final CustomMessageSource messageSource;
 
     @Override
     public String addCategory(CategoryDto categoryDto) {
         Category category = objectMapper.convertValue(categoryDto, Category.class);
         categoryRepo.save(category);
-        return "category added"+categoryDto.getName();
+        return messageSource.get(ExceptionMessages.SAVE.getCode()) + category.getId();
     }
 
     @Override
     public String updateCategory(CategoryDto categoryDto) {
-        Category category = categoryRepo.findById(categoryDto.getId()).orElseThrow(() -> new NotFoundException("Category Not Found"));
+        Category category = categoryRepo.findById(categoryDto.getId())
+                .orElseThrow(() -> new NotFoundException(messageSource.get(ExceptionMessages.NOT_FOUND.getCode())));
         BeanUtils.copyProperties(categoryDto, category, getNullPropertyNames(categoryDto));
         categoryRepo.save(category);
-        return "category added"+categoryDto.getName();
+        return messageSource.get(ExceptionMessages.UPDATE.getCode())+category.getId();
     }
 
     @Override
@@ -54,25 +58,27 @@ public class CategoryServiceImplementation implements CategoryService {
 
     @Override
     public Category findById(Long id) {
-        return categoryRepo.findById(id).orElseThrow(()->new NotFoundException("Category does not exist "));
+        return categoryRepo.findById(id)
+                .orElseThrow(() -> new NotFoundException(messageSource.get(ExceptionMessages.NOT_FOUND.getCode())));
     }
 
 
     @Override
     public String deleteCategory(Long id) {
-        Category category = categoryRepo.findById(id).orElseThrow(() -> new NotFoundException("Category does not exist"));
+        Category category = categoryRepo.findById(id)
+                .orElseThrow(() -> new NotFoundException(messageSource.get(ExceptionMessages.NOT_FOUND.getCode())));
         categoryRepo.delete(category);
-        return category.toString() + " has been deleted";
+        return category.getName()+ messageSource.get(ExceptionMessages.DELETED.getCode());
     }
 
     public String getExcel(HttpServletResponse response) throws IOException, IllegalAccessException {
         ExcelGenerator.generateExcel(response,categoryRepo.findAll(),"author sheet", Category.class);
-        return "downloaded";
+        return messageSource.get(ExceptionMessages.DOWNLOADED.getCode());
     }
 
     public String excelToDb(MultipartFile file) throws IOException, IllegalAccessException, InstantiationException {
         List<Category> categories= ExcelToDb.createExcel(file,Category.class);
         categoryRepo.saveAll(categories);
-        return "excel sheet data added";
+        return messageSource.get(ExceptionMessages.EXPORT_EXCEL_SUCCESS.getCode());
     }
 }

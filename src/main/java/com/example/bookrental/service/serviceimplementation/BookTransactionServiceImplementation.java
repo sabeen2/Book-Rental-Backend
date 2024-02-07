@@ -5,6 +5,8 @@ import com.example.bookrental.entity.Book;
 import com.example.bookrental.entity.BookTransaction;
 import com.example.bookrental.entity.Member;
 import com.example.bookrental.enums.RentType;
+import com.example.bookrental.exception.CustomMessageSource;
+import com.example.bookrental.exception.ExceptionMessages;
 import com.example.bookrental.exception.NotFoundException;
 import com.example.bookrental.repo.BookRepo;
 import com.example.bookrental.repo.BookTransactionRepo;
@@ -41,19 +43,20 @@ public class BookTransactionServiceImplementation implements BookTransactionServ
     private final BookRepo bookRepo;
     private final MembersRepo membersRepo;
     private final JwtService jwtService;
+    private final CustomMessageSource messageSource;
 
     @Override
     public String addTransaction(BookTransactionDto bookTransactionDto, HttpServletRequest request) {
         Long bookId = bookTransactionDto.getBookId();
         Book book = bookRepo.findById(bookId)
-                .orElseThrow(() -> new NotFoundException("book not found"));
+                .orElseThrow(() -> new NotFoundException(messageSource.get(ExceptionMessages.NOT_FOUND.getCode())));
 
         Long memberId = bookTransactionDto.getFkMemberId();
         Member member = membersRepo.findById(memberId)
-                .orElseThrow(() -> new NotFoundException("Member not found"));
+                .orElseThrow(() -> new NotFoundException(messageSource.get(ExceptionMessages.NOT_FOUND.getCode())));
 
         if (book.getStock() <= 0) {
-            throw new NotFoundException("Book is out of stock.");
+            throw new NotFoundException(messageSource.get(ExceptionMessages.OUT_OF_STOCK.getCode()));
         }
         if (bookTransactionDto.getRentType() == RentType.RENT) {
             book.setStock(book.getStock() - 1);
@@ -62,7 +65,7 @@ public class BookTransactionServiceImplementation implements BookTransactionServ
         for (BookTransaction bookTransaction : bookTransactions) {
             Member existingMember = bookTransaction.getMember();
             if (existingMember.getMemberid().equals(bookTransactionDto.getFkMemberId()) && bookTransaction.getRentType().equals(RentType.RENT)) {
-                throw new NotFoundException("Member cannot rent 2 books");
+                throw new NotFoundException(messageSource.get(ExceptionMessages.MULTIPLE_RENT.getCode()));
             }
         }
         BookTransaction bookTransaction = objectMapper.convertValue(bookTransactionDto, BookTransaction.class);
@@ -70,13 +73,13 @@ public class BookTransactionServiceImplementation implements BookTransactionServ
         bookTransaction.setBook(book);
 
          bookTransactionRepo.save(bookTransaction);
-        return "Transaction Updated"+bookTransactionDto.getCode();
+        return messageSource.get(ExceptionMessages.SAVE.getCode())+bookTransactionDto.getCode();
 
     }
     @Override
     public String updateTransaction(BookTransactionDto bookTransactionDto) {
         BookTransaction bookTransaction = bookTransactionRepo.findById(bookTransactionDto.getId())
-                .orElseThrow(() -> new NotFoundException("Transaction Does not exist"));
+                .orElseThrow(() -> new NotFoundException(messageSource.get(ExceptionMessages.NOT_FOUND.getCode())));
 
         if (bookTransactionDto.getRentType() == RentType.RETURN) {
             deleteTransaction(bookTransactionDto.getId());
@@ -96,7 +99,7 @@ public class BookTransactionServiceImplementation implements BookTransactionServ
 
         BeanUtils.copyProperties(bookTransactionDto, bookTransaction, getNullPropertyNames(bookTransactionDto));
 
-        return "Updated "+bookTransactionDto.getId();
+        return messageSource.get(ExceptionMessages.UPDATE.getCode())+bookTransactionDto.getId();
     }
 
 
@@ -108,7 +111,7 @@ public class BookTransactionServiceImplementation implements BookTransactionServ
 
     @Override
     public BookTransaction findById(Long id) {
-        return bookTransactionRepo.findById(id).orElseThrow(() -> new NotFoundException("Transaction Not available"));
+        return bookTransactionRepo.findById(id).orElseThrow(() -> new NotFoundException(messageSource.get(ExceptionMessages.NOT_FOUND.getCode())));
 
     }
 
@@ -116,12 +119,12 @@ public class BookTransactionServiceImplementation implements BookTransactionServ
     @Override
     public String deleteTransaction(Long id) {
         BookTransaction bookTransaction = bookTransactionRepo.findById(id)
-                .orElseThrow(() -> new NotFoundException("Transaction Not Found"));
+                .orElseThrow(() -> new NotFoundException(messageSource.get(ExceptionMessages.NOT_FOUND.getCode())));
         bookTransactionRepo.delete(bookTransaction);
         Book book = bookTransaction.getBook();
         book.setStock(book.getStock() + 1);
         bookRepo.save(book);
-        return bookTransaction + " Transaction has been deleted";
+        return bookTransaction.getId()+messageSource.get(ExceptionMessages.DELETED.getCode());
     }
 
     public List<Map<String,Object>> getNames() {
@@ -172,11 +175,11 @@ public class BookTransactionServiceImplementation implements BookTransactionServ
         String headerValue = "attachment;filename=transactions.xls";
         response.setHeader(headerKey, headerValue);
         out.close();
-        return "Download success";
+        return messageSource.get(ExceptionMessages.DOWNLOADED.getCode());
     }
     public String excelToDb(MultipartFile file) throws IOException, IllegalAccessException, InstantiationException {
         List<BookTransaction> bookTransactions= ExcelToDb.createExcel(file,BookTransaction.class);
         bookTransactionRepo.saveAll(bookTransactions);
-        return "excel sheet data added";
+        return messageSource.get(ExceptionMessages.EXPORT_EXCEL_SUCCESS.getCode());
     }
 }

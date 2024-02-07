@@ -5,6 +5,8 @@ import com.example.bookrental.dto.PasswordResetDto;
 import com.example.bookrental.dto.ResetTokenDto;
 import com.example.bookrental.entity.ResetTokenEntity;
 import com.example.bookrental.entity.UserEntity;
+import com.example.bookrental.exception.CustomMessageSource;
+import com.example.bookrental.exception.ExceptionMessages;
 import com.example.bookrental.exception.NotFoundException;
 import com.example.bookrental.repo.ResetTokenRepo;
 import com.example.bookrental.repo.UserEntityRepo;
@@ -15,6 +17,7 @@ import com.example.bookrental.utils.MailUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.repository.config.CustomRepositoryImplementationDetector;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -30,10 +33,7 @@ public class PasswordResetServiceImplementation implements PasswordResetService 
     private final UserEntityRepo userEntityRepo;
     private final PasswordEncoder passwordEncoder;
     private final ResetTokenRepo resetTokenRepo;
-
-    private final ObjectMapper objectMapper;
-
-
+    private final CustomMessageSource messageSource;
     private final MailUtils mailUtils;
 
     @Override
@@ -48,15 +48,15 @@ public class PasswordResetServiceImplementation implements PasswordResetService 
             String newPassword = passwordEncoder.encode(passwordResetDto.getNewPassword());
             if (passwordEncoder.matches(passwordResetDto.getOldPassword(), userDetails.getPassword())) {
                 UserEntity user = userEntityRepo.findByUsername(jwtService.extractUsername(token))
-                        .orElseThrow(() -> new NotFoundException("user not found"));
+                        .orElseThrow(() -> new NotFoundException(messageSource.get(ExceptionMessages.NOT_FOUND.getCode())));
                 user.setPassword(newPassword);
                 userEntityRepo.save(user);
-                return "Password changed! USERNAME";
+                return messageSource.get(ExceptionMessages.SUCCESS.getCode());
             } else {
-                return "incorrect password";
+                return messageSource.get(ExceptionMessages.INVALID_CREDENTIALS.getCode());
             }
         } else {
-            return "user not authenticated";
+            return messageSource.get(ExceptionMessages.AUTHENTICATION_ERROR.getCode());
         }
 
     }
@@ -64,39 +64,40 @@ public class PasswordResetServiceImplementation implements PasswordResetService 
     @Override
     public String forgotPassword(ForgotPasswordDto forgotPasswordDto) {
         String username = forgotPasswordDto.getUsername();
-        UserEntity user = userEntityRepo.findByUsername(username).orElseThrow(() -> new NotFoundException("user does not exist"));
+        UserEntity user = userEntityRepo.findByUsername(username)
+                .orElseThrow(() -> new NotFoundException(messageSource.get(ExceptionMessages.NOT_FOUND.getCode())));
         String to = user.getUsername();
         String sub = "reset token";
         String resetToken = otpGenerator();
-        saveResetToken(user.getUsername(),resetToken);
+        saveResetToken(user.getUsername(), resetToken);
         String emailBody = MailUtils.resetTemplet(to, sub, resetToken);
         mailUtils.sendMail(to, sub, emailBody);
-        return "password reset token sent";
+        return messageSource.get(ExceptionMessages.MAIL_SENT.getCode());
     }
 
-    public String reset(ResetTokenDto resetTokenDto){
-        ResetTokenEntity resetToken=resetTokenRepo.findByUsername(resetTokenDto.getUsername())
-                .orElseThrow(()->new NotFoundException("provided username do not have a reset token"));
+    public String reset(ResetTokenDto resetTokenDto) {
+        ResetTokenEntity resetToken = resetTokenRepo.findByUsername(resetTokenDto.getUsername())
+                .orElseThrow(() -> new NotFoundException(messageSource.get(ExceptionMessages.NOT_FOUND.getCode())));
 
-        String username=resetToken.getUsername();
+        String username = resetToken.getUsername();
 
-        UserEntity user=userEntityRepo.findByUsername(username)
-                .orElseThrow(()->new NotFoundException(("specified user does not exist in our records")));
+        UserEntity user = userEntityRepo.findByUsername(username)
+                .orElseThrow(() -> new NotFoundException(messageSource.get(ExceptionMessages.NOT_FOUND.getCode())));
 
-        if(resetTokenDto.getToken().equals(resetToken.getToken())){
-            String password=passwordEncoder.encode(resetTokenDto.getPassword());
+        if (resetTokenDto.getToken().equals(resetToken.getToken())) {
+            String password = passwordEncoder.encode(resetTokenDto.getPassword());
             user.setPassword(password);
             userEntityRepo.save(user);
-        }else{
-            throw new NotFoundException("invalid token or username");
+        } else {
+            throw new NotFoundException(messageSource.get(ExceptionMessages.INVALID_CREDENTIALS.getCode()));
         }
         resetTokenRepo.delete(resetToken);
 
-        return "password reset successful";
+        return messageSource.get(ExceptionMessages.SUCCESS.getCode());
     }
 
-    void saveResetToken(String username,String token){
-        ResetTokenEntity resetTokenEntity=new ResetTokenEntity();
+    void saveResetToken(String username, String token) {
+        ResetTokenEntity resetTokenEntity = new ResetTokenEntity();
         resetTokenEntity.setUsername(username);
         resetTokenEntity.setToken(token);
         resetTokenRepo.save(resetTokenEntity);

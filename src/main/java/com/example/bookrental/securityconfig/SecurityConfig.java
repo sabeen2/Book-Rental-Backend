@@ -1,5 +1,6 @@
 package com.example.bookrental.securityconfig;
 
+import com.example.bookrental.exception.CustomMessageSource;
 import com.example.bookrental.filter.JwtAuthFilter;
 import com.example.bookrental.repo.UserEntityRepo;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +36,7 @@ public class SecurityConfig {
     private final UserEntityRepo userEntityRepo;
     private final JwtAuthFilter jwtAuthFilter;
     private final AuthEntryPoint point;
+    private CustomMessageSource messageSource;
 
     @Bean
     public UserDetailsService userDetailsService() {

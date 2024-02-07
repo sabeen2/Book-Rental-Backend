@@ -34,15 +34,16 @@ public class AuthorServiceImplementation implements AuthorService {
         Author author;
         author = objectMapper.convertValue(authorDto, Author.class);
         authorRepo.save(author);
-        return "author saved -:" + authorDto.getName();
+        return messageSource.get(ExceptionMessages.SAVE.getCode()) +" id-:"+ author.getAuthorId();
     }
 
     @Override
     public String updateAuthor(AuthorDto authorDto) {
-        Author author = authorRepo.findById(authorDto.getAuthorId()).orElseThrow(() -> new NotFoundException("Author Not Found"));
+        Author author = authorRepo.findById(authorDto.getAuthorId())
+                .orElseThrow(() -> new NotFoundException(messageSource.get(ExceptionMessages.NOT_FOUND.getCode())));
         BeanUtils.copyProperties(authorDto, author, getNullPropertyNames(authorDto));
         authorRepo.save(author);
-        return "author Updated --";
+        return messageSource.get(ExceptionMessages.UPDATE.getCode())  +" id-:"+ author.getAuthorId();
     }
 
     @Override
@@ -53,30 +54,31 @@ public class AuthorServiceImplementation implements AuthorService {
     @Override
     public Author findById(Long id) {
         return authorRepo.findById(id)
-                .orElseThrow(() -> new NotFoundException(messageSource.get(ExceptionMessages.FAIL.getCode())));
+                .orElseThrow(() -> new NotFoundException(messageSource.get(ExceptionMessages.NOT_FOUND.getCode())));
     }
 
     @Override
     public AuthorDto findByAuthorId(Long id) {
         return authorRepo.findAuthorById(id)
-                .orElseThrow(() -> new NotFoundException("Author didnt exist"));
+                .orElseThrow(() -> new NotFoundException(messageSource.get(ExceptionMessages.NOT_FOUND.getCode())));
     }
 
     @Override
     public String deleteAuthor(Long id) {
-        Author author = authorRepo.findById(id).orElseThrow(() -> new NotFoundException("Author Not Found"));
+        Author author = authorRepo.findById(id)
+                .orElseThrow(() -> new NotFoundException(messageSource.get(ExceptionMessages.NOT_FOUND.getCode())));
         authorRepo.delete(author);
-        return author + "has been Deleted";
+        return author.getAuthorId() + messageSource.get(ExceptionMessages.DELETED.getCode()) ;
     }
 
     public String getExcel(HttpServletResponse response) throws IOException, IllegalAccessException {
         ExcelGenerator.generateExcel(response, authorRepo.findAll(), "authorSheet", Author.class);
-        return "downloaded";
+        return messageSource.get(ExceptionMessages.DOWNLOADED.getCode());
     }
 
     public String excelToDb(MultipartFile file) throws IOException, IllegalAccessException, InstantiationException {
         List<Author> authors = ExcelToDb.createExcel(file, Author.class);
         authorRepo.saveAll(authors);
-        return "excel sheet data added";
+        return messageSource.get(ExceptionMessages.EXPORT_EXCEL_SUCCESS.getCode());
     }
 }

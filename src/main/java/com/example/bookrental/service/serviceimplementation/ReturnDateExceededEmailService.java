@@ -1,6 +1,8 @@
 package com.example.bookrental.service.serviceimplementation;
 
 import com.example.bookrental.entity.BookTransaction;
+import com.example.bookrental.exception.CustomMessageSource;
+import com.example.bookrental.exception.ExceptionMessages;
 import com.example.bookrental.repo.BookTransactionRepo;
 import com.example.bookrental.utils.MailUtils;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +19,7 @@ import java.util.List;
 public class ReturnDateExceededEmailService {
     private final JavaMailSender javaMailSender;
     private final BookTransactionRepo bookTransactionRepo;
+    private final CustomMessageSource messageSource;
 
 //    @Scheduled(fixedRate = 5000)
     public String sendDueDateMail() {
@@ -30,8 +33,7 @@ public class ReturnDateExceededEmailService {
             String emailBody = MailUtils.setTemplet(memberEmail,emailSubject);
             sendMail(memberEmail, emailSubject, emailBody);
         }
-
-        return "Emails sent to members with exceeded return date";
+        return messageSource.get(ExceptionMessages.RETURN_MAIL_SENT.getCode());
     }
 
     public String sendMail(String to, String subject, String body) {
@@ -40,7 +42,7 @@ public class ReturnDateExceededEmailService {
         message.setSubject(subject);
         message.setText(body);
         javaMailSender.send(message);
-        return "mail sent";
+        return messageSource.get(ExceptionMessages.MAIL_SENT.getCode());
     }
 
 }
