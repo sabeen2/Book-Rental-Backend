@@ -14,6 +14,6 @@ public interface MemberMapper {
     @Select("select tm.memberid ,tm.address ,tm.email ,tm.name ,tm.mobile_no  from tbl_member tm")
     List<MemberDto> getAllMembers();
 
-    @Select("select tm.memberid ,tm.address ,tm.email ,tm.name ,tm.mobile_no  from tbl_member tm where id=#{id}")
+    @Select("select tm.memberid ,tm.address ,tm.email ,tm.name ,tm.mobile_no  from tbl_member tm where memberid=#{id}")
     Optional<MemberDto> getMemberById(@Param("id") Long id);
 }
