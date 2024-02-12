@@ -1,16 +1,21 @@
 package com.example.bookrental.service.serviceimplementation;
 
 import com.example.bookrental.dto.BookTransactionDto;
+import com.example.bookrental.dto.responsedto.BookTransactionResponse;
 import com.example.bookrental.entity.Book;
 import com.example.bookrental.entity.BookTransaction;
 import com.example.bookrental.entity.Member;
 import com.example.bookrental.enums.RentType;
+import com.example.bookrental.exception.CustomMessageSource;
+import com.example.bookrental.exception.ExceptionMessages;
 import com.example.bookrental.exception.NotFoundException;
+import com.example.bookrental.mapper.BookTransactionMapper;
 import com.example.bookrental.repo.BookRepo;
 import com.example.bookrental.repo.BookTransactionRepo;
 import com.example.bookrental.repo.MembersRepo;
 import com.example.bookrental.service.BookTransactionService;
 import com.example.bookrental.service.jwtservice.JwtService;
+import com.example.bookrental.utils.ExcelToDb;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.ServletOutputStream;
@@ -23,9 +28,11 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static com.example.bookrental.utils.NullValues.getNullPropertyNames;
@@ -37,20 +44,22 @@ public class BookTransactionServiceImplementation implements BookTransactionServ
     private final ObjectMapper objectMapper;
     private final BookRepo bookRepo;
     private final MembersRepo membersRepo;
-    private final JwtService jwtService;
+    private final BookTransactionMapper bookTransactionMapper;
+
+    private final CustomMessageSource messageSource;
 
     @Override
-    public BookTransaction addTransaction(BookTransactionDto bookTransactionDto, HttpServletRequest request) {
+    public String addTransaction(BookTransactionDto bookTransactionDto, HttpServletRequest request) {
         Long bookId = bookTransactionDto.getBookId();
         Book book = bookRepo.findById(bookId)
-                .orElseThrow(() -> new NotFoundException("book not found"));
+                .orElseThrow(() -> new NotFoundException(messageSource.get(ExceptionMessages.NOT_FOUND.getCode())));
 
         Long memberId = bookTransactionDto.getFkMemberId();
         Member member = membersRepo.findById(memberId)
-                .orElseThrow(() -> new NotFoundException("Member not found"));
+                .orElseThrow(() -> new NotFoundException(messageSource.get(ExceptionMessages.NOT_FOUND.getCode())));
 
         if (book.getStock() <= 0) {
-            throw new NotFoundException("Book is out of stock.");
+            throw new NotFoundException(messageSource.get(ExceptionMessages.OUT_OF_STOCK.getCode()));
         }
         if (bookTransactionDto.getRentType() == RentType.RENT) {
             book.setStock(book.getStock() - 1);
@@ -59,63 +68,53 @@ public class BookTransactionServiceImplementation implements BookTransactionServ
         for (BookTransaction bookTransaction : bookTransactions) {
             Member existingMember = bookTransaction.getMember();
             if (existingMember.getMemberid().equals(bookTransactionDto.getFkMemberId()) && bookTransaction.getRentType().equals(RentType.RENT)) {
-                throw new NotFoundException("Member cannot rent 2 books");
+                throw new NotFoundException(messageSource.get(ExceptionMessages.MULTIPLE_RENT.getCode()));
             }
         }
         BookTransaction bookTransaction = objectMapper.convertValue(bookTransactionDto, BookTransaction.class);
-        bookTransaction.setUsername(getUsername(request));
         bookTransaction.setMember(member);
         bookTransaction.setBook(book);
 
-        return bookTransactionRepo.save(bookTransaction);
-    }
+         bookTransactionRepo.save(bookTransaction);
+        return messageSource.get(ExceptionMessages.SAVE.getCode())+bookTransactionDto.getCode();
 
-    protected String getUsername(HttpServletRequest request) {
-        String authHeader = request.getHeader("Authorization");
-        String token = null;
-        String username = null;
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            token = authHeader.substring(7);
-            username = jwtService.extractUsername(token);
-        }
-        return username;
     }
-
     @Override
-    public BookTransaction updateTransaction(BookTransactionDto bookTransactionDto, HttpServletRequest request) {
+    public String updateTransaction(BookTransactionDto bookTransactionDto) {
         BookTransaction bookTransaction = bookTransactionRepo.findById(bookTransactionDto.getId())
-                .orElseThrow(() -> new NotFoundException("Transaction Does not exist"));
-        Optional<Book> updatedBookOptional = bookRepo.findById(bookTransactionDto.getBookId());
-        Optional<Member> updatedMemberOptional = membersRepo.findById(bookTransactionDto.getFkMemberId());
+                .orElseThrow(() -> new NotFoundException(messageSource.get(ExceptionMessages.NOT_FOUND.getCode())));
 
-        if (bookTransaction.getRentType() == RentType.RETURN) {
+        if (bookTransactionDto.getRentType() == RentType.RETURN) {
             deleteTransaction(bookTransactionDto.getId());
         }
+//        Optional<Book> updatedBookOptional = bookRepo.findById(bookTransactionDto.getBookId());
+//        Optional<Member> updatedMemberOptional = membersRepo.findById(bookTransactionDto.getFkMemberId());
 
-        if (updatedMemberOptional.isPresent()) {
-            Member updatemMember = updatedMemberOptional.get();
+        if (bookTransactionDto.getFkMemberId()!=null) {
+            Member updatemMember =  membersRepo.findById(bookTransactionDto.getFkMemberId()).get();
             bookTransaction.setMember(updatemMember);
         }
 
-        if (updatedBookOptional.isPresent()) {
-            Book updatedBook = updatedBookOptional.get();
+        if (bookTransactionDto.getBookId()!=null) {
+            Book updatedBook = bookRepo.findById(bookTransactionDto.getBookId()).get();
             bookTransaction.setBook(updatedBook);
         }
 
         BeanUtils.copyProperties(bookTransactionDto, bookTransaction, getNullPropertyNames(bookTransactionDto));
-        bookTransaction.setUsername(getUsername(request));
-        return bookTransactionRepo.save(bookTransaction);
+
+        return messageSource.get(ExceptionMessages.UPDATE.getCode())+bookTransactionDto.getId();
     }
 
 
+
     @Override
-    public List<BookTransaction> getAllTransaction() {
-        return bookTransactionRepo.findAll();
+    public List<BookTransactionDto> getAllTransaction() {
+        return bookTransactionMapper.getBookTransactionDetails();
     }
 
     @Override
-    public BookTransaction findById(Long id) {
-        return bookTransactionRepo.findById(id).orElseThrow(() -> new NotFoundException("Transaction Not available"));
+    public BookTransactionResponse findById(Long id) {
+        return bookTransactionMapper.getById(id).orElseThrow(() -> new NotFoundException(messageSource.get(ExceptionMessages.NOT_FOUND.getCode())));
 
     }
 
@@ -123,17 +122,23 @@ public class BookTransactionServiceImplementation implements BookTransactionServ
     @Override
     public String deleteTransaction(Long id) {
         BookTransaction bookTransaction = bookTransactionRepo.findById(id)
-                .orElseThrow(() -> new NotFoundException("Transaction Not Found"));
+                .orElseThrow(() -> new NotFoundException(messageSource.get(ExceptionMessages.NOT_FOUND.getCode())));
         bookTransactionRepo.delete(bookTransaction);
         Book book = bookTransaction.getBook();
         book.setStock(book.getStock() + 1);
         bookRepo.save(book);
-        return bookTransaction + " Transaction has been deleted";
+        return bookTransaction.getId()+messageSource.get(ExceptionMessages.DELETED.getCode());
     }
 
-    public List<Object> getNames() {
-        return bookTransactionRepo.getMemberAndBookDetails();
+    public List<BookTransactionDto> getNames() {
+        return bookTransactionMapper.getBookTransactionDetails();
     }
+
+    public List<Map<String,Object>> getTransactionHistory() {
+        return bookTransactionRepo.getTranscationHistry();
+    }
+
+
 
     public String generateExcel(HttpServletResponse response) throws IOException {
 //        workbook-->sheet-->row-->cell-->{DATA}
@@ -173,6 +178,11 @@ public class BookTransactionServiceImplementation implements BookTransactionServ
         String headerValue = "attachment;filename=transactions.xls";
         response.setHeader(headerKey, headerValue);
         out.close();
-        return "Download success";
+        return messageSource.get(ExceptionMessages.DOWNLOADED.getCode());
+    }
+    public String excelToDb(MultipartFile file) throws IOException, IllegalAccessException, InstantiationException {
+        List<BookTransaction> bookTransactions= ExcelToDb.createExcel(file,BookTransaction.class);
+        bookTransactionRepo.saveAll(bookTransactions);
+        return messageSource.get(ExceptionMessages.EXPORT_EXCEL_SUCCESS.getCode());
     }
 }

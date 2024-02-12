@@ -1,6 +1,7 @@
 package com.example.bookrental.entity;
 
 
+import com.example.bookrental.auditingconfig.AuditingEntity;
 import com.example.bookrental.enums.RentType;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
@@ -20,10 +21,7 @@ import java.util.Date;
 //@Where(clause ="deleted=true")
 @SQLDelete(sql = "UPDATE tbl_book_transaction SET deleted = true, rent_status = 'RETURN' WHERE id=?")
 @Where(clause = "deleted = false AND rent_status = 'RENT'")
-
-
-
-public class BookTransaction {
+public class BookTransaction  extends AuditingEntity {
     @Id
     @SequenceGenerator(name = "transaction_primary_key_generator", initialValue = 0, allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "transaction_primary_key_generator")
@@ -47,7 +45,7 @@ public class BookTransaction {
     RentType rentType;
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH},targetEntity = Member.class)
-    @JoinColumn(name = "memberid")
+    @JoinColumn(name = "memberid",foreignKey = @ForeignKey(name = "member_id",value = ConstraintMode.CONSTRAINT))
 
     Member member;
     private boolean deleted = Boolean.FALSE;

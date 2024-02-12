@@ -1,10 +1,12 @@
 package com.example.bookrental.entity;
 
 
+import com.example.bookrental.auditingconfig.AuditingEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @Table(name = "tbl_author",uniqueConstraints = {@UniqueConstraint(columnNames = {"name","email","mobileNumber"})})
@@ -14,8 +16,7 @@ import org.hibernate.annotations.Where;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-
-public class Author {
+public class Author  extends AuditingEntity {
     @Id
     //Sequence Generator
     @SequenceGenerator(name = "author_primary_key_generator", initialValue = 0, allocationSize = 1)

@@ -42,6 +42,20 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
+        <!-- my batisMaper-->
+        <dependency>
+            <groupId>org.mybatis.spring.boot</groupId>
+            <artifactId>mybatis-spring-boot-starter</artifactId>
+            <version>3.0.3</version>
+        </dependency>
+
+<!--        <dependency>-->
+<!--            <groupId>org.mybatis</groupId>-->
+<!--            <artifactId>mybatis</artifactId>-->
+<!--            <version>3.0.2</version>-->
+<!--        </dependency>-->
+<!--        </dependency>-->
+        <!-- my batisMaper-->
         <dependency>
             <groupId>org.hibernate.validator</groupId>
             <artifactId>hibernate-validator</artifactId>
@@ -79,6 +93,23 @@
         <!-- Swagger dependencies-->
 
         <dependency>
+            <groupId>org.awaitility</groupId>
+            <artifactId>awaitility</artifactId>
+            <version>3.1.2</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!--Smtp-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
+        <!--Smtp-->
+
+
+    <!--apache poi-->
+
+        <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi</artifactId>
             <version>5.2.0</version> <!-- Use the latest version available -->
@@ -89,7 +120,7 @@
             <artifactId>poi-ooxml</artifactId>
             <version>5.2.0</version> <!-- Use the same version as poi -->
         </dependency>
-
+        <!--apache poi-->
 
         <dependency>
             <groupId>org.postgresql</groupId>

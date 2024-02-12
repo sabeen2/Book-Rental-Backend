@@ -5,16 +5,22 @@ import com.example.bookrental.dto.MemberDto;
 import com.example.bookrental.entity.Member;
 import com.example.bookrental.generic_response.GenericResponse;
 import com.example.bookrental.service.MemberService;
+import com.example.bookrental.service.serviceimplementation.ReturnDateExceededEmailService;
+import com.example.bookrental.utils.MailUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -25,6 +31,7 @@ import java.util.List;
 public class MemberController extends BaseController {
 
     private final MemberService memberService;
+    private final ReturnDateExceededEmailService emailService;
 
     @Operation(summary = "Add Member", description = "Add Member to the application")
     @ApiResponses(value = {
@@ -34,7 +41,7 @@ public class MemberController extends BaseController {
     })
     @PostMapping("add-member")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
-    public GenericResponse<Member> addMember(@RequestBody @Valid MemberDto memberDto) {
+    public GenericResponse<String> addMember(@RequestBody @Valid MemberDto memberDto) {
         return successResponse(memberService.addMember(memberDto), "New Member added");
     }
 
@@ -47,7 +54,7 @@ public class MemberController extends BaseController {
     })
     @GetMapping("/all-members")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
-    public GenericResponse<List<Member>> allMembers() {
+    public GenericResponse<List<MemberDto>> allMembers() {
         return successResponse(memberService.getAllMember(), "All available members");
     }
 
@@ -60,7 +67,7 @@ public class MemberController extends BaseController {
     })
     @PutMapping("/update-members")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
-    public GenericResponse<Member> updateMember(@RequestBody MemberDto memberDto) {
+    public GenericResponse<String> updateMember(@RequestBody MemberDto memberDto) {
         return successResponse(memberService.updateMember(memberDto), "Member updated");
     }
 
@@ -74,7 +81,7 @@ public class MemberController extends BaseController {
     @DeleteMapping("/remove-member")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     public GenericResponse<String> deleteMember(@RequestParam long id) {
-        return successResponse(memberService.deleteMember(id), "Member id-" + id + " has been deleted");
+        return successResponse(memberService.deleteMember(id), "Member id-: " + id + " has been deleted");
     }
 
     @Operation(summary = "Get Member by id", description = "Fetch available Member detail based on  provided id")
@@ -86,7 +93,37 @@ public class MemberController extends BaseController {
     })
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     @GetMapping("/get-by-id")
-    public GenericResponse<Member> getById(@RequestParam Long id){
+    public GenericResponse<MemberDto> getById(@RequestParam Long id){
         return successResponse(memberService.findById(id),"Member id-:"+id+"details");
+    }
+
+
+
+    @Operation(summary = "send mail to users", description = "send mail to specified user")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Member found"),
+            @ApiResponse(responseCode = "403" ,description = "Forbidden"),
+            @ApiResponse(responseCode = "404", description = "Member not found"),
+            @ApiResponse(responseCode = "500", description = "internal server error")
+    })
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
+    @PostMapping("/send-mail")
+    public GenericResponse<String> sendMail(String to,String subject,String body){
+        return successResponse(emailService.sendMail(to,subject,body),"mail sent");
+    }
+    @GetMapping("/download-members")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
+    public GenericResponse<String> getExcel(HttpServletResponse response) throws IOException, IllegalAccessException {
+        return successResponse(memberService.getExcel(response),"excelSheet downloaded");
+    }
+    @Operation(summary = "Upload author details", description = "upload author detail based of excel sheet")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Author uploaded"),
+            @ApiResponse(responseCode = "500", description = "internal server error")
+    })
+    @PostMapping(value = "/export-to-db-members" ,consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
+    public GenericResponse<String> excelToDb(@ModelAttribute MultipartFile file) throws IOException, IllegalAccessException, InstantiationException {
+        return successResponse(memberService.excelToDb(file),"data exported");
     }
 }

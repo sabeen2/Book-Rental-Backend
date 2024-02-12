@@ -1,5 +1,6 @@
 package com.example.bookrental.entity;
 
+import com.example.bookrental.auditingconfig.AuditingEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
@@ -16,7 +17,7 @@ import org.hibernate.annotations.Where;
 @AllArgsConstructor
 @NoArgsConstructor
 
-public class Member {
+public class Member extends AuditingEntity {
     @Id
     @SequenceGenerator(name = "member_primary_key_generator", initialValue = 0, allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "member_primary_key_generator")
@@ -24,7 +25,6 @@ public class Member {
 
     String email;
     String name;
-
     String mobileNo;
     String address;
     private boolean deleted = Boolean.FALSE;

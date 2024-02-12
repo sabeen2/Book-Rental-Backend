@@ -5,8 +5,10 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
@@ -18,6 +20,7 @@ public class JwtService {
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }
+
     public Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
     }
@@ -35,7 +38,8 @@ public class JwtService {
                 .parseClaimsJws(token)
                 .getBody();
     }
-    private Boolean isTokenExpired(String token) {
+
+    public Boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }
 
@@ -43,9 +47,10 @@ public class JwtService {
         final String username = extractUsername(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
-    public String generateToken(String username){
-        Map<String,Object> claims=new HashMap<>();
-        return createToken(claims,username);
+
+    public String generateToken(String username) {
+        Map<String, Object> claims = new HashMap<>();
+        return createToken(claims, username);
     }
 
     private String createToken(Map<String, Object> claims, String username) {
@@ -53,14 +58,15 @@ public class JwtService {
                 .setClaims(claims)
                 .setSubject(username)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis()+1000*60*30))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24))
                 .signWith(SignatureAlgorithm.HS256, getSignKey())
                 .compact();
     }
-    public static final String SECRET="G2o+qUjYiIWsFbMAl0ElY3z9Hqw/W1JGUTlI7ObtjtE=";
 
-    private Key getSignKey(){
-        byte[] keyByte= Decoders.BASE64.decode(SECRET);
+    public static final String SECRET = "G2o+qUjYiIWsFbMAl0ElY3z9Hqw/W1JGUTlI7ObtjtE=";
+
+    private Key getSignKey() {
+        byte[] keyByte = Decoders.BASE64.decode(SECRET);
         return Keys.hmacShaKeyFor(keyByte);
     }
 }

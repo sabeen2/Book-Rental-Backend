@@ -1,5 +1,6 @@
 package com.example.bookrental.entity;
 
+import com.example.bookrental.auditingconfig.AuditingEntity;
 import com.example.bookrental.enums.UserType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -11,8 +12,7 @@ import org.hibernate.annotations.Where;
 
 @Entity
 @Table(name = "tbl_user",uniqueConstraints = {@UniqueConstraint(columnNames = {"name"})})
-@SQLDelete(sql = "UPDATE tbl_user SET deleted = true WHERE author_id = ?")
-@Where(clause = "deleted=false")
+@SQLDelete(sql = "UPDATE tbl_user SET deleted = true WHERE id = ?")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -22,9 +22,12 @@ public class UserEntity {
     @SequenceGenerator(name = "user_primary_key_generator", initialValue = 0, allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "user_primary_key_generator")
     Long id;
+
     @Column(unique = true)
     String username;
+
     String password;
+
     @Column(name = "user_type")
     @Enumerated(EnumType.STRING)
     UserType userType;

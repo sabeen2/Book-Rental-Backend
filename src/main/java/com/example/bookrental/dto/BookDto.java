@@ -3,9 +3,6 @@ package com.example.bookrental.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -23,9 +20,14 @@ public class BookDto {
     @NotNull(message = "Stock Cannot be empty")
     Integer stock;
 
+    @JsonFormat(pattern = "yyyy-mm-dd")
     Date publishedDate;
 
     String photo;
+
+    String isbn;
+
+    Integer pages;
 
     @NotNull(message = "category id Cannot be empty")
     Long categoryId;
