@@ -9,10 +9,10 @@ import java.util.Optional;
 
 @Mapper
 public interface CategoryMapper {
-     @Select("SELECT c.id,c.name,c.discription from tbl_catagory c")
+     @Select("SELECT c.id,c.name,c.discription from tbl_catagory c where deleted =false")
      List<CategoryDto> getAllAuthors();
 
-     @Select("SELECT c.id,c.name,c.discription from tbl_catagory c where id=#{id}")
+     @Select("SELECT c.id,c.name,c.discription from tbl_catagory c where id=#{id} and deleted =false")
      Optional<CategoryDto> getById(@Param("id") Long id);
 
      @Select(value = "select * from tbl_catagory where deleted=true")

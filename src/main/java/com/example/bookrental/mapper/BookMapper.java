@@ -10,9 +10,9 @@ import java.util.Optional;
 
 @Mapper
 public interface BookMapper {
-    @Select("select tb.id ,tb.name ,tb.photo ,tb.rating ,tb.stock ,tb.isbn ,tb.pages  from tbl_book tb")
+    @Select("select tb.id ,tb.name ,tb.photo ,tb.rating ,tb.stock ,tb.isbn ,tb.pages  from tbl_book tb where deleted =false")
     List<BookDto> getAllBooks();
 
-    @Select("select tb.id ,tb.name ,tb.photo ,tb.rating ,tb.stock ,tb.isbn ,tb.pages  from tbl_book tb where id=#{id}")
+    @Select("select tb.id ,tb.name ,tb.photo ,tb.rating ,tb.stock ,tb.isbn ,tb.pages  from tbl_book tb where id=#{id} and deleted =false")
     Optional<BookDto> getBookByID(@Param("id") Long id);
 }

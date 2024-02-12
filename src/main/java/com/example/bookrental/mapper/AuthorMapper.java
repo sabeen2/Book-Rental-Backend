@@ -13,9 +13,9 @@ public interface AuthorMapper {
     @Select("select a.author_id, a.email,a.mobile_number,a.name from tbl_author a where deleted=true")
     List<AuthorDto> getDeleted();
 
-    @Select("select  a.author_id, a.email,a.mobile_number,a.name from tbl_author a")
+    @Select("select  a.author_id, a.email,a.mobile_number,a.name from tbl_author a where deleted =false")
     List<AuthorDto> getAllAuthors();
 
-    @Select("select  a.author_id, a.email,a.mobile_number,a.name from tbl_author a where id=#{id}")
+    @Select("select  a.author_id, a.email,a.mobile_number,a.name from tbl_author a where id=#{id} and deleted =false")
     Optional<AuthorDto> getById(@Param("id") Long id);
 }

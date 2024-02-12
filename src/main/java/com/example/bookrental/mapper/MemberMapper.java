@@ -11,9 +11,9 @@ import java.util.Optional;
 
 @Mapper
 public interface MemberMapper {
-    @Select("select tm.memberid ,tm.address ,tm.email ,tm.name ,tm.mobile_no  from tbl_member tm")
+    @Select("select tm.memberid ,tm.address ,tm.email ,tm.name ,tm.mobile_no  from tbl_member tm where deleted =false ")
     List<MemberDto> getAllMembers();
 
-    @Select("select tm.memberid ,tm.address ,tm.email ,tm.name ,tm.mobile_no  from tbl_member tm where memberid=#{id}")
+    @Select("select tm.memberid ,tm.address ,tm.email ,tm.name ,tm.mobile_no  from tbl_member tm where memberid=#{id} and deleted =false")
     Optional<MemberDto> getMemberById(@Param("id") Long id);
 }
