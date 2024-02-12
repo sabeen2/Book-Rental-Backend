@@ -1,14 +1,14 @@
 
-#url: jdbc:postgresql://dpg-cml6omn109ks73a6q6ug-a.singapore-postgres.render.com/demobookrental
-#    username: demobookrental_user
-#    password: 8dahxvact7RNAwwIRwgA5BWRrOAVSZxo
 
-
+#
+#url: jdbc:postgresql://localhost:5432/BookRental
+#username: postgres
+#password: 1234
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/BookRental
-    username: postgres
-    password: 1234
+    url: jdbc:postgresql://dpg-cml6omn109ks73a6q6ug-a.singapore-postgres.render.com/demobookrental
+    username: demobookrental_user
+    password: 8dahxvact7RNAwwIRwgA5BWRrOAVSZxo
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
