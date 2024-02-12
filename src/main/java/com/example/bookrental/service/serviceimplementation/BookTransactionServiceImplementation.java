@@ -1,6 +1,7 @@
 package com.example.bookrental.service.serviceimplementation;
 
 import com.example.bookrental.dto.BookTransactionDto;
+import com.example.bookrental.dto.responsedto.BookTransactionResponse;
 import com.example.bookrental.entity.Book;
 import com.example.bookrental.entity.BookTransaction;
 import com.example.bookrental.entity.Member;
@@ -8,6 +9,7 @@ import com.example.bookrental.enums.RentType;
 import com.example.bookrental.exception.CustomMessageSource;
 import com.example.bookrental.exception.ExceptionMessages;
 import com.example.bookrental.exception.NotFoundException;
+import com.example.bookrental.mapper.BookTransactionMapper;
 import com.example.bookrental.repo.BookRepo;
 import com.example.bookrental.repo.BookTransactionRepo;
 import com.example.bookrental.repo.MembersRepo;
@@ -42,7 +44,8 @@ public class BookTransactionServiceImplementation implements BookTransactionServ
     private final ObjectMapper objectMapper;
     private final BookRepo bookRepo;
     private final MembersRepo membersRepo;
-    private final JwtService jwtService;
+    private final BookTransactionMapper bookTransactionMapper;
+
     private final CustomMessageSource messageSource;
 
     @Override
@@ -105,13 +108,13 @@ public class BookTransactionServiceImplementation implements BookTransactionServ
 
 
     @Override
-    public List<BookTransaction> getAllTransaction() {
-        return bookTransactionRepo.findAll();
+    public List<BookTransactionDto> getAllTransaction() {
+        return bookTransactionMapper.getBookTransactionDetails();
     }
 
     @Override
-    public BookTransaction findById(Long id) {
-        return bookTransactionRepo.findById(id).orElseThrow(() -> new NotFoundException(messageSource.get(ExceptionMessages.NOT_FOUND.getCode())));
+    public BookTransactionResponse findById(Long id) {
+        return bookTransactionMapper.getById(id).orElseThrow(() -> new NotFoundException(messageSource.get(ExceptionMessages.NOT_FOUND.getCode())));
 
     }
 
@@ -127,8 +130,8 @@ public class BookTransactionServiceImplementation implements BookTransactionServ
         return bookTransaction.getId()+messageSource.get(ExceptionMessages.DELETED.getCode());
     }
 
-    public List<Map<String,Object>> getNames() {
-        return bookTransactionRepo.getMemberAndBookDetails();
+    public List<BookTransactionDto> getNames() {
+        return bookTransactionMapper.getBookTransactionDetails();
     }
 
     public List<Map<String,Object>> getTransactionHistory() {

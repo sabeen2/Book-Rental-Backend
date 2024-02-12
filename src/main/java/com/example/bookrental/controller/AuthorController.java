@@ -66,9 +66,20 @@ public class AuthorController extends BaseController {
     })
     @GetMapping("/all-authors")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
-    public GenericResponse<List<Author>> getAllAuthor() {
+    public GenericResponse<List<AuthorDto>> getAllAuthor() {
         return successResponse(authorService.getAllAuthor(), "All Available Authors");
+    }
 
+    @Operation(summary = "Get all deleted authors", description = "Fetch all deleted authors detail")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "All available authors"),
+            @ApiResponse(responseCode = "404", description = "Author not found"),
+            @ApiResponse(responseCode = "500", description = "internal server error")
+    })
+    @GetMapping("/all-deleted-authors")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
+    public GenericResponse<List<AuthorDto>> getDeletedAuthor() {
+        return successResponse(authorService.getDeletedAuthor(), "Authors history");
     }
 
     @Operation(summary = "Get author by id", description = "Fetch available author detail based on  provided id")
@@ -79,14 +90,14 @@ public class AuthorController extends BaseController {
     })
     @GetMapping("/find-by-id")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
-    public GenericResponse<Author> findById(@RequestParam Long id) {
+    public GenericResponse<AuthorDto> findById(@RequestParam Long id) {
         return successResponse(authorService.findById(id), "User id-:" + id);
     }
 
     @GetMapping("/find-by-authorId")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     public GenericResponse<AuthorDto> findAuthorById(@RequestParam Long id) {
-        return successResponse(authorService.findByAuthorId(id), "User id-:" + id);
+        return successResponse(authorService.findById(id), "User id-:" + id);
     }
 
 

@@ -10,11 +10,12 @@ com\example\bookrental\exception\NotFoundException.class
 com\example\bookrental\BookRentalApplication.class
 com\example\bookrental\enums\RentType.class
 com\example\bookrental\controller\ForgotPasswordController.class
+com\example\bookrental\dto\responsedto\UserResponseDto.class
 com\example\bookrental\repo\ResetTokenRepo.class
 com\example\bookrental\service\serviceimplementation\PasswordResetServiceImplementation.class
+com\example\bookrental\mapper\BookMapper.class
 com\example\bookrental\service\serviceimplementation\UserEntityServiceImplementation.class
 com\example\bookrental\entity\BookTransaction.class
-com\example\bookrental\projectioninterface\CategoryProjection.class
 com\example\bookrental\service\serviceimplementation\CategoryServiceImplementation.class
 com\example\bookrental\service\MemberService.class
 com\example\bookrental\service\serviceimplementation\BookServiceImplementation.class
@@ -24,9 +25,11 @@ com\example\bookrental\auditingconfig\AuditorsInfo.class
 com\example\bookrental\dto\BookDto.class
 com\example\bookrental\repo\CategoryRepo.class
 com\example\bookrental\utils\ExcelToDb$1.class
+com\example\bookrental\mapper\BookTransactionMapper.class
 com\example\bookrental\repo\BookRepo.class
 com\example\bookrental\repo\MembersRepo.class
 com\example\bookrental\service\AuthorService.class
+com\example\bookrental\mapper\UserMapper.class
 com\example\bookrental\securityconfig\SecurityConfig.class
 com\example\bookrental\repo\UserEntityRepo.class
 com\example\bookrental\entity\Book.class
@@ -36,10 +39,12 @@ com\example\bookrental\entity\ResetTokenEntity.class
 com\example\bookrental\entity\Author.class
 com\example\bookrental\dto\PasswordResetDto.class
 com\example\bookrental\securityconfig\UserInfoDetailService.class
+com\example\bookrental\dto\responsedto\BookResponse.class
 com\example\bookrental\auditingconfig\AuditingEntity.class
 com\example\bookrental\enums\UserType.class
 com\example\bookrental\controller\BookController.class
 com\example\bookrental\securityconfig\UserInfoDetails.class
+com\example\bookrental\dto\responsedto\BookTransactionResponse.class
 com\example\bookrental\exception\CustomMessageSource.class
 com\example\bookrental\filter\JwtAuthFilter.class
 com\example\bookrental\dto\AuthorDto.class
@@ -51,6 +56,7 @@ com\example\bookrental\utils\ExcelGenerator.class
 com\example\bookrental\dto\BookTransactionDto.class
 com\example\bookrental\utils\NullValues.class
 com\example\bookrental\exception\TypeMismatch.class
+com\example\bookrental\mapper\CategoryMapper.class
 com\example\bookrental\service\UserEntityService.class
 com\example\bookrental\controller\BookTransactionController.class
 com\example\bookrental\controller\UserEntityController.class
@@ -63,6 +69,8 @@ com\example\bookrental\dto\CategoryDto.class
 com\example\bookrental\dto\MemberDto.class
 com\example\bookrental\exception\ExceptionMessages.class
 com\example\bookrental\dto\UserEntityDto.class
+com\example\bookrental\mapper\AuthorMapper.class
+com\example\bookrental\mapper\MemberMapper.class
 com\example\bookrental\service\CategoryService.class
 com\example\bookrental\securityconfig\AuthEntryPoint.class
 com\example\bookrental\entity\UserEntity.class

@@ -66,7 +66,7 @@ public class BookController extends BaseController {
     })
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     @GetMapping("/get-all-books")
-    public GenericResponse<List<Book>> getAllBook() {
+    public GenericResponse<List<BookDto>> getAllBook() {
         return successResponse(bookService.getAllBook(), "All available Books");
     }
     @Operation(summary = "Get book by id", description = "Fetch available Book detail based on  provided id")
@@ -78,7 +78,7 @@ public class BookController extends BaseController {
     })
     @GetMapping("/get-by-id")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
-    public GenericResponse<Book> getById(@RequestParam Long id){
+    public GenericResponse<BookDto> getById(@RequestParam Long id){
         return successResponse(bookService.findById(id),"book id-:"+id+"details");
     }
     @Operation(summary = "Get book image by id", description = "Fetch Book image based on  provided id")

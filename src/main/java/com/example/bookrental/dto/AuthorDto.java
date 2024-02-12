@@ -5,7 +5,6 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
 
-
 @Getter
 @Setter
 //@AllArgsConstructor
@@ -18,7 +17,6 @@ public class AuthorDto {
 
     @Email(message = "Enter valid Email")
     String email;
-
     @NotNull(message = "Mobile-No cannot be empty")
     @Pattern(regexp = "^[0-9]{10}$",message = "invalid phone")
     String mobileNumber;

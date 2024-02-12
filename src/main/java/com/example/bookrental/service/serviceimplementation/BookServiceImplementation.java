@@ -7,6 +7,7 @@ import com.example.bookrental.entity.Category;
 import com.example.bookrental.exception.CustomMessageSource;
 import com.example.bookrental.exception.ExceptionMessages;
 import com.example.bookrental.exception.NotFoundException;
+import com.example.bookrental.mapper.BookMapper;
 import com.example.bookrental.repo.AuthorRepo;
 import com.example.bookrental.repo.BookRepo;
 import com.example.bookrental.repo.CategoryRepo;
@@ -38,7 +39,9 @@ public class BookServiceImplementation implements BookService {
     private final BookRepo bookRepo;
     private final CategoryRepo categoryRepo;
     private final AuthorRepo authorRepo;
-private final CustomMessageSource messageSource;
+    private final CustomMessageSource messageSource;
+    private final BookMapper bookMapper;
+
     @Override
     public String addBook(BookDto bookDto, MultipartFile file) throws Exception {
         Long categoryId = bookDto.getCategoryId();
@@ -51,13 +54,13 @@ private final CustomMessageSource messageSource;
         if (authors.size() != authorId.size()) {
             throw new NotFoundException(messageSource.get(ExceptionMessages.NOT_FOUND.getCode()));
         }
-        String path=saveImage("C:\\Users\\shyam prasad\\Pictures\\Saved Pictures\\", file);
+        String path = saveImage("C:\\Users\\shyam prasad\\Pictures\\Saved Pictures\\", file);
         bookDto.setPhoto(path);
         Book book = objectMapper.convertValue(bookDto, Book.class);
         book.setCategory(category);
         book.setAuthors(authors);
         bookRepo.save(book);
-        return "Book added-" + bookDto.getName()+"\n id- "+bookDto.getId();
+        return "Book added-" + bookDto.getName() + "\n id- " + bookDto.getId();
     }
 
     public static String saveImage(String path, MultipartFile file) throws IOException {
@@ -92,14 +95,14 @@ private final CustomMessageSource messageSource;
     }
 
     @Override
-    public List<Book> getAllBook() {
-        return bookRepo.findAll();
+    public List<BookDto> getAllBook() {
+        return bookMapper.getAllBooks();
     }
 
 
     @Override
-    public Book findById(Long id) {
-        return bookRepo.findById(id)
+    public BookDto findById(Long id) {
+        return bookMapper.getBookByID(id)
                 .orElseThrow(() -> new NotFoundException(messageSource.get(ExceptionMessages.NOT_FOUND.getCode())));
     }
 
@@ -108,18 +111,19 @@ private final CustomMessageSource messageSource;
         Book book = bookRepo.findById(id)
                 .orElseThrow(() -> new NotFoundException(messageSource.get(ExceptionMessages.NOT_FOUND.getCode())));
         bookRepo.delete(book);
-        return book.getName()  + " has been deleted";
+        return book.getName() + " has been deleted";
     }
-    public void getImage(Long id,HttpServletResponse response) throws IOException {
-        Book book = bookRepo.findById(id) .orElseThrow(() -> new NotFoundException(messageSource.get(ExceptionMessages.NOT_FOUND.getCode())));
+
+    public void getImage(Long id, HttpServletResponse response) throws IOException {
+        Book book = bookRepo.findById(id).orElseThrow(() -> new NotFoundException(messageSource.get(ExceptionMessages.NOT_FOUND.getCode())));
         String name = book.getPhoto();
         InputStream stream = new FileInputStream("C:\\Users\\shyam prasad\\Pictures\\Saved Pictures\\" + name);
-        ServletOutputStream out=response.getOutputStream();
+        ServletOutputStream out = response.getOutputStream();
         response.setContentType("image/jpeg");
         String headerKey = "Content-Disposition";
         String headerValue = "attachment;filename=book_" + id + ".jpg";
         response.setHeader(headerKey, headerValue);
-        byte[] imageByte=IOUtils.toByteArray(stream);
+        byte[] imageByte = IOUtils.toByteArray(stream);
         out.write(imageByte);
         out.flush();
         out.close();

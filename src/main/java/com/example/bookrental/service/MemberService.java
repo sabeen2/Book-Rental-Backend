@@ -12,8 +12,8 @@ import java.util.List;
 public interface MemberService {
     public String addMember (MemberDto memberDto);
     public String updateMember (MemberDto memberDto);
-    public List<Member> getAllMember ();
-    public Member findById(Long id);
+    public List<MemberDto> getAllMember ();
+    public MemberDto findById(Long id);
     public String deleteMember (Long id);
     public String getExcel(HttpServletResponse response) throws IOException, IllegalAccessException;
     public String excelToDb(MultipartFile file) throws IOException, IllegalAccessException, InstantiationException;

@@ -5,7 +5,7 @@ import com.example.bookrental.entity.Category;
 import com.example.bookrental.exception.CustomMessageSource;
 import com.example.bookrental.exception.ExceptionMessages;
 import com.example.bookrental.exception.NotFoundException;
-import com.example.bookrental.projectioninterface.CategoryProjection;
+import com.example.bookrental.mapper.CategoryMapper;
 import com.example.bookrental.repo.CategoryRepo;
 import com.example.bookrental.service.CategoryService;
 import com.example.bookrental.utils.ExcelGenerator;
@@ -28,6 +28,7 @@ public class CategoryServiceImplementation implements CategoryService {
     private final ObjectMapper objectMapper;
     private final CategoryRepo categoryRepo;
     private final CustomMessageSource messageSource;
+    private final CategoryMapper categoryMapper;
 
     @Override
     public String addCategory(CategoryDto categoryDto) {
@@ -45,20 +46,23 @@ public class CategoryServiceImplementation implements CategoryService {
         return messageSource.get(ExceptionMessages.UPDATE.getCode())+category.getId();
     }
 
-    @Override
-    public List<Category> getAllCategory() {
-        return categoryRepo.findAll();
+//    @Override
+//    public List<Category> getAllCategory() {
+//        return categoryRepo.findAll();
+//    }
+
+    public List<CategoryDto>getDeleted(){
+        return categoryMapper.getDeleted();
     }
 
-
     @Override
-    public List<CategoryProjection> findAllCategory() {
-        return categoryRepo.getAllAuthors();
+    public List<CategoryDto> findAllCategory() {
+        return categoryMapper.getAllAuthors();
     }
 
     @Override
-    public Category findById(Long id) {
-        return categoryRepo.findById(id)
+    public CategoryDto findById(Long id) {
+        return categoryMapper.getById(id)
                 .orElseThrow(() -> new NotFoundException(messageSource.get(ExceptionMessages.NOT_FOUND.getCode())));
     }
 

@@ -54,7 +54,7 @@ public class MemberController extends BaseController {
     })
     @GetMapping("/all-members")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
-    public GenericResponse<List<Member>> allMembers() {
+    public GenericResponse<List<MemberDto>> allMembers() {
         return successResponse(memberService.getAllMember(), "All available members");
     }
 
@@ -81,7 +81,7 @@ public class MemberController extends BaseController {
     @DeleteMapping("/remove-member")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     public GenericResponse<String> deleteMember(@RequestParam long id) {
-        return successResponse(memberService.deleteMember(id), "Member id-" + id + " has been deleted");
+        return successResponse(memberService.deleteMember(id), "Member id-: " + id + " has been deleted");
     }
 
     @Operation(summary = "Get Member by id", description = "Fetch available Member detail based on  provided id")
@@ -93,7 +93,7 @@ public class MemberController extends BaseController {
     })
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     @GetMapping("/get-by-id")
-    public GenericResponse<Member> getById(@RequestParam Long id){
+    public GenericResponse<MemberDto> getById(@RequestParam Long id){
         return successResponse(memberService.findById(id),"Member id-:"+id+"details");
     }
 

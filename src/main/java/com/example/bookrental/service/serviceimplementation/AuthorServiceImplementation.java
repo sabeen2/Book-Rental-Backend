@@ -5,6 +5,7 @@ import com.example.bookrental.entity.Author;
 import com.example.bookrental.exception.CustomMessageSource;
 import com.example.bookrental.exception.ExceptionMessages;
 import com.example.bookrental.exception.NotFoundException;
+import com.example.bookrental.mapper.AuthorMapper;
 import com.example.bookrental.repo.AuthorRepo;
 import com.example.bookrental.service.AuthorService;
 import com.example.bookrental.utils.ExcelGenerator;
@@ -28,11 +29,11 @@ public class AuthorServiceImplementation implements AuthorService {
     private final AuthorRepo authorRepo;
     private final ObjectMapper objectMapper;
     private final CustomMessageSource messageSource;
+    private final AuthorMapper authorMapper;
 
     @Override
     public String addAuthor(AuthorDto authorDto) {
-        Author author;
-        author = objectMapper.convertValue(authorDto, Author.class);
+        Author author = objectMapper.convertValue(authorDto, Author.class);
         authorRepo.save(author);
         return messageSource.get(ExceptionMessages.SAVE.getCode()) +" id-:"+ author.getAuthorId();
     }
@@ -47,22 +48,19 @@ public class AuthorServiceImplementation implements AuthorService {
     }
 
     @Override
-    public List<Author> getAllAuthor() {
-        return authorRepo.findAll();
+    public List<AuthorDto> getAllAuthor() {
+        return authorMapper.getAllAuthors();
     }
 
     @Override
-    public Author findById(Long id) {
-        return authorRepo.findById(id)
-                .orElseThrow(() -> new NotFoundException(messageSource.get(ExceptionMessages.NOT_FOUND.getCode())));
+    public List<AuthorDto> getDeletedAuthor() {
+        return authorMapper.getDeleted();
     }
-
     @Override
-    public AuthorDto findByAuthorId(Long id) {
-        return authorRepo.findAuthorById(id)
+    public AuthorDto findById(Long id) {
+        return authorMapper.getById(id)
                 .orElseThrow(() -> new NotFoundException(messageSource.get(ExceptionMessages.NOT_FOUND.getCode())));
     }
-
     @Override
     public String deleteAuthor(Long id) {
         Author author = authorRepo.findById(id)

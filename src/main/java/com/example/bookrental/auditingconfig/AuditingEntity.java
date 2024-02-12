@@ -1,5 +1,6 @@
 package com.example.bookrental.auditingconfig;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.Temporal;
@@ -27,9 +28,11 @@ import static jakarta.persistence.TemporalType.TIMESTAMP;
 public class AuditingEntity implements Serializable {
     @CreatedDate
     @Temporal(TIMESTAMP)
+    @JsonFormat(pattern = "yyyy-mm-dd")
     Date createdDate;
 
     @LastModifiedDate
+    @JsonFormat(pattern = "yyyy-mm-dd")
     @Temporal(TIMESTAMP)
     Date modifiedDate;
 

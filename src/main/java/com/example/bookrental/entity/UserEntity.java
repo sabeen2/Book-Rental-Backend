@@ -12,8 +12,7 @@ import org.hibernate.annotations.Where;
 
 @Entity
 @Table(name = "tbl_user",uniqueConstraints = {@UniqueConstraint(columnNames = {"name"})})
-@SQLDelete(sql = "UPDATE tbl_user SET deleted = true WHERE author_id = ?")
-@Where(clause = "deleted=false")
+@SQLDelete(sql = "UPDATE tbl_user SET deleted = true WHERE id = ?")
 @Getter
 @Setter
 @AllArgsConstructor

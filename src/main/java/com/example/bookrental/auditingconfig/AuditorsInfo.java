@@ -1,19 +1,14 @@
 package com.example.bookrental.auditingconfig;
 
-import com.example.bookrental.filter.JwtAuthFilter;
 import com.example.bookrental.service.jwtservice.JwtService;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Optional;
 
@@ -24,7 +19,6 @@ class AuditorsInfo {
 
     private final JwtService jwtService;
     private final HttpServletRequest request;
-
     @Bean
     public AuditorAware<String> auditorProvider() {
         return ()->{
@@ -45,7 +39,6 @@ class AuditorsInfo {
             } else {
                 return null;
             }
-
         };
     }
 }

@@ -25,7 +25,6 @@ public class Member extends AuditingEntity {
 
     String email;
     String name;
-
     String mobileNo;
     String address;
     private boolean deleted = Boolean.FALSE;

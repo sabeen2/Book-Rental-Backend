@@ -5,6 +5,7 @@ import com.example.bookrental.entity.Member;
 import com.example.bookrental.exception.CustomMessageSource;
 import com.example.bookrental.exception.ExceptionMessages;
 import com.example.bookrental.exception.NotFoundException;
+import com.example.bookrental.mapper.MemberMapper;
 import com.example.bookrental.repo.MembersRepo;
 import com.example.bookrental.service.MemberService;
 import com.example.bookrental.utils.ExcelGenerator;
@@ -28,6 +29,8 @@ public class MemberServiceImplementation implements MemberService {
 
     private final MembersRepo membersRepo;
     private final ObjectMapper objectMapper;
+    private final MemberMapper memberMapper;
+
     private final CustomMessageSource messageSource;
 
 
@@ -50,13 +53,13 @@ public class MemberServiceImplementation implements MemberService {
 
 
     @Override
-    public List<Member> getAllMember() {
-        return membersRepo.findAll();
+    public List<MemberDto> getAllMember() {
+        return memberMapper.getAllMembers();
     }
 
     @Override
-    public Member findById(Long id) {
-        return membersRepo.findById(id)
+    public MemberDto findById(Long id) {
+        return memberMapper.getMemberById(id)
                 .orElseThrow(() -> new NotFoundException(messageSource.get(ExceptionMessages.NOT_FOUND.getCode())));
     }
 

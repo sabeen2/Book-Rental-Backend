@@ -2,9 +2,11 @@ package com.example.bookrental.controller;
 
 import com.example.bookrental.controller.basecontroller.BaseController;
 import com.example.bookrental.dto.BookTransactionDto;
+import com.example.bookrental.dto.responsedto.BookTransactionResponse;
 import com.example.bookrental.entity.BookTransaction;
 import com.example.bookrental.generic_response.GenericResponse;
 import com.example.bookrental.repo.BookTransactionRepo;
+import com.example.bookrental.service.BookTransactionService;
 import com.example.bookrental.service.serviceimplementation.BookTransactionServiceImplementation;
 import com.example.bookrental.service.serviceimplementation.ReturnDateExceededEmailService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -32,6 +34,7 @@ import java.util.Map;
 @Tag(name = "Book Transaction Controller", description = "APIs for managing Transactions")
 public class BookTransactionController extends BaseController {
     private final BookTransactionServiceImplementation bookTransactionServiceImplementation;
+    private final BookTransactionService bookTransactionService;
     private final ReturnDateExceededEmailService emailService;
 
     @Operation(summary = "Add book transaction", description = "Add book transaction to the application")
@@ -55,7 +58,7 @@ public class BookTransactionController extends BaseController {
     })
     @GetMapping("/get-all-transactions")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
-    public GenericResponse<List<BookTransaction>> getAllTransaction() {
+    public GenericResponse<List<BookTransactionDto>> getAllTransaction() {
         return successResponse(bookTransactionServiceImplementation.getAllTransaction(), "All transactions");
     }
 
@@ -68,8 +71,8 @@ public class BookTransactionController extends BaseController {
     })
     @GetMapping("/all-transactions")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
-    public GenericResponse<Object> getMemberAndBookDetails() {
-        return successResponse(bookTransactionServiceImplementation.getNames(), "All transactions details");
+    public GenericResponse<List<BookTransactionDto>> getMemberAndBookDetails() {
+        return successResponse(bookTransactionService.getNames(), "All transactions details");
     }
 
     @Operation(summary = "Get all book transaction history", description = "Fetch all available book transaction history detail")
@@ -105,8 +108,8 @@ public class BookTransactionController extends BaseController {
     })
     @GetMapping("/get-by-id")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
-    public GenericResponse<BookTransaction> getById(@RequestParam Long id) {
-        return successResponse(bookTransactionServiceImplementation.findById(id), "transaction detail-:" + id + " are");
+    public GenericResponse<BookTransactionResponse> getById(@RequestParam Long id) {
+        return successResponse(bookTransactionService.findById(id), "transaction detail-:" + id + " are");
     }
 
     @Operation(summary = "Update book transaction", description = "update the available book transaction detail")
@@ -132,7 +135,7 @@ public class BookTransactionController extends BaseController {
     @DeleteMapping("/delete-transaction")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     public GenericResponse<String> deleteTransaction(@RequestParam Long id) {
-        return successResponse(bookTransactionServiceImplementation.deleteTransaction(id), "Trascation" + id + " is hidden");
+        return successResponse(bookTransactionServiceImplementation.deleteTransaction(id), "Transaction-:" + id + " is hidden");
     }
     @Operation(summary = "send mail to users whose transaction date is exceeded", description = "send mail to transaction date is exceeded user")
     @ApiResponses(value = {

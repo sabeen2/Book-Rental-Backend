@@ -4,6 +4,7 @@ import com.example.bookrental.controller.basecontroller.BaseController;
 import com.example.bookrental.dto.AuthenticationDto;
 import com.example.bookrental.dto.PasswordResetDto;
 import com.example.bookrental.dto.UserEntityDto;
+import com.example.bookrental.dto.responsedto.UserResponseDto;
 import com.example.bookrental.entity.UserEntity;
 import com.example.bookrental.exception.CustomMessageSource;
 import com.example.bookrental.exception.ExceptionMessages;
@@ -24,6 +25,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/admin/user")
@@ -47,7 +50,7 @@ public class UserEntityController extends BaseController {
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @PostMapping("/add-user")
     public GenericResponse<String> addUser(@RequestBody UserEntityDto userEntityDto) {
-        return successResponse(userEntityService.addUser(userEntityDto), "New user" + userEntityDto.getUserType() + " Added");
+        return successResponse(userEntityService.addUser(userEntityDto), "New user " + userEntityDto.getUserType() + " Added");
     }
     @Operation(summary = "Deactivate Users" ,description = "Deactivate users")
     @ApiResponses(value = {
@@ -59,8 +62,22 @@ public class UserEntityController extends BaseController {
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @DeleteMapping("/deactivate")
     public GenericResponse<String> deactivateUser(@RequestParam Long id) {
-        return successResponse(userEntityService.deactivateUser(id), "user" + id + " has been deactivated");
+        return successResponse(userEntityService.deactivateUser(id), "user " + id + " has been deactivated");
     }
+
+    @Operation(summary = "Reactivate Users" ,description = "Reactivate users")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200" ,description = "User activated"),
+            @ApiResponse(responseCode = "404" ,description = "User Not found"),
+            @ApiResponse(responseCode = "500" ,description = "internal server error"),
+            @ApiResponse(responseCode = "403" ,description = "Forbidden"),
+    })
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PostMapping("/reactivate")
+    public GenericResponse<String> reActivateUser(@RequestParam Long id) {
+        return successResponse(userEntityService.reactivateUser(id), "user " + id + " has been activated");
+    }
+
     @Operation(summary = "Login" ,description = "User login ")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200" ,description = "User Logged in"),
@@ -94,4 +111,22 @@ public class UserEntityController extends BaseController {
                 .data(passwordResetService.requestReset(request, passwordResetDto))
                 .build();
     }
+
+    @Operation(summary = "get users" ,description = "get users")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200" ,description = "All users"),
+            @ApiResponse(responseCode = "404" ,description = "User Not found"),
+            @ApiResponse(responseCode = "500" ,description = "internal server error"),
+            @ApiResponse(responseCode = "403" ,description = "Forbidden"),
+    })
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
+    @GetMapping("/get-all-users")
+    public GenericResponse<List<UserResponseDto>> getAll() {
+        return GenericResponse.<List<UserResponseDto>>builder()
+                .success(true)
+                .message("password changed")
+                .data(userEntityService.getUsers())
+                .build();
+    }
+
 }

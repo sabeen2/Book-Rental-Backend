@@ -1,5 +1,6 @@
 package com.example.bookrental.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import java.util.Date;
@@ -19,6 +20,7 @@ public class BookDto {
     @NotNull(message = "Stock Cannot be empty")
     Integer stock;
 
+    @JsonFormat(pattern = "yyyy-mm-dd")
     Date publishedDate;
 
     String photo;
