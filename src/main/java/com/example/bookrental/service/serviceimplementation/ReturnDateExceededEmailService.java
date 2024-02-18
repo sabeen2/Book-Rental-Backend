@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Logger;
 
 @Service
 @RequiredArgsConstructor
@@ -21,11 +22,12 @@ public class ReturnDateExceededEmailService {
     private final BookTransactionRepo bookTransactionRepo;
     private final CustomMessageSource messageSource;
 
-//    @Scheduled(fixedRate = 5000)
+//    @Scheduled(fixedRate = 500)
     public String sendDueDateMail() {
         Date today = new Date();
 
         List<BookTransaction> returnDateExceeded = bookTransactionRepo.findByToDateBefore(today);
+//        List<BookTransaction> returnDateExceeded = bookTransactionRepo.findByToDateAfter(today);
 
         for (BookTransaction transaction : returnDateExceeded) {
             String memberEmail = transaction.getMember().getEmail();
@@ -33,6 +35,7 @@ public class ReturnDateExceededEmailService {
             String emailBody = MailUtils.setTemplet(memberEmail,emailSubject);
             sendMail(memberEmail, emailSubject, emailBody);
         }
+//        System.out.println("mailsent");
         return messageSource.get(ExceptionMessages.RETURN_MAIL_SENT.getCode());
     }
 

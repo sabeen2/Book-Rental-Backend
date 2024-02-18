@@ -1,20 +1,16 @@
-#url: jdbc:postgresql://localhost:5432/BookRental
-#    username: postgres
-#    password: 1234
-
-
-
-
+#      url: jdbc:postgresql://dpg-cml6omn109ks73a6q6ug-a.singapore-postgres.render.com/demobookrental
+#      username: demobookrental_user
+#      password: 8dahxvact7RNAwwIRwgA5BWRrOAVSZxo
 spring:
   datasource:
-      url: jdbc:postgresql://dpg-cml6omn109ks73a6q6ug-a.singapore-postgres.render.com/demobookrental
-      username: demobookrental_user
-      password: 8dahxvact7RNAwwIRwgA5BWRrOAVSZxo
-      driver-class-name: org.postgresql.Driver
+        url: jdbc:postgresql://192.168.101.5:5432/BookRental
+        username: postgres
+        password: 1234
+        driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
       ddl-auto: update
-      show-sql: true
+    show-sql: true
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect

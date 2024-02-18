@@ -44,8 +44,7 @@ public class BookServiceImplementation implements BookService {
 
     @Override
     public String addBook(BookDto bookDto, MultipartFile file) throws Exception {
-        Long categoryId = bookDto.getCategoryId();
-        Category category = categoryRepo.findById(categoryId)
+        Category category = categoryRepo.findById(bookDto.getCategoryId())
                 .orElseThrow(() -> new NotFoundException(messageSource.get(ExceptionMessages.NOT_FOUND.getCode())));
 
         List<Long> authorId = bookDto.getAuthorId();
@@ -54,13 +53,14 @@ public class BookServiceImplementation implements BookService {
         if (authors.size() != authorId.size()) {
             throw new NotFoundException(messageSource.get(ExceptionMessages.NOT_FOUND.getCode()));
         }
-        String path = saveImage("C:\\Users\\shyam prasad\\Pictures\\Saved Pictures\\", file);
+//        String path = saveImage("C:\\Users\\shyam prasad\\Pictures\\Saved Pictures\\", file);
+        String path = saveImage("/uploads", file);
         bookDto.setPhoto(path);
         Book book = objectMapper.convertValue(bookDto, Book.class);
         book.setCategory(category);
         book.setAuthors(authors);
         bookRepo.save(book);
-        return "Book added-" + bookDto.getName() + "\n id- " + bookDto.getId();
+        return "Book added-" + bookDto.getName() + "\n id- " + book.getId();
     }
 
     public static String saveImage(String path, MultipartFile file) throws IOException {
@@ -117,7 +117,8 @@ public class BookServiceImplementation implements BookService {
     public void getImage(Long id, HttpServletResponse response) throws IOException {
         Book book = bookRepo.findById(id).orElseThrow(() -> new NotFoundException(messageSource.get(ExceptionMessages.NOT_FOUND.getCode())));
         String name = book.getPhoto();
-        InputStream stream = new FileInputStream("C:\\Users\\shyam prasad\\Pictures\\Saved Pictures\\" + name);
+//        InputStream stream = new FileInputStream("C:\\Users\\shyam prasad\\Pictures\\Saved Pictures\\" + name);
+        InputStream stream = new FileInputStream("/uploads" + name);
         ServletOutputStream out = response.getOutputStream();
         response.setContentType("image/jpeg");
         String headerKey = "Content-Disposition";

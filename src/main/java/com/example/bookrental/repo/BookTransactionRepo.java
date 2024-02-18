@@ -22,4 +22,6 @@ public interface BookTransactionRepo extends JpaRepository<BookTransaction,Long>
     List<Map<String,Object>> getTranscationHistry();
 
     List<BookTransaction> findByToDateBefore(Date date);
+
+    List<BookTransaction> findByToDateAfter(Date date);
 }

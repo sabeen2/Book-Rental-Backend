@@ -19,8 +19,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 public class Author  extends AuditingEntity {
     @Id
     //Sequence Generator
-    @SequenceGenerator(name = "author_primary_key_generator", initialValue = 0, allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "author_primary_key_generator")
+    @SequenceGenerator(name = "author_seq_gen", initialValue = 0, allocationSize = 1,sequenceName = "author_seq")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "author_seq_gen")
     Long authorId;
 
     String name;
