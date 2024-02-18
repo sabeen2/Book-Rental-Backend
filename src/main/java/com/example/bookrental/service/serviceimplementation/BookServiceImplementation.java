@@ -54,7 +54,7 @@ public class BookServiceImplementation implements BookService {
             throw new NotFoundException(messageSource.get(ExceptionMessages.NOT_FOUND.getCode()));
         }
 //        String path = saveImage("C:\\Users\\shyam prasad\\Pictures\\Saved Pictures\\", file);
-        String path = saveImage("/uploads", file);
+        String path = saveImage("/uploads/", file);
         bookDto.setPhoto(path);
         Book book = objectMapper.convertValue(bookDto, Book.class);
         book.setCategory(category);
@@ -118,7 +118,7 @@ public class BookServiceImplementation implements BookService {
         Book book = bookRepo.findById(id).orElseThrow(() -> new NotFoundException(messageSource.get(ExceptionMessages.NOT_FOUND.getCode())));
         String name = book.getPhoto();
 //        InputStream stream = new FileInputStream("C:\\Users\\shyam prasad\\Pictures\\Saved Pictures\\" + name);
-        InputStream stream = new FileInputStream("/uploads" + name);
+        InputStream stream = new FileInputStream("/uploads/" + name);
         ServletOutputStream out = response.getOutputStream();
         response.setContentType("image/jpeg");
         String headerKey = "Content-Disposition";
