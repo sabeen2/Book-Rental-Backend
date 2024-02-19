@@ -98,6 +98,9 @@ public class UserEntityController extends BaseController {
         if (authentication.isAuthenticated()) {
             UserEntity byUsername = userEntityRepo.findByUsername(authentication.getName())
                     .orElseThrow(()->new NotFoundException(messageSource.get(ExceptionMessages.NOT_FOUND.getCode())));
+            if(byUsername.isDeleted()){
+                throw new NotFoundException(messageSource.get(ExceptionMessages.INVALID_CREDENTIALS.getCode()));
+            }
             String role=String.valueOf(byUsername.getUserType());
             return successResponse(jwtService.generateToken(authenticationDto.getUsername(),role), messageSource.get(ExceptionMessages.SUCCESS.getCode()));
         } else {
