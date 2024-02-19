@@ -108,7 +108,7 @@ public class BookTransactionServiceImplementation implements BookTransactionServ
 
 
     @Override
-    public List<BookTransactionDto> getAllTransaction() {
+    public List<BookTransactionResponse> getAllTransaction() {
         return bookTransactionMapper.getBookTransactionDetails();
     }
 
@@ -130,7 +130,7 @@ public class BookTransactionServiceImplementation implements BookTransactionServ
         return bookTransaction.getId()+messageSource.get(ExceptionMessages.DELETED.getCode());
     }
 
-    public List<BookTransactionDto> getNames() {
+    public List<BookTransactionResponse> getNames() {
         return bookTransactionMapper.getBookTransactionDetails();
     }
 

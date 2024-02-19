@@ -2,6 +2,7 @@ package com.example.bookrental.controller;
 
 import com.example.bookrental.controller.basecontroller.BaseController;
 import com.example.bookrental.dto.BookDto;
+import com.example.bookrental.dto.responsedto.BookResponse;
 import com.example.bookrental.entity.Book;
 import com.example.bookrental.generic_response.GenericResponse;
 import com.example.bookrental.service.BookService;
@@ -66,7 +67,7 @@ public class BookController extends BaseController {
     })
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     @GetMapping("/get-all-books")
-    public GenericResponse<List<BookDto>> getAllBook() {
+    public GenericResponse<List<BookResponse>> getAllBook() {
         return successResponse(bookService.getAllBook(), "All available Books");
     }
     @Operation(summary = "Get book by id", description = "Fetch available Book detail based on  provided id")
@@ -78,7 +79,7 @@ public class BookController extends BaseController {
     })
     @GetMapping("/get-by-id")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
-    public GenericResponse<BookDto> getById(@RequestParam Long id){
+    public GenericResponse<BookResponse> getById(@RequestParam Long id){
         return successResponse(bookService.findById(id),"book id-:"+id+"details");
     }
     @Operation(summary = "Get book image by id", description = "Fetch Book image based on  provided id")

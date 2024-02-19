@@ -19,5 +19,5 @@ public class BookResponse {
     String isbn;
     Integer pages;
     String categoryName;
-    List<String> authorName;
+    String authorName;
 }

@@ -1,6 +1,7 @@
 package com.example.bookrental.service.serviceimplementation;
 
 import com.example.bookrental.dto.BookDto;
+import com.example.bookrental.dto.responsedto.BookResponse;
 import com.example.bookrental.entity.Author;
 import com.example.bookrental.entity.Book;
 import com.example.bookrental.entity.Category;
@@ -95,13 +96,13 @@ public class BookServiceImplementation implements BookService {
     }
 
     @Override
-    public List<BookDto> getAllBook() {
+    public List<BookResponse> getAllBook() {
         return bookMapper.getAllBooks();
     }
 
 
     @Override
-    public BookDto findById(Long id) {
+    public BookResponse findById(Long id) {
         return bookMapper.getBookByID(id)
                 .orElseThrow(() -> new NotFoundException(messageSource.get(ExceptionMessages.NOT_FOUND.getCode())));
     }

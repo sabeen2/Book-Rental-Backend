@@ -58,7 +58,7 @@ public class BookTransactionController extends BaseController {
     })
     @GetMapping("/get-all-transactions")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
-    public GenericResponse<List<BookTransactionDto>> getAllTransaction() {
+    public GenericResponse<List<BookTransactionResponse>> getAllTransaction() {
         return successResponse(bookTransactionServiceImplementation.getAllTransaction(), "All transactions");
     }
 
@@ -71,7 +71,7 @@ public class BookTransactionController extends BaseController {
     })
     @GetMapping("/all-transactions")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
-    public GenericResponse<List<BookTransactionDto>> getMemberAndBookDetails() {
+    public GenericResponse<List<BookTransactionResponse>> getMemberAndBookDetails() {
         return successResponse(bookTransactionService.getNames(), "All transactions details");
     }
 
