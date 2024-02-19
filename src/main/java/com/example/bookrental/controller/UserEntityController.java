@@ -96,8 +96,6 @@ public class UserEntityController extends BaseController {
     public GenericResponse<String> login(@RequestBody AuthenticationDto authenticationDto) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationDto.getUsername(), authenticationDto.getPassword()));
         if (authentication.isAuthenticated()) {
-//            String name = SecurityContextHolder.getContext().getAuthentication().getName();
-            String details = authentication.getName();
             UserEntity byUsername = userEntityRepo.findByUsername(authentication.getName())
                     .orElseThrow(()->new NotFoundException(messageSource.get(ExceptionMessages.NOT_FOUND.getCode())));
             String role=String.valueOf(byUsername.getUserType());

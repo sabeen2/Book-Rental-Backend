@@ -53,20 +53,19 @@ public class ExcelToDb {
             case STRING:
                 if (fieldType == String.class) {
                     return cell.getStringCellValue();
-                } else{
+                } else {
                     return null;
                 }
             case NUMERIC:
-                if (fieldType == Double.class || fieldType == double.class) {
+                if (fieldType == Integer.class || fieldType == int.class || fieldType == Long.class) {
                     return cell.getNumericCellValue();
-                } else if (fieldType == Integer.class || fieldType == int.class) {
+                }else if (fieldType == Double.class || fieldType == double.class) {
                     return (int) cell.getNumericCellValue();
                 } else if (fieldType == Date.class) {
                     return cell.getDateCellValue();
                 } else {
-                    return null;
+                    return String.valueOf(cell.getNumericCellValue());
                 }
-
             case BOOLEAN:
                 return cell.getBooleanCellValue();
             default:
