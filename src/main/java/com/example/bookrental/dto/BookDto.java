@@ -1,5 +1,7 @@
 package com.example.bookrental.dto;
 
+import com.example.bookrental.annotations.notzero.NotZeroNull;
+import com.example.bookrental.annotations.publisheddate.PublishedDateValidator;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -21,12 +23,14 @@ public class BookDto {
     Integer stock;
 
     @JsonFormat(pattern = "yyyy-mm-dd")
+    @PublishedDateValidator
     Date publishedDate;
 
     String photo;
 
     String isbn;
 
+    @NotZeroNull
     Integer pages;
 
     @NotNull(message = "category id Cannot be empty")

@@ -9,6 +9,7 @@ com\example\bookrental\service\serviceimplementation\AuthorServiceImplementation
 com\example\bookrental\exception\NotFoundException.class
 com\example\bookrental\BookRentalApplication.class
 com\example\bookrental\enums\RentType.class
+com\example\bookrental\annotations\publisheddate\DateValidator.class
 com\example\bookrental\controller\ForgotPasswordController.class
 com\example\bookrental\dto\responsedto\UserResponseDto.class
 com\example\bookrental\repo\ResetTokenRepo.class
@@ -26,6 +27,7 @@ com\example\bookrental\dto\BookDto.class
 com\example\bookrental\repo\CategoryRepo.class
 com\example\bookrental\utils\ExcelToDb$1.class
 com\example\bookrental\mapper\BookTransactionMapper.class
+com\example\bookrental\annotations\publisheddate\PublishedDateValidator.class
 com\example\bookrental\repo\BookRepo.class
 com\example\bookrental\repo\MembersRepo.class
 com\example\bookrental\service\AuthorService.class
@@ -50,7 +52,9 @@ com\example\bookrental\filter\JwtAuthFilter.class
 com\example\bookrental\dto\AuthorDto.class
 com\example\bookrental\entity\Category.class
 com\example\bookrental\dto\ResetTokenDto.class
+com\example\bookrental\annotations\notzero\NotZeroNull.class
 com\example\bookrental\exception\BookRentalExceptionHandler.class
+com\example\bookrental\annotations\notzero\NegativeValidator.class
 com\example\bookrental\repo\AuthorRepo.class
 com\example\bookrental\utils\ExcelGenerator.class
 com\example\bookrental\dto\BookTransactionDto.class

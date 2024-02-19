@@ -61,7 +61,7 @@ public class BookServiceImplementation implements BookService {
         book.setCategory(category);
         book.setAuthors(authors);
         bookRepo.save(book);
-        return "Book added-" + bookDto.getName() + "\n id- " + book.getId();
+        return "Book added-" + bookDto.getName() + " id- " + book.getId();
     }
 
     public static String saveImage(String path, MultipartFile file) throws IOException {

@@ -8,7 +8,9 @@ import com.example.bookrental.dto.responsedto.UserResponseDto;
 import com.example.bookrental.entity.UserEntity;
 import com.example.bookrental.exception.CustomMessageSource;
 import com.example.bookrental.exception.ExceptionMessages;
+import com.example.bookrental.exception.NotFoundException;
 import com.example.bookrental.generic_response.GenericResponse;
+import com.example.bookrental.repo.UserEntityRepo;
 import com.example.bookrental.service.PasswordResetService;
 import com.example.bookrental.service.UserEntityService;
 import com.example.bookrental.service.jwtservice.JwtService;
@@ -18,15 +20,19 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.constraints.Email;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/admin/user")
@@ -39,6 +45,7 @@ public class UserEntityController extends BaseController {
     private final PasswordResetService passwordResetService;
     private final AuthenticationManager authenticationManager;
     private final CustomMessageSource messageSource;
+    private final UserEntityRepo userEntityRepo;
 
 
     @Operation(summary = "Add Users" ,description = "Add users and provide them Roles")
@@ -89,7 +96,12 @@ public class UserEntityController extends BaseController {
     public GenericResponse<String> login(@RequestBody AuthenticationDto authenticationDto) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationDto.getUsername(), authenticationDto.getPassword()));
         if (authentication.isAuthenticated()) {
-            return successResponse(jwtService.generateToken(authenticationDto.getUsername()), messageSource.get(ExceptionMessages.SUCCESS.getCode()));
+//            String name = SecurityContextHolder.getContext().getAuthentication().getName();
+            String details = authentication.getName();
+            UserEntity byUsername = userEntityRepo.findByUsername(authentication.getName())
+                    .orElseThrow(()->new NotFoundException(messageSource.get(ExceptionMessages.NOT_FOUND.getCode())));
+            String role=String.valueOf(byUsername.getUserType());
+            return successResponse(jwtService.generateToken(authenticationDto.getUsername(),role), messageSource.get(ExceptionMessages.SUCCESS.getCode()));
         } else {
             return errorResponse(messageSource.get(ExceptionMessages.INVALID_CREDENTIALS.getCode()));
         }
