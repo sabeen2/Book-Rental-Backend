@@ -101,7 +101,7 @@ public class BookTransactionServiceImplementation implements BookTransactionServ
         }
 
         BeanUtils.copyProperties(bookTransactionDto, bookTransaction, getNullPropertyNames(bookTransactionDto));
-
+        bookTransactionRepo.save(bookTransaction);
         return messageSource.get(ExceptionMessages.UPDATE.getCode())+bookTransactionDto.getId();
     }
 
