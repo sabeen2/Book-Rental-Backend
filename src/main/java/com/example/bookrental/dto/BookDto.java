@@ -20,6 +20,7 @@ public class BookDto {
     Double rating;
 
     @NotNull(message = "Stock Cannot be empty")
+    @NotZeroNull
     Integer stock;
 
     @JsonFormat(pattern = "yyyy-mm-dd")
