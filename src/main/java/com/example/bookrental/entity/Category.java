@@ -14,7 +14,7 @@ import org.hibernate.annotations.Where;
 @AllArgsConstructor
 @NoArgsConstructor
 @SQLDelete(sql = "UPDATE tbl_catagory SET deleted = true WHERE id = ?")
-@Where(clause ="deleted=false")
+//@Where(clause ="deleted=false")
 public class Category extends AuditingEntity {
     @Id
     @SequenceGenerator(name = "category_primary_key_generator", initialValue = 0, allocationSize = 1)

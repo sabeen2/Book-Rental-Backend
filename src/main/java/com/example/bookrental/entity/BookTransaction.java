@@ -20,7 +20,7 @@ import java.util.Date;
 //@SQLDelete(sql = "UPDATE tbl_book_transaction SET deleted = true WHERE id=?")
 //@Where(clause ="deleted=true")
 @SQLDelete(sql = "UPDATE tbl_book_transaction SET deleted = true, rent_status = 'RETURN' WHERE id=?")
-@Where(clause = "deleted = false AND rent_status = 'RENT'")
+//@Where(clause = "deleted = false AND rent_status = 'RENT'")
 public class BookTransaction  extends AuditingEntity {
     @Id
     @SequenceGenerator(name = "transaction_primary_key_generator", initialValue = 0, allocationSize = 1)

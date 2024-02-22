@@ -1,6 +1,5 @@
 package com.example.bookrental.mapper;
 
-import com.example.bookrental.dto.BookDto;
 import com.example.bookrental.dto.responsedto.BookResponse;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;

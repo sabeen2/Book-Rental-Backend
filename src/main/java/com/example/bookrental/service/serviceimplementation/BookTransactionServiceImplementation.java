@@ -123,10 +123,12 @@ public class BookTransactionServiceImplementation implements BookTransactionServ
     public String deleteTransaction(Long id) {
         BookTransaction bookTransaction = bookTransactionRepo.findById(id)
                 .orElseThrow(() -> new NotFoundException(messageSource.get(ExceptionMessages.NOT_FOUND.getCode())));
-        bookTransactionRepo.delete(bookTransaction);
+//        bookTransactionRepo.delete(bookTransaction);
         Book book = bookTransaction.getBook();
         book.setStock(book.getStock() + 1);
         bookRepo.save(book);
+        bookTransaction.setDeleted(true);
+        bookTransactionRepo.save(bookTransaction);
         return bookTransaction.getId()+messageSource.get(ExceptionMessages.DELETED.getCode());
     }
 

@@ -16,8 +16,6 @@ import java.util.List;
 @Getter
 @Setter
 
-@SQLDelete(sql = "UPDATE tbl_book SET deleted = true WHERE id = ?")
-@Where(clause ="deleted=false")
 public class Book extends AuditingEntity {
     @Id
     @SequenceGenerator(name = "book_primary_key_generator", initialValue = 0, allocationSize = 1)

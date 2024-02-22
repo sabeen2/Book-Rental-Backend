@@ -11,7 +11,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Entity
 @Table(name = "tbl_author",uniqueConstraints = {@UniqueConstraint(columnNames = {"name","email","mobileNumber"})})
 @SQLDelete(sql = "UPDATE tbl_author SET deleted = true WHERE author_id = ?")
-@Where(clause ="deleted=false")
+//@Where(clause ="deleted=false")
 @Getter
 @Setter
 @AllArgsConstructor

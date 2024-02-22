@@ -48,8 +48,18 @@ public class BookServiceImplementation implements BookService {
         Category category = categoryRepo.findById(bookDto.getCategoryId())
                 .orElseThrow(() -> new NotFoundException(messageSource.get(ExceptionMessages.NOT_FOUND.getCode())));
 
+        if(category.isDeleted()){
+            throw new NotFoundException(messageSource.get(ExceptionMessages.NOT_FOUND.getCode()));
+        }
+
         List<Long> authorId = bookDto.getAuthorId();
         List<Author> authors = authorRepo.findAllById(authorId);
+
+        for (Author author : authors) {
+            if (author.isDeleted()) {
+                throw new NotFoundException(messageSource.get(ExceptionMessages.NOT_FOUND.getCode()));
+            }
+        }
 
         if (authors.size() != authorId.size()) {
             throw new NotFoundException(messageSource.get(ExceptionMessages.NOT_FOUND.getCode()));
@@ -111,7 +121,8 @@ public class BookServiceImplementation implements BookService {
     public String deleteBook(Long id) {
         Book book = bookRepo.findById(id)
                 .orElseThrow(() -> new NotFoundException(messageSource.get(ExceptionMessages.NOT_FOUND.getCode())));
-        bookRepo.delete(book);
+        book.setDeleted(true);
+        bookRepo.save(book);
         return book.getName() + " has been deleted";
     }
 
