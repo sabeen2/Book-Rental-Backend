@@ -58,6 +58,10 @@ public class BookTransactionServiceImplementation implements BookTransactionServ
         Member member = membersRepo.findById(memberId)
                 .orElseThrow(() -> new NotFoundException(messageSource.get(ExceptionMessages.NOT_FOUND.getCode())));
 
+        if(member.isDeleted()){
+            throw new NotFoundException(messageSource.get(ExceptionMessages.NOT_FOUND.getCode()));
+        }
+
         if (book.getStock() <= 0) {
             throw new NotFoundException(messageSource.get(ExceptionMessages.OUT_OF_STOCK.getCode()));
         }
