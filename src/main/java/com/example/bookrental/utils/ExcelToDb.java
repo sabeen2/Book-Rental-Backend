@@ -57,7 +57,7 @@ public class ExcelToDb {
                     return null;
                 }
             case NUMERIC:
-                if (fieldType == Integer.class || fieldType == int.class || fieldType == Long.class) {
+                if (fieldType == Integer.class || fieldType == int.class) {
                     return cell.getNumericCellValue();
                 }else if (fieldType == Double.class || fieldType == double.class) {
                     return (int) cell.getNumericCellValue();

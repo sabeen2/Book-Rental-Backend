@@ -1,5 +1,6 @@
 package com.example.bookrental.dto;
 
+import com.example.bookrental.annotations.publisheddate.PublishedDateValidator;
 import com.example.bookrental.enums.RentType;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -28,6 +29,7 @@ public class BookTransactionDto {
 
     @NotNull(message = "date Cannot be empty")
     @JsonFormat(pattern = "yyyy-mm-dd")
+    @PublishedDateValidator
     Date fromDate;
 
     @NotNull(message = "date Cannot be empty")
