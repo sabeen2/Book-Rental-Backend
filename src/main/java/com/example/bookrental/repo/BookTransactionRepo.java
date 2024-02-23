@@ -18,8 +18,8 @@ public interface BookTransactionRepo extends JpaRepository<BookTransaction,Long>
     List<Map<String,Object>> getMemberAndBookDetails();
 
     @Query(value = "SELECT bt.id,bt.code,bt.from_date,bt.to_date, m.name as member_name, b.name from tbl_book_transaction bt\n" +
-            " inner join tbl_member m on m.memberid=bt.memberid inner join tbl_book b on b.id=bt.book_id where bt.deleted='true'",nativeQuery = true)
-    List<Map<String,Object>> getTranscationHistry();
+            " inner join tbl_member m on m.memberid=bt.memberid inner join tbl_book b on b.id=bt.book_id where bt.deleted='true' LIMIT ?1 OFFSET ?2 ",nativeQuery = true)
+    List<Map<String,Object>> getTranscationHistry(int limit ,  int offset);
 
     List<BookTransaction> findByToDateBefore(Date date);
 

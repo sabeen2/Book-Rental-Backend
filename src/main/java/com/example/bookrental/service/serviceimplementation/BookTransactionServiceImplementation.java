@@ -140,11 +140,9 @@ public class BookTransactionServiceImplementation implements BookTransactionServ
         return bookTransactionMapper.getBookTransactionDetails();
     }
 
-    public List<Map<String,Object>> getTransactionHistory() {
-        return bookTransactionRepo.getTranscationHistry();
+    public List<Map<String,Object>> getTransactionHistory(int limit ,  int page) {
+        return bookTransactionRepo.getTranscationHistry(limit, page);
     }
-
-
 
     public String generateExcel(HttpServletResponse response) throws IOException {
 //        workbook-->sheet-->row-->cell-->{DATA}

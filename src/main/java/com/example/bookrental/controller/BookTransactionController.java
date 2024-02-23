@@ -84,8 +84,9 @@ public class BookTransactionController extends BaseController {
     })
     @GetMapping("/get-transactions-history")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
-    public GenericResponse<Object> getTransactionHistory() {
-        return successResponse(bookTransactionServiceImplementation.getTransactionHistory(), "All transactions details");
+    public GenericResponse<Object> getTransactionHistory(@RequestParam(name = "page",defaultValue = "0") int page,
+                                                         @RequestParam(name = "Offset",defaultValue = "10") int offset) {
+        return successResponse(bookTransactionServiceImplementation.getTransactionHistory(offset,page), "All transactions details");
     }
 
     @Operation(summary = "Get all book transaction details with rented member names, book names and download in excel", description = "Fetch all available book transaction detail")
