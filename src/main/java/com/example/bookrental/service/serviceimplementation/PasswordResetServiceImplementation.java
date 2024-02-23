@@ -16,6 +16,7 @@ import com.example.bookrental.service.jwtservice.JwtService;
 import com.example.bookrental.utils.MailUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.repository.config.CustomRepositoryImplementationDetector;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -61,6 +62,7 @@ public class PasswordResetServiceImplementation implements PasswordResetService 
 
     }
 
+    @Transactional
     @Override
     public String forgotPassword(ForgotPasswordDto forgotPasswordDto) {
         String username = forgotPasswordDto.getUsername();
@@ -69,7 +71,14 @@ public class PasswordResetServiceImplementation implements PasswordResetService 
         String to = user.getUsername();
         String sub = "reset token";
         String resetToken = otpGenerator();
-        saveResetToken(user.getUsername(), resetToken);
+        int resetTokenEntity = resetTokenRepo.userCount(username);
+
+        if(resetTokenEntity!=1) {
+            saveResetToken(user.getUsername(), resetToken);
+        }else{
+            resetTokenRepo.updateToken(user.getUsername(), resetToken);
+        }
+
         String emailBody = MailUtils.resetTemplet(to, sub, resetToken);
         mailUtils.sendMail(to, sub, emailBody);
         return messageSource.get(ExceptionMessages.MAIL_SENT.getCode());
