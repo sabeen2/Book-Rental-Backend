@@ -23,7 +23,8 @@ public enum ExceptionMessages {
     INVALID_CREDENTIALS("invalid.credentials"),
     AUTHENTICATION_ERROR("authentication.error"),
     MAIL_SENT("mail.sent"),
-    RETURN_MAIL_SENT("remainder.mail.sent")
+    RETURN_MAIL_SENT("remainder.mail.sent"),
+    EXPIRED("jtw.expired")
     ;
     final String code;
 }

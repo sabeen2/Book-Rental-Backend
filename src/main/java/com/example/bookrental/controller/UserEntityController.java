@@ -3,8 +3,11 @@ package com.example.bookrental.controller;
 import com.example.bookrental.controller.basecontroller.BaseController;
 import com.example.bookrental.dto.AuthenticationDto;
 import com.example.bookrental.dto.PasswordResetDto;
+import com.example.bookrental.dto.RefreshTokenReq;
 import com.example.bookrental.dto.UserEntityDto;
+import com.example.bookrental.dto.responsedto.AuthResponse;
 import com.example.bookrental.dto.responsedto.UserResponseDto;
+import com.example.bookrental.entity.RefreshToken;
 import com.example.bookrental.entity.UserEntity;
 import com.example.bookrental.exception.CustomMessageSource;
 import com.example.bookrental.exception.ExceptionMessages;
@@ -12,6 +15,7 @@ import com.example.bookrental.exception.NotFoundException;
 import com.example.bookrental.generic_response.GenericResponse;
 import com.example.bookrental.repo.UserEntityRepo;
 import com.example.bookrental.service.PasswordResetService;
+import com.example.bookrental.service.RefreshTokenService;
 import com.example.bookrental.service.UserEntityService;
 import com.example.bookrental.service.jwtservice.JwtService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -20,19 +24,14 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.constraints.Email;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/admin/user")
@@ -46,6 +45,7 @@ public class UserEntityController extends BaseController {
     private final AuthenticationManager authenticationManager;
     private final CustomMessageSource messageSource;
     private final UserEntityRepo userEntityRepo;
+    private final RefreshTokenService refreshTokenService;
 
 
     @Operation(summary = "Add Users" ,description = "Add users and provide them Roles")
@@ -93,7 +93,7 @@ public class UserEntityController extends BaseController {
             @ApiResponse(responseCode = "403" ,description = "Forbidden"),
     })
     @PostMapping("/login")
-    public GenericResponse<String> login(@RequestBody AuthenticationDto authenticationDto) {
+    public GenericResponse<AuthResponse> login(@RequestBody AuthenticationDto authenticationDto) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationDto.getUsername(), authenticationDto.getPassword()));
         if (authentication.isAuthenticated()) {
             UserEntity byUsername = userEntityRepo.findByUsername(authentication.getName())
@@ -101,12 +101,43 @@ public class UserEntityController extends BaseController {
             if(byUsername.isDeleted()){
                 throw new NotFoundException(messageSource.get(ExceptionMessages.INVALID_CREDENTIALS.getCode()));
             }
+            RefreshToken refreshToken = refreshTokenService.createRefreshToken(authenticationDto.getUsername());
             String role=String.valueOf(byUsername.getUserType());
-            return successResponse(jwtService.generateToken(authenticationDto.getUsername(),role), messageSource.get(ExceptionMessages.SUCCESS.getCode()));
+
+            AuthResponse response=AuthResponse.builder()
+                    .accessToken(jwtService.generateToken(authenticationDto.getUsername(),role))
+                    .refreshToken(refreshToken.getToken())
+                    .build();
+
+//            return successResponse(jwtService.generateToken(authenticationDto.getUsername(),role), messageSource.get(ExceptionMessages.SUCCESS.getCode()));
+
+            return successResponse(response, messageSource.get(ExceptionMessages.SUCCESS.getCode()));
         } else {
             return errorResponse(messageSource.get(ExceptionMessages.INVALID_CREDENTIALS.getCode()));
         }
     }
+
+    @Operation(summary = "Refresh token" ,description = "Refresh token for users")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200" ,description = "Token generated"),
+            @ApiResponse(responseCode = "404" ,description = "invalid"),
+            @ApiResponse(responseCode = "500" ,description = "internal server error"),
+            @ApiResponse(responseCode = "403" ,description = "Forbidden"),
+    })
+    @PostMapping("/refreshToken")
+    public GenericResponse<AuthResponse> refreshToken(@RequestBody RefreshTokenReq refreshTokenReq){
+        RefreshToken token = refreshTokenService.getToken(refreshTokenReq.getToken());
+        refreshTokenService.verifyToken(token);
+        UserEntity user=token.getUser();
+        String role = String.valueOf(user.getUserType());
+        String refreshedToken= jwtService.generateToken(user.getUsername(),role);
+        AuthResponse response=AuthResponse.builder()
+                .accessToken(refreshedToken)
+                .refreshToken(refreshTokenReq.getToken())
+                .build();
+        return successResponse(response, messageSource.get(ExceptionMessages.SUCCESS.getCode()));
+    }
+
 
     @Operation(summary = "Reset User's password" ,description = "reset users password based on authentication token")
     @ApiResponses(value = {
