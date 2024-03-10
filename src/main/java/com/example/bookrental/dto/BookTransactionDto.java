@@ -18,8 +18,8 @@ import java.util.Date;
 @NoArgsConstructor
 public class BookTransactionDto {
     Long id;
-    @NotNull(message = "Code Cannot be empty")
-    Long code;
+//    @NotNull(message = "Code Cannot be empty")
+//    Long code;
     @NotNull(message = "Book Id Cannot be empty")
 //    @JsonProperty("FK_book_id")
     Long bookId;

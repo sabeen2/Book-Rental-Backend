@@ -32,10 +32,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import static com.example.bookrental.utils.NullValues.getNullPropertyNames;
 
@@ -60,7 +57,7 @@ public class BookTransactionServiceImplementation implements BookTransactionServ
         Member member = membersRepo.findById(memberId)
                 .orElseThrow(() -> new NotFoundException(messageSource.get(ExceptionMessages.NOT_FOUND.getCode())));
 
-        if(member.isDeleted()){
+        if (member.isDeleted()) {
             throw new NotFoundException(messageSource.get(ExceptionMessages.NOT_FOUND.getCode()));
         }
 
@@ -80,11 +77,12 @@ public class BookTransactionServiceImplementation implements BookTransactionServ
         BookTransaction bookTransaction = objectMapper.convertValue(bookTransactionDto, BookTransaction.class);
         bookTransaction.setMember(member);
         bookTransaction.setBook(book);
-
-         bookTransactionRepo.save(bookTransaction);
-        return messageSource.get(ExceptionMessages.SAVE.getCode())+bookTransactionDto.getCode();
+        bookTransaction.setCode(generateRandomNumber());
+        bookTransactionRepo.save(bookTransaction);
+        return messageSource.get(ExceptionMessages.SAVE.getCode()) + bookTransaction.getCode();
 
     }
+
     @Override
     public String updateTransaction(BookTransactionDto bookTransactionDto) {
         BookTransaction bookTransaction = bookTransactionRepo.findById(bookTransactionDto.getId())
@@ -96,21 +94,20 @@ public class BookTransactionServiceImplementation implements BookTransactionServ
 //        Optional<Book> updatedBookOptional = bookRepo.findById(bookTransactionDto.getBookId());
 //        Optional<Member> updatedMemberOptional = membersRepo.findById(bookTransactionDto.getFkMemberId());
 
-        if (bookTransactionDto.getFkMemberId()!=null) {
-            Member updatemMember =  membersRepo.findById(bookTransactionDto.getFkMemberId()).get();
+        if (bookTransactionDto.getFkMemberId() != null) {
+            Member updatemMember = membersRepo.findById(bookTransactionDto.getFkMemberId()).get();
             bookTransaction.setMember(updatemMember);
         }
 
-        if (bookTransactionDto.getBookId()!=null) {
+        if (bookTransactionDto.getBookId() != null) {
             Book updatedBook = bookRepo.findById(bookTransactionDto.getBookId()).get();
             bookTransaction.setBook(updatedBook);
         }
 
         BeanUtils.copyProperties(bookTransactionDto, bookTransaction, getNullPropertyNames(bookTransactionDto));
         bookTransactionRepo.save(bookTransaction);
-        return messageSource.get(ExceptionMessages.UPDATE.getCode())+bookTransactionDto.getId();
+        return messageSource.get(ExceptionMessages.UPDATE.getCode()) + bookTransactionDto.getId();
     }
-
 
 
     @Override
@@ -135,7 +132,7 @@ public class BookTransactionServiceImplementation implements BookTransactionServ
         bookRepo.save(book);
         bookTransaction.setDeleted(true);
         bookTransactionRepo.save(bookTransaction);
-        return bookTransaction.getId()+messageSource.get(ExceptionMessages.DELETED.getCode());
+        return bookTransaction.getId() + messageSource.get(ExceptionMessages.DELETED.getCode());
     }
 
     public List<BookTransactionResponse> getNames() {
@@ -144,7 +141,7 @@ public class BookTransactionServiceImplementation implements BookTransactionServ
 
     public List<Map<String, Object>> getTransactionHistory(int page, int pageSize, Date fromDate, Date toDate) {
         int offset = (page - 1) * pageSize;
-        return bookTransactionRepo.getTransactionHistory( fromDate,toDate,pageSize,offset);
+        return bookTransactionRepo.getTransactionHistory(fromDate, toDate, pageSize, offset);
     }
 
     public String generateExcel(HttpServletResponse response) throws IOException {
@@ -187,9 +184,19 @@ public class BookTransactionServiceImplementation implements BookTransactionServ
         out.close();
         return messageSource.get(ExceptionMessages.DOWNLOADED.getCode());
     }
+
     public String excelToDb(MultipartFile file) throws IOException, IllegalAccessException, InstantiationException {
-        List<BookTransaction> bookTransactions= ExcelToDb.createExcel(file,BookTransaction.class);
+        List<BookTransaction> bookTransactions = ExcelToDb.createExcel(file, BookTransaction.class);
         bookTransactionRepo.saveAll(bookTransactions);
         return messageSource.get(ExceptionMessages.EXPORT_EXCEL_SUCCESS.getCode());
+    }
+
+    public  long generateRandomNumber() {
+        // Create an instance of Random class
+        Random random = new Random();
+        // Generate a random long between 100000 and 999999 (inclusive)
+        long min = 100000L;
+        long max = 999999L;
+        return min + (long) (random.nextDouble() * (max - min));
     }
 }
