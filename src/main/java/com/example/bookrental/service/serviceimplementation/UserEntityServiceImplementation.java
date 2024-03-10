@@ -11,6 +11,7 @@ import com.example.bookrental.repo.UserEntityRepo;
 import com.example.bookrental.service.UserEntityService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -27,11 +28,15 @@ public class UserEntityServiceImplementation implements UserEntityService {
 
     @Override
     public String addUser(UserEntityDto userEntityDto) {
-        UserEntity userEntity;
-        userEntity = objectMapper.convertValue(userEntityDto, UserEntity.class);
-        userEntity.setPassword(passwordEncoder.encode(userEntity.getPassword()));
-        userEntityRepo.save(userEntity);
-        return messageSource.get(ExceptionMessages.SAVE.getCode()) + "User added-: " + userEntityDto.getUsername() + "\n Role-: " + userEntityDto.getUserType();
+//        try {
+            UserEntity userEntity;
+            userEntity = objectMapper.convertValue(userEntityDto, UserEntity.class);
+            userEntity.setPassword(passwordEncoder.encode(userEntity.getPassword()));
+            userEntityRepo.save(userEntity);
+            return messageSource.get(ExceptionMessages.SAVE.getCode()) + "User added-: " + userEntityDto.getUsername() + "\n Role-: " + userEntityDto.getUserType();
+//        } catch (DataIntegrityViolationException ex) {
+//            throw new NotFoundException(ex.getMessage());
+//        }
     }
 
     @Override

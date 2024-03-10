@@ -11,7 +11,7 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 @Entity
-@Table(name = "tbl_user",uniqueConstraints = {@UniqueConstraint(columnNames = {"name"})})
+@Table(name = "tbl_user")
 @SQLDelete(sql = "UPDATE tbl_user SET deleted = true WHERE id = ?")
 @Getter
 @Setter
@@ -23,7 +23,7 @@ public class UserEntity {
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "user_primary_key_generator")
     Long id;
 
-    @Column(unique = true)
+    @Column(unique = true, columnDefinition = "citext")
     String username;
 
     String password;

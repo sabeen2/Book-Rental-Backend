@@ -21,30 +21,20 @@ public class Book extends AuditingEntity {
     @SequenceGenerator(name = "book_primary_key_generator", initialValue = 0, allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "book_primary_key_generator")
     Long id;
-
     String name;
-
     Double rating;
-
     Integer stock;
-
     Date publishedDate;
-
     String photo;
-
     String isbn;
-
     Integer pages;
-
     @ManyToOne(cascade = CascadeType.ALL, targetEntity = Category.class)
     private Category category;
-
     @ManyToMany
     @JoinTable(name = "book_author",// Specify the name of the intermediate table
             joinColumns = @JoinColumn(name = "book_id",foreignKey = @ForeignKey(name ="book_id_foreign_key")), // Column in the book table
             inverseJoinColumns = @JoinColumn(name = "author_id",foreignKey = @ForeignKey(name ="author_id_foreign_key")) // Column in the author table
     )
     List<Author> authors;
-
     private boolean deleted = Boolean.FALSE;
 }

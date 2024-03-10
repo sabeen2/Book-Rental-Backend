@@ -138,7 +138,6 @@ public class UserEntityController extends BaseController {
         return successResponse(response, messageSource.get(ExceptionMessages.SUCCESS.getCode()));
     }
 
-
     @Operation(summary = "Reset User's password" ,description = "reset users password based on authentication token")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200" ,description = "Password reset Success"),

@@ -16,27 +16,19 @@ public class BookDto {
     Long id;
     @NotNull(message = "Name Cannot be empty")
     String name;
-
     Double rating;
-
     @NotNull(message = "Stock Cannot be empty")
     @NotZeroNull
     Integer stock;
-
     @JsonFormat(pattern = "yyyy-mm-dd")
     @PublishedDateValidator
     Date publishedDate;
-
     String photo;
-
     String isbn;
-
     @NotZeroNull
     Integer pages;
-
     @NotNull(message = "category id Cannot be empty")
     Long categoryId;
-
     @NotNull(message = "author id Cannot be empty")
     List<Long> authorId;
 }

@@ -2,7 +2,9 @@ package com.example.bookrental.exception;
 
 import com.example.bookrental.generic_response.GenericResponse;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.exception.GenericJDBCException;
 import org.springframework.context.MessageSource;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -41,6 +43,7 @@ public class BookRentalExceptionHandler {
                 .data(map)
                 .build();
     }
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(Exception.class)
     public GenericResponse<Map<String, String>> globalException(Exception e) {
@@ -50,6 +53,46 @@ public class BookRentalExceptionHandler {
                 .success(false)
                 .message(messageSource.get(ExceptionMessages.EXCEPTION.getCode()))
                 .data(map)
+                .build();
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public GenericResponse<Map<String, String>> handleConstraintViolation(DataIntegrityViolationException ex) {
+        Map<String, String> errors = new HashMap<>();
+
+        if (ex.getCause() instanceof org.hibernate.exception.ConstraintViolationException) {
+            org.hibernate.exception.ConstraintViolationException violation = ((org.hibernate.exception.ConstraintViolationException) ex.getCause());
+
+            //handling constraint violations
+            if (violation.getMessage().contains("unique")) {
+                errors.put("errorMessage", "The data violates a unique constraint.");
+            }
+        } else if (ex.getCause() instanceof org.hibernate.exception.DataException) {
+            org.hibernate.exception.DataException violation = ((org.hibernate.exception.DataException) ex.getCause());
+
+            // handling data exceptions
+            if (violation.getCause().toString().contains("value too long for type character varying")) {
+                errors.put("errorMessage", "The length of the provided data exceeds the limit.");
+            }
+        } else if (ex.getCause() instanceof GenericJDBCException) {
+            GenericJDBCException e = (GenericJDBCException) ex.getCause();
+            String message = e.getMessage();
+            //handling generic JDBC exceptions
+            if (message.contains("function_exception_")) {
+                errors.put("errorMessage", "An error occurred with a database function.");
+            }
+        } else {
+            String errorMessage = ex.getMessage();
+            errors.put("errorMessage", errorMessage);
+        }
+
+        //handling for unhandled exceptions
+
+        return GenericResponse.<Map<String, String>>builder()
+                .success(false)
+                .message(messageSource.get(ExceptionMessages.EXCEPTION.getCode()))
+                .data(errors)
                 .build();
     }
 }
