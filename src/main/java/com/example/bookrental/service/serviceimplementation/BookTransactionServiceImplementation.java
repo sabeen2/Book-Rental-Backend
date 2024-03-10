@@ -31,6 +31,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -140,8 +142,9 @@ public class BookTransactionServiceImplementation implements BookTransactionServ
         return bookTransactionMapper.getBookTransactionDetails();
     }
 
-    public List<Map<String,Object>> getTransactionHistory(int limit ,  int page) {
-        return bookTransactionRepo.getTranscationHistry(limit, page);
+    public List<Map<String, Object>> getTransactionHistory(int page, int pageSize, Date fromDate, Date toDate) {
+        int offset = (page - 1) * pageSize;
+        return bookTransactionRepo.getTransactionHistory( fromDate,toDate,pageSize,offset);
     }
 
     public String generateExcel(HttpServletResponse response) throws IOException {

@@ -29,6 +29,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static com.example.bookrental.utils.NullValues.getNullPropertyNames;
@@ -45,6 +46,21 @@ public class BookServiceImplementation implements BookService {
 
     @Override
     public String addBook(BookDto bookDto, MultipartFile file) throws Exception {
+        Optional<Book> byName = bookRepo.findByName(bookDto.getName());
+        if(byName.isPresent()){
+            Book existingBook = byName.get();
+
+            if(existingBook.isDeleted()){
+                existingBook.setDeleted(false);
+                existingBook.setStock(existingBook.getStock()+bookDto.getStock());
+            }else{
+                existingBook.setStock(existingBook.getStock()+bookDto.getStock());
+            }
+            bookRepo.save(existingBook);
+            return "Book already existed SO, provided stock is added";
+
+        }else{
+
         Category category = categoryRepo.findById(bookDto.getCategoryId())
                 .orElseThrow(() -> new NotFoundException(messageSource.get(ExceptionMessages.NOT_FOUND.getCode())));
 
@@ -73,6 +89,7 @@ public class BookServiceImplementation implements BookService {
         bookRepo.save(book);
         return "Book added-" + bookDto.getName() + " id- " + book.getId();
     }
+}
 
     public static String saveImage(String path, MultipartFile file) throws IOException {
         if (file == null) {

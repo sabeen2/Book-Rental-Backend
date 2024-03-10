@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 import static com.example.bookrental.utils.NullValues.getNullPropertyNames;
 
@@ -33,11 +34,20 @@ public class AuthorServiceImplementation implements AuthorService {
 
     @Override
     public String addAuthor(AuthorDto authorDto) {
+        Optional<Author> byName = authorRepo.findByName(authorDto.getName());
+        if(byName.isPresent()){
+            Author existingAuthor=byName.get();
+            if (existingAuthor.isDeleted()) {
+                existingAuthor.setDeleted(false);
+                authorRepo.save(existingAuthor);
+            }
+            return "author already existed so, active status is changed";
+        }else {
         Author author = objectMapper.convertValue(authorDto, Author.class);
         authorRepo.save(author);
         return messageSource.get(ExceptionMessages.SAVE.getCode()) +" id-:"+ author.getAuthorId();
     }
-
+}
     @Override
     public String updateAuthor(AuthorDto authorDto) {
         Author author = authorRepo.findById(authorDto.getAuthorId())

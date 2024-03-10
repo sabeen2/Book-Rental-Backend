@@ -94,6 +94,8 @@ public class UserEntityController extends BaseController {
     })
     @PostMapping("/login")
     public GenericResponse<AuthResponse> login(@RequestBody AuthenticationDto authenticationDto) {
+        userEntityRepo.findByUsername(authenticationDto.getUsername())
+                .orElseThrow(()->new NotFoundException( messageSource.get(ExceptionMessages.INVALID_CREDENTIALS.getCode())));
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationDto.getUsername(), authenticationDto.getPassword()));
         if (authentication.isAuthenticated()) {
             UserEntity byUsername = userEntityRepo.findByUsername(authentication.getName())

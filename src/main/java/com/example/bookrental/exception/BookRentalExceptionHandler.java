@@ -66,7 +66,7 @@ public class BookRentalExceptionHandler {
 
             //handling constraint violations
             if (violation.getMessage().contains("unique")) {
-                errors.put("errorMessage", "The data violates a unique constraint.");
+                errors.put("errorMessage", "Data Already Exist.");
             }
         } else if (ex.getCause() instanceof org.hibernate.exception.DataException) {
             org.hibernate.exception.DataException violation = ((org.hibernate.exception.DataException) ex.getCause());

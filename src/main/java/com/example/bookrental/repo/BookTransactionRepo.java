@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -17,10 +18,19 @@ public interface BookTransactionRepo extends JpaRepository<BookTransaction,Long>
     @Query("SELECT m.name as Menber_name ,b.name as bookName ,bt.fromDate as fromDate,bt.toDate as to_Date FROM Member m inner JOIN BookTransaction bt on m.memberid=bt.member.memberid inner join Book b on b.id=bt.book.id")
     List<Map<String,Object>> getMemberAndBookDetails();
 
-    @Query(value = "SELECT bt.id,bt.code,bt.from_date,bt.to_date, m.name as member_name, b.name from tbl_book_transaction bt\n" +
-            " inner join tbl_member m on m.memberid=bt.memberid inner join tbl_book b on b.id=bt.book_id where bt.deleted='true' LIMIT ?1 OFFSET ?2 ",nativeQuery = true)
-    List<Map<String,Object>> getTranscationHistry(int limit ,  int offset);
-
+    @Query(value = "SELECT bt.id, bt.code, bt.from_date, bt.to_date, m.name AS member_name, b.name " +
+            "FROM tbl_book_transaction bt " +
+            "INNER JOIN tbl_member m ON m.memberid = bt.memberid " +
+            "INNER JOIN tbl_book b ON b.id = bt.book_id " +
+            "WHERE bt.deleted = 'true' " +
+            "AND (DATE(bt.from_date) >= DATE(?1) ) " +
+            "AND (DATE(bt.to_date) <= DATE(?2)) " +
+            "LIMIT ?3 OFFSET ?4",
+            nativeQuery = true)
+    List<Map<String, Object>> getTransactionHistory(@Param("fromDate") Date fromDate,
+                                                    @Param("toDate") Date toDate,
+                                                    @Param("pageSize") int pageSize,
+                                                    @Param("offset") int offset);
     List<BookTransaction> findByToDateBefore(Date date);
 
     List<BookTransaction> findByToDateAfter(Date date);

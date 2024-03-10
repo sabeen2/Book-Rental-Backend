@@ -15,4 +15,6 @@ public interface AuthorRepo extends JpaRepository<Author, Long> {
     @Query(value = "select * from tbl_author where deleted=true", nativeQuery = true)
     List<Author> getDeleted();
     Author findByAuthorId(Long id);
+
+    Optional<Author> findByName(String name);
 }

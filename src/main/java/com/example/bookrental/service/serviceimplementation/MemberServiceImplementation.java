@@ -1,6 +1,7 @@
 package com.example.bookrental.service.serviceimplementation;
 
 import com.example.bookrental.dto.MemberDto;
+import com.example.bookrental.entity.Category;
 import com.example.bookrental.entity.Member;
 import com.example.bookrental.exception.CustomMessageSource;
 import com.example.bookrental.exception.ExceptionMessages;
@@ -19,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 import static com.example.bookrental.utils.NullValues.getNullPropertyNames;
 
@@ -36,12 +38,22 @@ public class MemberServiceImplementation implements MemberService {
 
     @Override
     public String addMember(MemberDto memberDto) {
+        Optional<Member> byName = membersRepo.findByName(memberDto.getName());
+        if (byName.isPresent()) {
+            Member existingMember = byName.get();
+            if (existingMember.isDeleted()) {
+                existingMember.setDeleted(false);
+                membersRepo.save(existingMember);
+            }
+            return "member already existed so, active status is changed";
+        } else {
         Member member;
         member = objectMapper.convertValue(memberDto, Member.class);
         membersRepo.save(member);
-        return messageSource.get(ExceptionMessages.SAVE.getCode())+ memberDto.getName();
+        return messageSource.get(ExceptionMessages.SAVE.getCode()) + memberDto.getName();
     }
 
+}
     @Override
     public String updateMember(MemberDto memberDto) {
         Member member = membersRepo.findById(memberDto.getMemberid())
