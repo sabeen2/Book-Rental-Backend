@@ -133,6 +133,7 @@ public class BookTransactionServiceImplementation implements BookTransactionServ
         book.setStock(book.getStock() + 1);
         bookRepo.save(book);
         bookTransaction.setDeleted(true);
+        bookTransaction.setRentType(RentType.RETURN);
         bookTransactionRepo.save(bookTransaction);
         return bookTransaction.getId() + messageSource.get(ExceptionMessages.DELETED.getCode());
     }
