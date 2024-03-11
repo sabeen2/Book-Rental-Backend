@@ -1,16 +1,21 @@
 package com.example.bookrental.exception;
 
 import com.example.bookrental.generic_response.GenericResponse;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.MalformedJwtException;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.exception.GenericJDBCException;
 import org.springframework.context.MessageSource;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.nio.file.AccessDeniedException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -93,6 +98,40 @@ public class BookRentalExceptionHandler {
                 .success(false)
                 .message(messageSource.get(ExceptionMessages.EXCEPTION.getCode()))
                 .data(errors)
+                .build();
+    }
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ExceptionHandler(AccessDeniedException.class)
+    public GenericResponse<Map<String, String>> accessDeniedException(AccessDeniedException e) {
+        Map<String, String> map = new HashMap<>();
+        map.put("errorMessage", e.getMessage());
+        return GenericResponse.<Map<String, String>>builder()
+                .success(false)
+                .message(messageSource.get(ExceptionMessages.AUTHENTICATION_ERROR.getCode()))
+                .data(map)
+                .build();
+    }
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler({ExpiredJwtException.class, MalformedJwtException.class})
+    public GenericResponse<Map<String, String>> handleJwtExceptions(JwtException ex) {
+        Map<String, String> map = new HashMap<>();
+        map.put("errorMessage", "JWT token is invalid or has expired.");
+        return GenericResponse.<Map<String, String>>builder()
+                .success(false)
+                .message("Exception occurred")
+                .data(map)
+                .build();
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(AuthenticationException.class)
+    public GenericResponse<Map<String, String>> handleAuthenticationExceptions(AuthenticationException ex) {
+        Map<String, String> map = new HashMap<>();
+        map.put("errorMessage", "Authentication failed.");
+        return GenericResponse.<Map<String, String>>builder()
+                .success(false)
+                .message("Exception occurred")
+                .data(map)
                 .build();
     }
 }

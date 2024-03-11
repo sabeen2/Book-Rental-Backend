@@ -70,8 +70,10 @@ public class BookTransactionServiceImplementation implements BookTransactionServ
         List<BookTransaction> bookTransactions = bookTransactionRepo.findAll();
         for (BookTransaction bookTransaction : bookTransactions) {
             Member existingMember = bookTransaction.getMember();
-            if (existingMember.getMemberid().equals(bookTransactionDto.getFkMemberId()) && bookTransaction.getRentType().equals(RentType.RENT)) {
-                throw new NotFoundException(messageSource.get(ExceptionMessages.MULTIPLE_RENT.getCode()));
+            if(!bookTransaction.isDeleted()) {
+                if (existingMember.getMemberid().equals(bookTransactionDto.getFkMemberId()) && bookTransaction.getRentType().equals(RentType.RENT)) {
+                    throw new NotFoundException(messageSource.get(ExceptionMessages.MULTIPLE_RENT.getCode()));
+                }
             }
         }
         BookTransaction bookTransaction = objectMapper.convertValue(bookTransactionDto, BookTransaction.class);
