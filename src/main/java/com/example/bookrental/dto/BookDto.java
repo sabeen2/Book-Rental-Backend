@@ -21,11 +21,15 @@ public class BookDto {
     @NotZeroNull
     Integer stock;
     @JsonFormat(pattern = "yyyy-mm-dd")
+
     @PublishedDateValidator
     @NotNull(message = "date Cannot be empty")
     Date publishedDate;
+
     String photo;
+
     String isbn;
+
     @NotZeroNull
     Integer pages;
     @NotNull(message = "category id Cannot be empty")

@@ -28,7 +28,7 @@ public class BookTransaction  extends AuditingEntity {
     Long id;
 
     @Column(unique=true)
-    Long code;
+    String code;
 
 //    @NotNull(message = "Book Cannot be empty")
     @ManyToOne(targetEntity = Book.class ,cascade = {CascadeType.MERGE, CascadeType.PERSIST})

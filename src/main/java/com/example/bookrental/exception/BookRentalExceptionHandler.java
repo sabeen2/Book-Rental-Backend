@@ -10,6 +10,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -17,7 +18,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.nio.file.AccessDeniedException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestControllerAdvice
 @RequiredArgsConstructor
@@ -27,13 +30,15 @@ public class BookRentalExceptionHandler {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public GenericResponse<Map<String, String>> invalidArgumentHandler(MethodArgumentNotValidException e) {
-        Map<String, String> map = new HashMap<>();
-        e.getBindingResult().getFieldErrors().forEach(error -> map.put(error.getField(), error.getDefaultMessage()));
-        return GenericResponse.<Map<String, String>>builder()
+    public GenericResponse<String> invalidArgumentHandler(MethodArgumentNotValidException e) {
+        List<FieldError> errors = e.getBindingResult().getFieldErrors();
+        String errorMessage = errors.stream()
+                .map(error -> error.getDefaultMessage())
+                .collect(Collectors.joining(", "));
+        return GenericResponse.<String>builder()
                 .success(false)
                 .message(messageSource.get(ExceptionMessages.METHOD_INVALID.getCode()))
-                .data(map)
+                .data(errorMessage)
                 .build();
     }
 

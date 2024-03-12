@@ -79,7 +79,7 @@ public class BookTransactionServiceImplementation implements BookTransactionServ
         BookTransaction bookTransaction = objectMapper.convertValue(bookTransactionDto, BookTransaction.class);
         bookTransaction.setMember(member);
         bookTransaction.setBook(book);
-        bookTransaction.setCode(generateRandomNumber());
+        bookTransaction.setCode(String.valueOf(generateRandomNumber()));
         bookTransactionRepo.save(bookTransaction);
         return messageSource.get(ExceptionMessages.SAVE.getCode()) + bookTransaction.getCode();
 
