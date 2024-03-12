@@ -23,12 +23,12 @@ public class BookDto {
     @NotNull(message = "Stock Cannot be empty")
     @NotZeroNull
     Integer stock;
-    @JsonFormat(pattern = "yyyy-mm-dd")
 
+
+    @JsonFormat(pattern = "yyyy-mm-dd")
     @PublishedDateValidator
     @NotNull(message = "date Cannot be empty")
     Date publishedDate;
-
     String photo;
 
     String isbn;

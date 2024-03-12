@@ -23,13 +23,15 @@ public class BookTransactionDto {
     @NotNull(message = "Book Id Cannot be empty")
 //    @JsonProperty("FK_book_id")
     Long bookId;
-    @NotNull(message = "date Cannot be empty")
+    @NotNull(message = "FromDate date Cannot be empty")
     @JsonFormat(pattern = "yyyy-mm-dd")
     @PublishedDateValidator
     Date fromDate;
-    @NotNull(message = "date Cannot be empty")
+
+    @NotNull(message = "ToDate date Cannot be empty")
     @JsonFormat(pattern = "yyyy-mm-dd")
     Date toDate;
+
     @NotNull(message = "Rest status Cannot be empty")
     @Enumerated(EnumType.STRING)
     RentType rentType;

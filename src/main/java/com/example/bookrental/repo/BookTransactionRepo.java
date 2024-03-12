@@ -23,8 +23,8 @@ public interface BookTransactionRepo extends JpaRepository<BookTransaction,Long>
             "INNER JOIN tbl_member m ON m.memberid = bt.memberid " +
             "INNER JOIN tbl_book b ON b.id = bt.book_id " +
             "WHERE bt.deleted = 'true' " +
-            "AND (DATE(bt.from_date) >= DATE(?1) ) " +
-            "AND (DATE(bt.to_date) <= DATE(?2)) " +
+            "AND (DATE(bt.from_date) >= COALESCE(DATE(?1), DATE(bt.from_date))) " +
+            "AND (DATE(bt.to_date) <= COALESCE(DATE(?2), DATE(bt.to_date))) " +
             "LIMIT ?3 OFFSET ?4",
             nativeQuery = true)
     List<Map<String, Object>> getTransactionHistory(@Param("fromDate") Date fromDate,
