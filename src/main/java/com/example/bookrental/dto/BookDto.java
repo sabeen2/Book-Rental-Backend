@@ -4,6 +4,7 @@ import com.example.bookrental.annotations.notzero.NotZeroNull;
 import com.example.bookrental.annotations.publisheddate.PublishedDateValidator;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.*;
 import java.util.Date;
 import java.util.List;
@@ -16,6 +17,8 @@ public class BookDto {
     Long id;
     @NotNull(message = "Name Cannot be empty")
     String name;
+
+    @Positive
     Double rating;
     @NotNull(message = "Stock Cannot be empty")
     @NotZeroNull

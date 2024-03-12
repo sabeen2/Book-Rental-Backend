@@ -30,15 +30,18 @@ public class BookRentalExceptionHandler {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public GenericResponse<String> invalidArgumentHandler(MethodArgumentNotValidException e) {
+    public GenericResponse<Map<String,String>> invalidArgumentHandler(MethodArgumentNotValidException e) {
+        Map<String, String> map = new HashMap<>();
+//        e.getBindingResult().getFieldErrors().forEach(error -> map.put(error.getField(), error.getDefaultMessage()));
         List<FieldError> errors = e.getBindingResult().getFieldErrors();
         String errorMessage = errors.stream()
-                .map(error -> error.getDefaultMessage())
+                .map(FieldError::getDefaultMessage)
                 .collect(Collectors.joining(", "));
-        return GenericResponse.<String>builder()
+        map.put("errorMessage", errorMessage);
+        return GenericResponse.<Map<String,String>>builder()
                 .success(false)
                 .message(messageSource.get(ExceptionMessages.METHOD_INVALID.getCode()))
-                .data(errorMessage)
+                .data(map)
                 .build();
     }
 
