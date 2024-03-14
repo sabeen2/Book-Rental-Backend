@@ -13,4 +13,5 @@ public interface BookTransactionService {
     public List<BookTransactionResponse> getNames();
     public BookTransactionResponse findById(Long id);
     public String deleteTransaction (Long id);
+    public int getTransactionCount();
 }

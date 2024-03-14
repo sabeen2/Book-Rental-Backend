@@ -115,6 +115,18 @@ public class BookTransactionController extends BaseController {
         return successResponse(bookTransactionService.findById(id), "transaction detail-:" + id + " are");
     }
 
+    @Operation(summary = "Get transaction history count", description = "Fetch available Transaction history count")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "transaction count "),
+            @ApiResponse(responseCode = "403", description = "Forbidden"),
+            @ApiResponse(responseCode = "500", description = "internal server error")
+    })
+    @GetMapping("/get-transactionCount")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
+    public GenericResponse<Integer> getById() {
+        return successResponse(bookTransactionService.getTransactionCount(), "Transaction count");
+    }
+
     @Operation(summary = "Update book transaction", description = "update the available book transaction detail")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "book transaction updated"),

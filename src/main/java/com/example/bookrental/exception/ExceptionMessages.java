@@ -24,7 +24,8 @@ public enum ExceptionMessages {
     AUTHENTICATION_ERROR("authentication.error"),
     MAIL_SENT("mail.sent"),
     RETURN_MAIL_SENT("remainder.mail.sent"),
-    EXPIRED("jtw.expired")
+    EXPIRED("jtw.expired"),
+    CONSTRAINT_VIOLATION("violate.Constraint")
     ;
     final String code;
 }

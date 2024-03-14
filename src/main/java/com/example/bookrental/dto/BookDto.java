@@ -2,6 +2,7 @@ package com.example.bookrental.dto;
 
 import com.example.bookrental.annotations.notzero.NotZeroNull;
 import com.example.bookrental.annotations.publisheddate.PublishedDateValidator;
+import com.example.bookrental.annotations.rating.ValidRating;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -19,7 +20,9 @@ public class BookDto {
     String name;
 
     @Positive
+    @ValidRating
     Double rating;
+
     @NotNull(message = "Stock Cannot be empty")
     @NotZeroNull
     Integer stock;

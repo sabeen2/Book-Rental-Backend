@@ -40,9 +40,11 @@ public class AuthorServiceImplementation implements AuthorService {
             if (existingAuthor.isDeleted()) {
                 existingAuthor.setDeleted(false);
                 authorRepo.save(existingAuthor);
+                return "member already existed so, active status is changed";
+            }else {
+                throw new NotFoundException(messageSource.get(ExceptionMessages.CONSTRAINT_VIOLATION.getCode()));
             }
-            return "author already existed so, active status is changed";
-        }else {
+        } else {
         Author author = objectMapper.convertValue(authorDto, Author.class);
         authorRepo.save(author);
         return messageSource.get(ExceptionMessages.SAVE.getCode()) +" id-:"+ author.getAuthorId();

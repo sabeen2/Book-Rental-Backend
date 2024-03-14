@@ -11,12 +11,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-public interface BookTransactionRepo extends JpaRepository<BookTransaction,Long> {
+public interface BookTransactionRepo extends JpaRepository<BookTransaction, Long> {
     @Query("SELECT bt.rentType FROM BookTransaction bt WHERE bt.member.memberid = :memberId")
     String findRentTypeByMemberId(@Param("memberId") Long memberId);
 
     @Query("SELECT m.name as Menber_name ,b.name as bookName ,bt.fromDate as fromDate,bt.toDate as to_Date FROM Member m inner JOIN BookTransaction bt on m.memberid=bt.member.memberid inner join Book b on b.id=bt.book.id")
-    List<Map<String,Object>> getMemberAndBookDetails();
+    List<Map<String, Object>> getMemberAndBookDetails();
 
     @Query(value = "SELECT bt.id, bt.code, bt.from_date, bt.to_date, m.name AS member_name, b.name " +
             "FROM tbl_book_transaction bt " +
@@ -31,6 +31,10 @@ public interface BookTransactionRepo extends JpaRepository<BookTransaction,Long>
                                                     @Param("toDate") Date toDate,
                                                     @Param("pageSize") int pageSize,
                                                     @Param("offset") int offset);
+
+    @Query(value = "select count(*) from tbl_book_transaction tbt  where tbt.deleted =true", nativeQuery = true)
+    int transactionCount();
+
     List<BookTransaction> findByToDateBefore(Date date);
 
     List<BookTransaction> findByToDateAfter(Date date);

@@ -44,13 +44,15 @@ public class MemberServiceImplementation implements MemberService {
             if (existingMember.isDeleted()) {
                 existingMember.setDeleted(false);
                 membersRepo.save(existingMember);
+                return "member already existed so, active status is changed";
+            }else {
+                throw new NotFoundException(messageSource.get(ExceptionMessages.CONSTRAINT_VIOLATION.getCode()));
             }
-            return "member already existed so, active status is changed";
         } else {
         Member member;
         member = objectMapper.convertValue(memberDto, Member.class);
         membersRepo.save(member);
-        return messageSource.get(ExceptionMessages.SAVE.getCode()) + memberDto.getName();
+        return messageSource.get(ExceptionMessages.SAVE.getCode()) +" "+ memberDto.getName();
     }
 
 }
@@ -60,7 +62,7 @@ public class MemberServiceImplementation implements MemberService {
                 .orElseThrow(() -> new NotFoundException(messageSource.get(ExceptionMessages.NOT_FOUND.getCode())));
         BeanUtils.copyProperties(memberDto, member, getNullPropertyNames(memberDto));
         membersRepo.save(member);
-        return messageSource.get(ExceptionMessages.UPDATE.getCode()) + memberDto.getName();
+        return messageSource.get(ExceptionMessages.UPDATE.getCode())+" "+ memberDto.getName();
     }
 
 
@@ -80,7 +82,7 @@ public class MemberServiceImplementation implements MemberService {
         Member member = membersRepo.findById(id)
                 .orElseThrow(() -> new NotFoundException(messageSource.get(ExceptionMessages.NOT_FOUND.getCode())));
         membersRepo.delete(member);
-        return member +  messageSource.get(ExceptionMessages.DELETED.getCode());
+        return member.getName()+" "+  messageSource.get(ExceptionMessages.DELETED.getCode());
     }
     @Override
     public String getExcel(HttpServletResponse response) throws IOException, IllegalAccessException {

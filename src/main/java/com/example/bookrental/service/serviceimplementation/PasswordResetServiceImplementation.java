@@ -48,11 +48,15 @@ public class PasswordResetServiceImplementation implements PasswordResetService 
             UserDetails userDetails = userInfoDetailService.loadUserByUsername(jwtService.extractUsername(token));
             String newPassword = passwordEncoder.encode(passwordResetDto.getNewPassword());
             if (passwordEncoder.matches(passwordResetDto.getOldPassword(), userDetails.getPassword())) {
-                UserEntity user = userEntityRepo.findByUsername(jwtService.extractUsername(token))
-                        .orElseThrow(() -> new NotFoundException(messageSource.get(ExceptionMessages.NOT_FOUND.getCode())));
-                user.setPassword(newPassword);
-                userEntityRepo.save(user);
-                return messageSource.get(ExceptionMessages.SUCCESS.getCode());
+                if (passwordEncoder.matches(passwordResetDto.getOldPassword(), passwordResetDto.getNewPassword())){
+                    throw new NotFoundException("Old pass word and new password cannot be same");
+                }else {
+                    UserEntity user = userEntityRepo.findByUsername(jwtService.extractUsername(token))
+                            .orElseThrow(() -> new NotFoundException(messageSource.get(ExceptionMessages.NOT_FOUND.getCode())));
+                    user.setPassword(newPassword);
+                    userEntityRepo.save(user);
+                    return messageSource.get(ExceptionMessages.SUCCESS.getCode());
+                }
             } else {
                 throw new NotFoundException(messageSource.get(ExceptionMessages.INVALID_CREDENTIALS.getCode()));
 //                return messageSource.get(ExceptionMessages.INVALID_CREDENTIALS.getCode());

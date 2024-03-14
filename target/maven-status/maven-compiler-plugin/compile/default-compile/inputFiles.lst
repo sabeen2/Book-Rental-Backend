@@ -21,6 +21,7 @@ C:\Users\shyam prasad\Desktop\BookRental\src\main\java\com\example\bookrental\se
 C:\Users\shyam prasad\Desktop\BookRental\src\main\java\com\example\bookrental\entity\BookTransaction.java
 C:\Users\shyam prasad\Desktop\BookRental\src\main\java\com\example\bookrental\service\jwtservice\JwtService.java
 C:\Users\shyam prasad\Desktop\BookRental\src\main\java\com\example\bookrental\annotations\publisheddate\DateValidator.java
+C:\Users\shyam prasad\Desktop\BookRental\src\main\java\com\example\bookrental\annotations\rating\ValidRating.java
 C:\Users\shyam prasad\Desktop\BookRental\src\main\java\com\example\bookrental\entity\Category.java
 C:\Users\shyam prasad\Desktop\BookRental\src\main\java\com\example\bookrental\repo\MembersRepo.java
 C:\Users\shyam prasad\Desktop\BookRental\src\main\java\com\example\bookrental\exception\TypeMismatch.java
@@ -72,6 +73,7 @@ C:\Users\shyam prasad\Desktop\BookRental\src\main\java\com\example\bookrental\dt
 C:\Users\shyam prasad\Desktop\BookRental\src\main\java\com\example\bookrental\service\serviceimplementation\ReturnDateExceededEmailService.java
 C:\Users\shyam prasad\Desktop\BookRental\src\main\java\com\example\bookrental\controller\UserEntityController.java
 C:\Users\shyam prasad\Desktop\BookRental\src\main\java\com\example\bookrental\exception\CustomMessageSource.java
+C:\Users\shyam prasad\Desktop\BookRental\src\main\java\com\example\bookrental\annotations\rating\RatingValidator.java
 C:\Users\shyam prasad\Desktop\BookRental\src\main\java\com\example\bookrental\auditingconfig\AuditorsInfo.java
 C:\Users\shyam prasad\Desktop\BookRental\src\main\java\com\example\bookrental\repo\AuthorRepo.java
 C:\Users\shyam prasad\Desktop\BookRental\src\main\java\com\example\bookrental\utils\ExcelGenerator.java

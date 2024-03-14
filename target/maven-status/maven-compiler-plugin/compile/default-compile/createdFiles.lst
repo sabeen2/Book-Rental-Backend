@@ -60,6 +60,7 @@ com\example\bookrental\dto\AuthorDto.class
 com\example\bookrental\entity\Category.class
 com\example\bookrental\dto\ResetTokenDto.class
 com\example\bookrental\annotations\notzero\NotZeroNull.class
+com\example\bookrental\annotations\rating\RatingValidator.class
 com\example\bookrental\exception\BookRentalExceptionHandler.class
 com\example\bookrental\annotations\notzero\NegativeValidator.class
 com\example\bookrental\repo\AuthorRepo.class
@@ -76,6 +77,7 @@ com\example\bookrental\entity\Member.class
 com\example\bookrental\service\BookService.class
 com\example\bookrental\service\serviceimplementation\BookTransactionServiceImplementation.class
 com\example\bookrental\controller\basecontroller\BaseController.class
+com\example\bookrental\annotations\rating\ValidRating.class
 com\example\bookrental\generic_response\GenericResponse.class
 com\example\bookrental\dto\CategoryDto.class
 com\example\bookrental\dto\MemberDto.class

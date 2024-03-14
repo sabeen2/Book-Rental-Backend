@@ -202,4 +202,9 @@ public class BookTransactionServiceImplementation implements BookTransactionServ
         long max = 999999L;
         return min + (long) (random.nextDouble() * (max - min));
     }
+
+
+    public int getTransactionCount(){
+       return bookTransactionRepo.transactionCount();
+    }
 }

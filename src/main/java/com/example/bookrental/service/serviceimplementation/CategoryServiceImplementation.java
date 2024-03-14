@@ -41,13 +41,14 @@ public class CategoryServiceImplementation implements CategoryService {
             if (existingCategory.isDeleted()) {
                 existingCategory.setDeleted(false);
                 categoryRepo.save(existingCategory);
+                return "member already existed so, active status is changed";
+            }else {
+                throw new NotFoundException(messageSource.get(ExceptionMessages.CONSTRAINT_VIOLATION.getCode()));
             }
-            return "category already existed so, active status is changed";
         } else {
-
             Category category = objectMapper.convertValue(categoryDto, Category.class);
             categoryRepo.save(category);
-            return messageSource.get(ExceptionMessages.SAVE.getCode()) + category.getId();
+            return messageSource.get(ExceptionMessages.SAVE.getCode())+" "+ category.getId();
         }
 
     }
@@ -58,7 +59,7 @@ public class CategoryServiceImplementation implements CategoryService {
                 .orElseThrow(() -> new NotFoundException(messageSource.get(ExceptionMessages.NOT_FOUND.getCode())));
         BeanUtils.copyProperties(categoryDto, category, getNullPropertyNames(categoryDto));
         categoryRepo.save(category);
-        return messageSource.get(ExceptionMessages.UPDATE.getCode()) + category.getId();
+        return messageSource.get(ExceptionMessages.UPDATE.getCode()) +" "+ category.getId();
     }
 
 //    @Override
@@ -87,7 +88,7 @@ public class CategoryServiceImplementation implements CategoryService {
         Category category = categoryRepo.findById(id)
                 .orElseThrow(() -> new NotFoundException(messageSource.get(ExceptionMessages.NOT_FOUND.getCode())));
         categoryRepo.delete(category);
-        return category.getName() + messageSource.get(ExceptionMessages.DELETED.getCode());
+        return category.getName() +" "+ messageSource.get(ExceptionMessages.DELETED.getCode());
     }
 
     public String getExcel(HttpServletResponse response) throws IOException, IllegalAccessException {
