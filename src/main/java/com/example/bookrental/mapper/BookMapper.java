@@ -10,7 +10,9 @@ import java.util.Optional;
 
 @Mapper
 public interface BookMapper {
-    @Select("select tb.id ,tb.name ,tb.photo ,tb.rating ,tb.stock ,tb.published_date as publishedDate ,tb.isbn ,tb.pages,tc.name as categoryName,\n" +
+    @Select("select tb.id ,tb.name ,tb.photo ,tb.rating ,tb.stock ," +
+            "tc.id as categoryId, \n" +
+            "ta.author_id as authorId, ,tb.published_date as publishedDate ,tb.isbn ,tb.pages,tc.name as categoryName,\n" +
             " STRING_AGG(ta.name, ', ') as authorName \n" +
             " from tbl_book tb \n" +
             " inner join tbl_catagory tc on tc.id  =tb.category_id \n" +
@@ -19,7 +21,9 @@ public interface BookMapper {
             " where tb.deleted =false  GROUP BY tb.id, tb.name, tb.photo, tb.rating, tb.stock, tb.published_date, tb.isbn, tb.pages, tc.name  ")
     List<BookResponse> getAllBooks();
 
-    @Select("select tb.id ,tb.name ,tb.photo ,tb.rating ,tb.published_date as publishedDate,tb.stock ,tb.isbn ,tb.pages,tc.name as categoryName,\n" +
+    @Select("select tb.id ,tb.name ,tb.photo ,tb.rating ," +
+            " tc.id as categoryId,\n" +
+            " ta.author_id as authorId, tb.published_date as publishedDate,tb.stock ,tb.isbn ,tb.pages,tc.name as categoryName,\n" +
             " STRING_AGG(ta.name, ', ') as authorName  from tbl_book tb \n" +
             " inner join tbl_catagory tc on tc.id  =tb.category_id \n" +
             " inner join book_author ba on ba.book_id =tb.id \n" +

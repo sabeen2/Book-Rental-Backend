@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.time.LocalDate;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -24,8 +24,8 @@ public interface BookTransactionRepo extends JpaRepository<BookTransaction, Long
             "INNER JOIN tbl_member m ON m.memberid = bt.memberid " +
             "INNER JOIN tbl_book b ON b.id = bt.book_id " +
             "WHERE bt.deleted = 'true' " +
-            "AND (DATE(bt.from_date) >= COALESCE(DATE(?1), DATE(bt.from_date))) " +
-            "AND (DATE(bt.to_date) <= COALESCE(DATE(?2), DATE(bt.to_date))) ",
+            "AND (DATE(bt.created_date) >= COALESCE(DATE(?1), DATE(bt.created_date))) " +
+            "AND (DATE(bt.created_date) <= COALESCE(DATE(?2), DATE(bt.created_date))) ",
             nativeQuery = true)
     Page<Map<String, Object>> getTransactionHistory(@Param("fromDate") Date fromDate,
                                                     @Param("toDate") Date toDate,

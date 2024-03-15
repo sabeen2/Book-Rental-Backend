@@ -3,6 +3,7 @@ package com.example.bookrental.controller;
 import com.example.bookrental.controller.basecontroller.BaseController;
 import com.example.bookrental.dto.BookTransactionDto;
 import com.example.bookrental.dto.responsedto.BookTransactionResponse;
+import com.example.bookrental.dto.responsedto.PaginationResponse;
 import com.example.bookrental.entity.BookTransaction;
 import com.example.bookrental.generic_response.GenericResponse;
 import com.example.bookrental.repo.BookTransactionRepo;
@@ -86,13 +87,13 @@ public class BookTransactionController extends BaseController {
     })
     @GetMapping("/get-transactions-history")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
-    public GenericResponse<Object> getTransactionHistory(@RequestParam(name = "page", defaultValue = "1") int page,
-                                                         @RequestParam(name = "pageSize", defaultValue = "10") int pageSize,
-                                                         @RequestParam(name = "fromDate", required = false) Date fromDate,
-                                                         @RequestParam(name = "toDate", required = false) Date toDate) {
+    public GenericResponse<PaginationResponse> getTransactionHistory(@RequestParam(name = "page", defaultValue = "1") int page,
+                                                                     @RequestParam(name = "pageSize", defaultValue = "10") int pageSize,
+                                                                     @RequestParam(name = "fromDate", required = false) Date fromDate,
+                                                                     @RequestParam(name = "toDate", required = false)  Date toDate) {
 //        Page<BookTransactionResponse> transactionPage = bookTransactionServiceImplementation.getTransactionHistory(fromDate, toDate, page, pageSize);
-        Page<Map<String,Object>> transactionPage = bookTransactionServiceImplementation.getTransactionHistory(fromDate, toDate, page, pageSize);
-        return successResponse(transactionPage.getContent(), "All transactions details");
+//        Page<Map<String,Object>> transactionPage = bookTransactionServiceImplementation.getTransactionHistory(fromDate, toDate, page, pageSize);
+        return successResponse(bookTransactionServiceImplementation.getTransactionHistory(fromDate,toDate,page,pageSize), "All transactions details");
     }
 
     @Operation(summary = "Get all book transaction details with rented member names, book names and download in excel", description = "Fetch all available book transaction detail")

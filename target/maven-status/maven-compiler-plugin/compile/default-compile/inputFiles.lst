@@ -24,6 +24,7 @@ C:\Users\shyam prasad\Desktop\BookRental\src\main\java\com\example\bookrental\an
 C:\Users\shyam prasad\Desktop\BookRental\src\main\java\com\example\bookrental\annotations\rating\ValidRating.java
 C:\Users\shyam prasad\Desktop\BookRental\src\main\java\com\example\bookrental\entity\Category.java
 C:\Users\shyam prasad\Desktop\BookRental\src\main\java\com\example\bookrental\repo\MembersRepo.java
+C:\Users\shyam prasad\Desktop\BookRental\src\main\java\com\example\bookrental\dto\responsedto\PaginationResponse.java
 C:\Users\shyam prasad\Desktop\BookRental\src\main\java\com\example\bookrental\exception\TypeMismatch.java
 C:\Users\shyam prasad\Desktop\BookRental\src\main\java\com\example\bookrental\dto\ResetTokenDto.java
 C:\Users\shyam prasad\Desktop\BookRental\src\main\java\com\example\bookrental\dto\BookTransactionDto.java
@@ -32,6 +33,7 @@ C:\Users\shyam prasad\Desktop\BookRental\src\main\java\com\example\bookrental\en
 C:\Users\shyam prasad\Desktop\BookRental\src\main\java\com\example\bookrental\mapper\AuthorMapper.java
 C:\Users\shyam prasad\Desktop\BookRental\src\main\java\com\example\bookrental\dto\ForgotPasswordDto.java
 C:\Users\shyam prasad\Desktop\BookRental\src\main\java\com\example\bookrental\service\serviceimplementation\BookServiceImplementation.java
+C:\Users\shyam prasad\Desktop\BookRental\src\main\java\com\example\bookrental\utils\CustomPagination.java
 C:\Users\shyam prasad\Desktop\BookRental\src\main\java\com\example\bookrental\securityconfig\UserInfoDetailService.java
 C:\Users\shyam prasad\Desktop\BookRental\src\main\java\com\example\bookrental\controller\CategoryController.java
 C:\Users\shyam prasad\Desktop\BookRental\src\main\java\com\example\bookrental\annotations\notzero\NegativeValidator.java

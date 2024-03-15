@@ -2,6 +2,7 @@ package com.example.bookrental.service.serviceimplementation;
 
 import com.example.bookrental.dto.BookTransactionDto;
 import com.example.bookrental.dto.responsedto.BookTransactionResponse;
+import com.example.bookrental.dto.responsedto.PaginationResponse;
 import com.example.bookrental.entity.Book;
 import com.example.bookrental.entity.BookTransaction;
 import com.example.bookrental.entity.Member;
@@ -14,6 +15,7 @@ import com.example.bookrental.repo.BookRepo;
 import com.example.bookrental.repo.BookTransactionRepo;
 import com.example.bookrental.repo.MembersRepo;
 import com.example.bookrental.service.BookTransactionService;
+import com.example.bookrental.utils.CustomPagination;
 import com.example.bookrental.utils.ExcelToDb;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletOutputStream;
@@ -24,6 +26,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.springframework.cglib.core.Local;
 import org.springframework.data.domain.Page;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.PageRequest;
@@ -32,6 +35,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -47,7 +51,7 @@ public class BookTransactionServiceImplementation implements BookTransactionServ
     private final BookRepo bookRepo;
     private final MembersRepo membersRepo;
     private final BookTransactionMapper bookTransactionMapper;
-
+private final CustomPagination customPagination;
     private final CustomMessageSource messageSource;
 
     @Override
@@ -137,6 +141,7 @@ public class BookTransactionServiceImplementation implements BookTransactionServ
         bookRepo.save(book);
         bookTransaction.setDeleted(true);
         bookTransaction.setRentType(RentType.RETURN);
+        bookTransaction.setToDate(new Date());
         bookTransactionRepo.save(bookTransaction);
         return bookTransaction.getId() + messageSource.get(ExceptionMessages.DELETED.getCode());
     }
@@ -145,11 +150,10 @@ public class BookTransactionServiceImplementation implements BookTransactionServ
         return bookTransactionMapper.getBookTransactionDetails();
     }
 
-//    public Page<BookTransactionResponse> getTransactionHistory(Date fromDate, Date toDate, int page, int pageSize) {
-    public Page<Map<String,Object>> getTransactionHistory(Date fromDate, Date toDate, int page, int pageSize) {
+    public PaginationResponse getTransactionHistory(Date fromDate, Date toDate, int page, int pageSize) {
         Pageable pageable = PageRequest.of(page - 1, pageSize);
-        return bookTransactionRepo.getTransactionHistory(fromDate, toDate, pageable);
-//        return bookTransactionMapper.getTransactionHistory(fromDate, toDate, pageable);
+        return customPagination.getPaginatedData(bookTransactionRepo.getTransactionHistory(fromDate, toDate, pageable));
+//        return bookTransactionRepo.getTransactionHistory(fromDate, toDate, pageable);
     }
 
     public String generateExcel(HttpServletResponse response) throws IOException {
