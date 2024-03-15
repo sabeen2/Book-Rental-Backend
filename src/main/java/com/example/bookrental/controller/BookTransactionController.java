@@ -18,6 +18,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -26,6 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.Date;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @RestController
@@ -86,9 +88,11 @@ public class BookTransactionController extends BaseController {
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
     public GenericResponse<Object> getTransactionHistory(@RequestParam(name = "page", defaultValue = "1") int page,
                                                          @RequestParam(name = "pageSize", defaultValue = "10") int pageSize,
-                                                         @RequestParam(name = "fromDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date fromDate,
-                                                         @RequestParam(name = "toDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date toDate) {
-        return successResponse(bookTransactionServiceImplementation.getTransactionHistory(page, pageSize, fromDate, toDate), "All transactions details");
+                                                         @RequestParam(name = "fromDate", required = false) Date fromDate,
+                                                         @RequestParam(name = "toDate", required = false) Date toDate) {
+//        Page<BookTransactionResponse> transactionPage = bookTransactionServiceImplementation.getTransactionHistory(fromDate, toDate, page, pageSize);
+        Page<Map<String,Object>> transactionPage = bookTransactionServiceImplementation.getTransactionHistory(fromDate, toDate, page, pageSize);
+        return successResponse(transactionPage.getContent(), "All transactions details");
     }
 
     @Operation(summary = "Get all book transaction details with rented member names, book names and download in excel", description = "Fetch all available book transaction detail")

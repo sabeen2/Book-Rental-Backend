@@ -16,7 +16,9 @@ import java.util.Date;
 @Setter
 public class BookTransactionResponse {
     Long id;
+
     Long code;
+
     String bookName;
 
     @JsonFormat(pattern = "yyyy-mm-dd")

@@ -14,10 +14,8 @@ import com.example.bookrental.repo.BookRepo;
 import com.example.bookrental.repo.BookTransactionRepo;
 import com.example.bookrental.repo.MembersRepo;
 import com.example.bookrental.service.BookTransactionService;
-import com.example.bookrental.service.jwtservice.JwtService;
 import com.example.bookrental.utils.ExcelToDb;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -26,13 +24,18 @@ import lombok.RequiredArgsConstructor;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.springframework.data.domain.Page;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.time.LocalDate;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 import static com.example.bookrental.utils.NullValues.getNullPropertyNames;
 
@@ -142,9 +145,11 @@ public class BookTransactionServiceImplementation implements BookTransactionServ
         return bookTransactionMapper.getBookTransactionDetails();
     }
 
-    public List<Map<String, Object>> getTransactionHistory(int page, int pageSize, Date fromDate, Date toDate) {
-        int offset = (page - 1) * pageSize;
-        return bookTransactionRepo.getTransactionHistory(fromDate, toDate, pageSize, offset);
+//    public Page<BookTransactionResponse> getTransactionHistory(Date fromDate, Date toDate, int page, int pageSize) {
+    public Page<Map<String,Object>> getTransactionHistory(Date fromDate, Date toDate, int page, int pageSize) {
+        Pageable pageable = PageRequest.of(page - 1, pageSize);
+        return bookTransactionRepo.getTransactionHistory(fromDate, toDate, pageable);
+//        return bookTransactionMapper.getTransactionHistory(fromDate, toDate, pageable);
     }
 
     public String generateExcel(HttpServletResponse response) throws IOException {
