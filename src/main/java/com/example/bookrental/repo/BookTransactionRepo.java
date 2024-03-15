@@ -19,7 +19,7 @@ public interface BookTransactionRepo extends JpaRepository<BookTransaction, Long
     @Query("SELECT m.name as Menber_name ,b.name as bookName ,bt.fromDate as fromDate,bt.toDate as to_Date FROM Member m inner JOIN BookTransaction bt on m.memberid=bt.member.memberid inner join Book b on b.id=bt.book.id")
     List<Map<String, Object>> getMemberAndBookDetails();
 
-    @Query(value = "SELECT bt.id, bt.code, DATE (bt.from_date) as fromDate, Date(bt.to_date) as toDate, m.name AS member_name, b.name " +
+    @Query(value = "SELECT bt.id, bt.code, bt.from_date, bt.to_date, m.name AS member_name, b.name " +
             "FROM tbl_book_transaction bt " +
             "INNER JOIN tbl_member m ON m.memberid = bt.memberid " +
             "INNER JOIN tbl_book b ON b.id = bt.book_id " +
