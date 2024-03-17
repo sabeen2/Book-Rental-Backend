@@ -47,49 +47,49 @@ public class BookServiceImplementation implements BookService {
     @Override
     public String addBook(BookDto bookDto, MultipartFile file) throws Exception {
         Optional<Book> byName = bookRepo.findByName(bookDto.getName());
-        if(byName.isPresent()){
+        if (byName.isPresent()) {
             Book existingBook = byName.get();
 
-            if(existingBook.isDeleted()){
+            if (existingBook.isDeleted()) {
                 existingBook.setDeleted(false);
-                existingBook.setStock(existingBook.getStock()+bookDto.getStock());
-            }else{
-                existingBook.setStock(existingBook.getStock()+bookDto.getStock());
+                existingBook.setStock(existingBook.getStock() + bookDto.getStock());
+            } else {
+                existingBook.setStock(existingBook.getStock() + bookDto.getStock());
             }
             bookRepo.save(existingBook);
             return "Book already existed SO, provided stock is added";
 
-        }else{
+        } else {
 
-        Category category = categoryRepo.findById(bookDto.getCategoryId())
-                .orElseThrow(() -> new NotFoundException(messageSource.get(ExceptionMessages.NOT_FOUND.getCode())));
+            Category category = categoryRepo.findById(bookDto.getCategoryId())
+                    .orElseThrow(() -> new NotFoundException(messageSource.get(ExceptionMessages.NOT_FOUND.getCode())));
 
-        if(category.isDeleted()){
-            throw new NotFoundException(messageSource.get(ExceptionMessages.NOT_FOUND.getCode()));
-        }
-
-        List<Long> authorId = bookDto.getAuthorId();
-        List<Author> authors = authorRepo.findAllById(authorId);
-
-        for (Author author : authors) {
-            if (author.isDeleted()) {
+            if (category.isDeleted()) {
                 throw new NotFoundException(messageSource.get(ExceptionMessages.NOT_FOUND.getCode()));
             }
-        }
 
-        if (authors.size() != authorId.size()) {
-            throw new NotFoundException(messageSource.get(ExceptionMessages.NOT_FOUND.getCode()));
-        }
+            List<Long> authorId = bookDto.getAuthorId();
+            List<Author> authors = authorRepo.findAllById(authorId);
+
+            for (Author author : authors) {
+                if (author.isDeleted()) {
+                    throw new NotFoundException(messageSource.get(ExceptionMessages.NOT_FOUND.getCode()));
+                }
+            }
+
+            if (authors.size() != authorId.size()) {
+                throw new NotFoundException(messageSource.get(ExceptionMessages.NOT_FOUND.getCode()));
+            }
 //        String path = saveImage("C:\\Users\\shyam prasad\\Pictures\\Saved Pictures\\", file);
-        String path = saveImage("/uploads/", file);
-        bookDto.setPhoto(path);
-        Book book = objectMapper.convertValue(bookDto, Book.class);
-        book.setCategory(category);
-        book.setAuthors(authors);
-        bookRepo.save(book);
-        return "Book added-" + bookDto.getName() + " id- " + book.getId();
+            String path = saveImage("/uploads/", file);
+            bookDto.setPhoto(path);
+            Book book = objectMapper.convertValue(bookDto, Book.class);
+            book.setCategory(category);
+            book.setAuthors(authors);
+            bookRepo.save(book);
+            return "Book added-" + bookDto.getName() + " id- " + book.getId();
+        }
     }
-}
 
     public static String saveImage(String path, MultipartFile file) throws IOException {
         if (file == null) {

@@ -7,6 +7,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.util.Date;
 import java.util.List;
 
@@ -27,8 +29,6 @@ public class BookDto {
     @NotZeroNull
     Integer stock;
 
-
-    @JsonFormat(pattern = "yyyy-mm-dd")
     @PublishedDateValidator
     @NotNull(message = "date Cannot be empty")
     Date publishedDate;
