@@ -16,7 +16,7 @@ public class BookResponse {
     String name;
     Double rating;
     Integer stock;
-    @JsonFormat(pattern = "yyyy-mm-dd")
+//    @JsonFormat(pattern = "yyyy-mm-dd")
     Date publishedDate;
     String photo;
     String isbn;
