@@ -1,13 +1,16 @@
 package com.example.bookrental.dto.responsedto;
 
+import com.example.bookrental.dto.AuthorDto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Date;
 import java.util.List;
 
 @Getter
+@Setter
 public class BookResponse {
     Long id;
     String name;
@@ -19,5 +22,9 @@ public class BookResponse {
     String isbn;
     Integer pages;
     String categoryName;
-    String authorName;
+//    List<String> authorName;
+    List<AuthorDto> authorDetails;
+    Long categoryId;
+//    List<Long> authors;
+
 }

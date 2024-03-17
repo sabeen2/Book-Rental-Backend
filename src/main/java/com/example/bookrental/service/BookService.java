@@ -13,7 +13,7 @@ public interface BookService {
     public String addBook(BookDto  bookDto,MultipartFile file) throws Exception;
     public String updateBook(BookDto  bookDto);
     public List<BookResponse> getAllBook();
-    public BookResponse findById(Long id);
+    public List<BookResponse> findById(Long id);
     public String deleteBook(Long id);
 
 

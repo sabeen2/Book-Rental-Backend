@@ -129,9 +129,9 @@ public class BookServiceImplementation implements BookService {
 
 
     @Override
-    public BookResponse findById(Long id) {
-        return bookMapper.getBookByID(id)
-                .orElseThrow(() -> new NotFoundException(messageSource.get(ExceptionMessages.NOT_FOUND.getCode())));
+    public List<BookResponse> findById(Long id) {
+        return bookMapper.getBookByID(id);
+//                .orElseThrow(() -> new NotFoundException(messageSource.get(ExceptionMessages.NOT_FOUND.getCode())));
     }
 
     @Override

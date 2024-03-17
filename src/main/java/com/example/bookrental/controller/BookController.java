@@ -79,7 +79,7 @@ public class BookController extends BaseController {
     })
     @GetMapping("/get-by-id")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN','ROLE_LIBRARIAN')")
-    public GenericResponse<BookResponse> getById(@RequestParam Long id){
+    public GenericResponse<List<BookResponse>> getById(@RequestParam Long id){
         return successResponse(bookService.findById(id),"book id-:"+id+"details");
     }
     @Operation(summary = "Get book image by id", description = "Fetch Book image based on  provided id")
