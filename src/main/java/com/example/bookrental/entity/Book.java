@@ -3,8 +3,6 @@ package com.example.bookrental.entity;
 import com.example.bookrental.auditingconfig.AuditingEntity;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
 
 import java.util.Date;
 import java.util.List;
