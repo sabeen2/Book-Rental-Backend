@@ -27,7 +27,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 //@MappedTypes({CategoryDto.class})
 
 @OpenAPIDefinition(info = @Info(title = "Book rental API", version = "1.0", description = "Allows the admin and librarian too keep track of the rented books and Transactions associated with it.")
-        , servers = {@Server(url = "https://bookrental-7yd6.onrender.com/", description = "Deployed Server URL"),
+        , servers = {@Server(url = "https://book-rental-backend-9vf9.onrender.com/", description = "Deployed Server URL"),
         @Server(url = "http://localhost:8080", description = "Local Server URL")
 }
 )
