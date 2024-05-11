@@ -6,9 +6,10 @@
 
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/BookRental
-    username: postgres
-    password: 1234
+#    url: jdbc:postgresql://localhost:5432/BookRental
+    url: jdbc:postgresql://dpg-covnqsa1hbls73du0fj0-a.singapore-postgres.render.com/demobookrentalsabeen
+    username: sabeen
+    password: GUfjjJo6ssjfXWNNgs6Jkgf0GkuQJQeP
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
