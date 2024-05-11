@@ -50,6 +50,17 @@ public class AuthorServiceImplementation implements AuthorService {
         return messageSource.get(ExceptionMessages.SAVE.getCode()) +" id-:"+ author.getAuthorId();
     }
 }
+
+    String facebook = "df0f08c9-7d0e-4f6a-b0c7-5127a9eb1075";
+    String Email = "df0f08c9-7d0e-4f6a-b0c7-5127a9eb1078";
+    String baseUrl="http://localhost:8080";
+
+    public static String generateUniqueUrl(String baseUrl, String endpoint) {
+        String uuid="df0f08c9-7d0e-4f6a-b0c7-5127a9eb1075";
+        return baseUrl + endpoint + "?" + uuid;
+    }
+
+
     @Override
     public String updateAuthor(AuthorDto authorDto) {
         Author author = authorRepo.findById(authorDto.getAuthorId())

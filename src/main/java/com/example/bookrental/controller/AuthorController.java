@@ -28,6 +28,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 
+import static com.example.bookrental.service.serviceimplementation.AuthorServiceImplementation.generateUniqueUrl;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/lib/authors")
@@ -58,6 +60,20 @@ public class AuthorController extends BaseController {
     public GenericResponse<String> updateAuthor(@RequestBody AuthorDto authorDto) {
         return successResponse(authorService.updateAuthor(authorDto), "Author Updated");
     }
+
+
+    @Operation(summary = "Update authors", description = "update the available authors detail")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Author updated"),
+            @ApiResponse(responseCode = "404", description = "Author not found"),
+            @ApiResponse(responseCode = "500", description = "internal server error")
+    })
+    @GetMapping("/generate-url")
+    public String generateUnique(@RequestParam String endpoint) {
+        String baseUrl="http://localhost:8080";
+        return generateUniqueUrl(baseUrl,endpoint);
+    }
+
     @Operation(summary = "Get all authors", description = "Fetch all available authors detail")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "All available authors"),

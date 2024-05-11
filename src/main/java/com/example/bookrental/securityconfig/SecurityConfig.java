@@ -70,56 +70,12 @@ public class SecurityConfig {
     }
     // Password encoder
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    public AuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
-        authenticationProvider.setUserDetailsService(userDetailsService());
-        authenticationProvider.setPasswordEncoder(passwordEncoder());
-        return authenticationProvider;
-    }
-    @Bean
     public AuthenticationManager authenticationManagerBean(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
 
-    /*
-    A CorsFilter is typically used when you want to apply CORS configuration
-    globally to all requests, and you want to add it directly to the servlet
-     filter chain. This means that the CORS configuration will be applied to
-     all endpoints in your application.
-    */
-    @Bean
-    public CorsFilter corsFilter(){
-        CorsConfiguration configuration=new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173","https://bookrental-7yd6.onrender.com"
-                , "https://book-rental-system-ts.netlify.app/", "https://bookrental-demo-production.up.railway.app","https://book-rental.netlify.app/"));
-        configuration.addAllowedHeader("*");
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
-        UrlBasedCorsConfigurationSource source=new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**",configuration);
-        return new CorsFilter(source);
-    }
 
-
-    /*if we want cors enabled at specific part then we can use
-    CorsConfigurationSource we also need to use @CrossOrigin annotation
-      to specify the origins in methodLevel */
-//    CorsConfigurationSource  corsConfigurationSource(){
-//        CorsConfiguration configuration=new CorsConfiguration();
-//
-//        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173", "https://book-rental-system-ts.netlify.app/", "https://bookrental-demo-production.up.railway.app"));
-//        configuration.addAllowedHeader("*");
-//        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
-//
-//        UrlBasedCorsConfigurationSource source=new UrlBasedCorsConfigurationSource();
-//        source.registerCorsConfiguration("/**",configuration);
-//        return source;
-//    }
 
 }
 
