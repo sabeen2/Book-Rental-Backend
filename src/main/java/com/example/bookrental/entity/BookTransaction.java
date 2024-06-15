@@ -8,7 +8,9 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
+import org.springframework.cglib.core.Local;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Getter
@@ -35,10 +37,10 @@ public class BookTransaction  extends AuditingEntity {
     Book book;
 
     @JsonFormat(pattern = "yyyy-mm-dd")
-    Date fromDate;
+    LocalDate fromDate;
 
     @JsonFormat(pattern = "yyyy-mm-dd")
-    Date toDate;
+    LocalDate toDate;
 
     @Column(name = "rent_status")
     @Enumerated(EnumType.STRING)

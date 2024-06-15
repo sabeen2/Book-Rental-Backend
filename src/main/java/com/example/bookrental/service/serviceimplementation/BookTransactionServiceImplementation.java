@@ -141,7 +141,7 @@ private final CustomPagination customPagination;
         bookRepo.save(book);
         bookTransaction.setDeleted(true);
         bookTransaction.setRentType(RentType.RETURN);
-        bookTransaction.setToDate(new Date());
+//        bookTransaction.setToDate(new Date());
         bookTransactionRepo.save(bookTransaction);
         return bookTransaction.getId() + messageSource.get(ExceptionMessages.DELETED.getCode());
     }

@@ -10,7 +10,9 @@ import com.example.bookrental.repo.AuthorRepo;
 import com.example.bookrental.service.AuthorService;
 import com.example.bookrental.utils.ExcelGenerator;
 import com.example.bookrental.utils.ExcelToDb;
+import com.example.bookrental.utils.MailUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
@@ -31,6 +33,7 @@ public class AuthorServiceImplementation implements AuthorService {
     private final ObjectMapper objectMapper;
     private final CustomMessageSource messageSource;
     private final AuthorMapper authorMapper;
+    private final MailUtils mailUtils;
 
     @Override
     public String addAuthor(AuthorDto authorDto) {
@@ -90,5 +93,11 @@ public class AuthorServiceImplementation implements AuthorService {
         List<Author> authors = ExcelToDb.createExcel(file, Author.class);
         authorRepo.saveAll(authors);
         return messageSource.get(ExceptionMessages.EXPORT_EXCEL_SUCCESS.getCode());
+    }
+
+    @Override
+    public Boolean sendHtmlMail() throws Exception {
+        mailUtils.sendHtmlEmail();
+        return true;
     }
 }

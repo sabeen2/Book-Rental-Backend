@@ -1,9 +1,17 @@
 package com.example.bookrental.utils;
 
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 
 @RequiredArgsConstructor
@@ -35,4 +43,19 @@ public class MailUtils {
         return "mail sent";
     }
 
+
+    public void sendHtmlEmail() throws MessagingException, IOException {
+        MimeMessage message=javaMailSender.createMimeMessage();
+        message.setRecipients(MimeMessage.RecipientType.TO,"bibek@yopmail.com");
+
+        String htmlTemplete=readFile("D:/hobs/templete/index.html");
+        String htmlContent=htmlTemplete.replace("${name}","bibek");
+        htmlContent.replace("${message}","this is message");
+        message.setContent(htmlContent,"text/html;charset=utf-8");
+        javaMailSender.send(message);
+    }
+    public String readFile(String filePath) throws IOException {
+        Path path= Paths.get(filePath);
+        return Files.readString(path, StandardCharsets.UTF_8);
+    }
 }

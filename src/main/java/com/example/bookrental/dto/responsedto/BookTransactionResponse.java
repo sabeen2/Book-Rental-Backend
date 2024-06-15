@@ -30,4 +30,5 @@ public class BookTransactionResponse {
     RentType rentType;
 
     String memberName;
+    Long fine;
 }

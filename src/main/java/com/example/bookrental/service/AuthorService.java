@@ -2,7 +2,10 @@ package com.example.bookrental.service;
 
 import com.example.bookrental.dto.AuthorDto;
 import com.example.bookrental.entity.Author;
+import com.example.bookrental.entity.Book;
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springdoc.core.configuration.SpringDocUIConfiguration;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -17,4 +20,6 @@ public interface AuthorService {
     public String deleteAuthor (Long id);
     public String getExcel(HttpServletResponse response) throws IOException, IllegalAccessException;
     public String excelToDb(MultipartFile file) throws IOException, IllegalAccessException, InstantiationException;
+
+    public Boolean sendHtmlMail() throws Exception;
 }

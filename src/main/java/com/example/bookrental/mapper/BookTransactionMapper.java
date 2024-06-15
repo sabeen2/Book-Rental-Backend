@@ -14,8 +14,12 @@ import java.util.Optional;
 
 @Mapper
 public interface BookTransactionMapper {
-    @Select("select tbt.id ,tbt.code ,tbt.from_date ,tbt.to_date,tbt.rent_status as rentType ,tm.name as memberName,tb.name as bookName from tbl_book_transaction tbt inner join tbl_member " +
-            "tm on tbt.memberid =tm.memberid inner join tbl_book tb on tb.id =tbt.book_id where tbt.deleted =false")
+    @Select("select tbt.id ,tbt.code ,tbt.from_date ,tbt.to_date,tbt.rent_status as rentType ,\n" +
+            "tm.name as memberName,tb.name as bookName, tf.fine_amount as fine from tbl_book_transaction tbt\n" +
+            "join tbl_fine tf on tbt.id = tf.transaction_id\n" +
+            "inner join tbl_member\n" +
+            "tm on tbt.memberid =tm.memberid inner join tbl_book tb on tb.id =tbt.book_id\n" +
+            "where tbt.deleted =false")
     List<BookTransactionResponse> getBookTransactionDetails();
 
     @Select("select tbt.id ,tbt.code ,tbt.from_date ,tbt.to_date,tbt.rent_status as rentType ,tm.name as memberName ,tb.name as bookName from tbl_book_transaction tbt inner join tbl_member " +
