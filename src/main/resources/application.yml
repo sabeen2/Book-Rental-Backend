@@ -10,9 +10,13 @@
 
 spring:
   datasource:
-    url: jdbc:postgresql://dpg-covnqsa1hbls73du0fj0-a.singapore-postgres.render.com/demobookrentalsabeen
-    username: sabeen
-    password: GUfjjJo6ssjfXWNNgs6Jkgf0GkuQJQeP
+    # url: jdbc:postgresql://dpg-covnqsa1hbls73du0fj0-a.singapore-postgres.render.com/demobookrentalsabeen
+    # username: sabeen
+    # password: GUfjjJo6ssjfXWNNgs6Jkgf0GkuQJQeP
+    # driver-class-name: org.postgresql.Driver
+     url: jdbc:postgresql://ep-shy-snowflake-a1dg4thr.ap-southeast-1.aws.neon.tech/neondb?sslmode=require
+    username: neondb_owner
+    password: qTZRi7X6AkzM
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
